@@ -16,7 +16,7 @@ SRC_URI="http://hg.clusterlabs.org/${PN}/1.1/archive/${MY_P}.tar.bz2"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64 ~hppa ~x86"
-IUSE="heartbeat smtp snmp static-libs cman3"
+IUSE="acl cman3 heartbeat smtp snmp static-libs"
 
 RDEPEND="
 	dev-libs/libxslt
@@ -30,7 +30,7 @@ RDEPEND="
 DEPEND="${RDEPEND}"
 
 PATCHES=(
-	"${FILESDIR}/${P}-autotools-r2.patch"
+# 	"${FILESDIR}/${PN}-1.1.5-autotools.patch"
 )
 
 S=${WORKDIR}/${MY_PN}-1-1-${MY_P}
@@ -54,10 +54,11 @@ src_configure() {
 		--localstatedir=/var \
 		--disable-dependency-tracking \
 		--disable-fatal-warnings \
+		$(use_with acl) \
 		$(use_with cman3 cs-quorum) \
 		$(use_with cman3 cman) \
-		$(use_with smtp esmtp) \
 		$(use_with heartbeat) \
+		$(use_with smtp esmtp) \
 		$(use_with snmp) \
 		$(use_enable static-libs static) \
 		${myopts}
