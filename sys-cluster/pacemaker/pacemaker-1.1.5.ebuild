@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: /var/cvsroot/gentoo-x86/sys-cluster/pacemaker/pacemaker-1.1.4-r4.ebuild,v 1.1 2011/02/21 14:39:27 ultrabug Exp $
 
-EAPI="2"
+EAPI=3
 
 inherit autotools base eutils flag-o-matic multilib python
 

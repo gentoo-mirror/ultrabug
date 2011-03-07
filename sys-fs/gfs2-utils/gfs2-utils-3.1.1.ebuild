@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI=4
+EAPI=3
 
 inherit autotools linux-info
 
@@ -12,7 +12,7 @@ SRC_URI="https://fedorahosted.org/releases/${PN:0:1}/${PN:1:1}/${PN}/${P}.tar.gz
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~amd64"
+KEYWORDS="~amd64 ~x86"
 IUSE="debug"
 
 RDEPEND="sys-cluster/corosync
@@ -40,7 +40,7 @@ src_configure() {
 }
 
 src_install() {
-	default
+	emake DESTDIR="${D}" install || die "emake failed"
 	rm -rf "${D}/usr/share/doc"
 	dodoc doc/*.txt
 	keepdir /var/{lib,log,run}/cluster

@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI="4"
+EAPI=3
 
 inherit linux-info multilib toolchain-funcs versionator
 
@@ -44,6 +44,6 @@ src_configure() {
 }
 
 src_install() {
-	default
+	emake DESTDIR="${D}" install || die "emake failed"
 	use static-libs || rm -f "${D}"/usr/lib*/*.a
 }
