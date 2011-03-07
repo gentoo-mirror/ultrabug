@@ -4,10 +4,11 @@
 
 EAPI="2"
 
+inherit autotools base eutils flag-o-matic multilib python
+
 MY_PN="Pacemaker"
 MY_P="${MY_PN}-${PV}"
 PYTHON_DEPEND="2"
-inherit autotools base eutils flag-o-matic multilib python
 
 DESCRIPTION="Pacemaker CRM"
 HOMEPAGE="http://www.linux-ha.org/wiki/Pacemaker"
