@@ -79,5 +79,5 @@ src_install() {
 	dohtml doc/*.html
 
 	# lib-specific man pages are provided by the corresponding packages
-	rm -rf "${D}/usr/share/man/man3/libdlm.3.bz2"
+	rm -rf "${D}/usr/share/man/man3/libdlm.3"
 }
