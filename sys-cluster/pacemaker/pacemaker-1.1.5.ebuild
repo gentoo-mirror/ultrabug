@@ -17,7 +17,7 @@ SRC_URI="http://hg.clusterlabs.org/${PN}/1.1/archive/${MY_P}.tar.bz2"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64 ~hppa ~x86"
-IUSE="acl cman3 heartbeat smtp snmp static-libs"
+IUSE="acl cman heartbeat smtp snmp static-libs"
 
 RDEPEND="
 	dev-libs/libxslt
@@ -56,8 +56,8 @@ src_configure() {
 		--disable-dependency-tracking \
 		--disable-fatal-warnings \
 		$(use_with acl) \
-		$(use_with cman3 cs-quorum) \
-		$(use_with cman3 cman) \
+		$(use_with cman cs-quorum) \
+		$(use_with cman cman) \
 		$(use_with heartbeat) \
 		$(use_with smtp esmtp) \
 		$(use_with snmp) \

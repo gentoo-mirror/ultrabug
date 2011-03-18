@@ -26,7 +26,7 @@ RDEPEND="!sys-cluster/dlm-headers
 DEPEND="${RDEPEND}
     >=sys-kernel/linux-headers-2.6.24"
 
-S="${WORKDIR}/${MY_P}/dlm/${PN}"
+S="${WORKDIR}/${MY_P}/dlm"
 
 src_configure() {
 	cd "${WORKDIR}/${MY_P}"
@@ -40,10 +40,22 @@ src_configure() {
 		--sominor="$MIN_PV" \
 		--dlmlibdir=/usr/$(get_libdir) \
 		--dlmincdir=/usr/include \
+		--dlmcontrollibdir=/usr/$(get_libdir) \
+		--dlmcontrolincdir=/usr/include \
 	    || die "configure problem"
 }
 
+src_compile() {
+	for i in libdlm libdlmcontrol; do
+		emake -C ${i}
+	done
+}
+
 src_install() {
-	emake DESTDIR="${D}" install || die "emake failed"
+	for i in libdlm libdlmcontrol; do
+		emake DESTDIR="${D}" -C ${i} install || die "emake failed"
+	done
 	use static-libs || rm -f "${D}"/usr/lib*/*.a
+	doman man/libdlm.3
+	dodoc doc/{libdlm.txt,example.c,user-dlm-overview.txt}
 }

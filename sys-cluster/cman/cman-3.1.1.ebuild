@@ -27,7 +27,6 @@ RDEPEND="dev-libs/libxml2
 	~sys-cluster/libfence-${PV}
 	~sys-cluster/libcman-${PV}
 	~sys-cluster/libdlm-${PV}
-	~sys-cluster/libdlmcontrol-${PV}
 	~sys-cluster/liblogthread-${PV}"
 DEPEND="${RDEPEND}
     >=sys-kernel/linux-headers-2.6.24"
@@ -35,8 +34,6 @@ DEPEND="${RDEPEND}
 S="${WORKDIR}/${MY_P}"
 
 # TODO:
-# * man pages for functions and libs should be installed by the corresponding
-#   lib ebuilds
 # * Gentoo'ise the init script
 # * fix magic dep on openldap
 
@@ -80,4 +77,7 @@ src_install() {
 		doc/{usage.txt,cman_notify_template.sh} \
 		config/plugins/ldap/*.ldif
 	dohtml doc/*.html
+
+	# lib-specific man pages are provided by the corresponding packages
+	rm -rf "${D}/usr/share/man/man3/libdlm.3.bz2"
 }
