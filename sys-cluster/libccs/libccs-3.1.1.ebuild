@@ -21,8 +21,10 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE="static-libs"
 
-RDEPEND="sys-cluster/corosync
-	dev-libs/libxml2"
+RDEPEND="
+	sys-cluster/corosync
+	dev-libs/libxml2
+	!sys-cluster/ccs"
 DEPEND="${RDEPEND}
 	>=sys-kernel/linux-headers-2.6.24"
 

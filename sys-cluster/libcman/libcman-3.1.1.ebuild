@@ -22,7 +22,7 @@ KEYWORDS="~amd64 ~x86"
 IUSE="static-libs"
 
 DEPEND=">=sys-kernel/linux-headers-2.6.24"
-RDEPEND=""
+RDEPEND="!sys-cluster/cman-lib"
 
 S="${WORKDIR}/${MY_P}/cman/lib"
 

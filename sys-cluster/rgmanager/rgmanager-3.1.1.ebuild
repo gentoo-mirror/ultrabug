@@ -21,9 +21,9 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
 
-RDEPEND="~sys-cluster/libccs-${PV}
-	~sys-cluster/libdlm-${PV}
-	~sys-cluster/libdlmcontrol-${PV}"
+RDEPEND="
+	~sys-cluster/libccs-${PV}
+	~sys-cluster/libdlm-${PV}"
 DEPEND="${RDEPEND}
 	dev-libs/libxml2
 	=sys-libs/slang-2*"

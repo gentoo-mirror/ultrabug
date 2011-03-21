@@ -27,7 +27,9 @@ RDEPEND="dev-libs/libxml2
 	~sys-cluster/libfence-${PV}
 	~sys-cluster/libcman-${PV}
 	~sys-cluster/libdlm-${PV}
-	~sys-cluster/liblogthread-${PV}"
+	~sys-cluster/liblogthread-${PV}
+	!sys-cluster/dlm
+"
 DEPEND="${RDEPEND}
     >=sys-kernel/linux-headers-2.6.24"
 

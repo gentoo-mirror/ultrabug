@@ -21,8 +21,10 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE="static-libs"
 
-RDEPEND="!sys-cluster/dlm-headers
-	!sys-cluster/dlm-kernel"
+RDEPEND="
+	!sys-cluster/dlm-headers
+	!sys-cluster/dlm-kernel
+	!sys-cluster/dlm-lib"
 DEPEND="${RDEPEND}
     >=sys-kernel/linux-headers-2.6.24"
 
