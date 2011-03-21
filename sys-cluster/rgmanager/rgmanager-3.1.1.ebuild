@@ -19,7 +19,7 @@ SRC_URI="https://fedorahosted.org/releases/c/l/cluster/${MY_P}.tar.gz"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE=""
+IUSE="dbus"
 
 RDEPEND="
 	~sys-cluster/libccs-${PV}
@@ -35,6 +35,8 @@ src_prepare() {
 }
 
 src_configure() {
+	local myopts=""
+	use dbus || myopts="--disable_dbus"
 	(cd "${WORKDIR}"/${MY_P};
 		./configure \
 			--cc="$(tc-getCC)" \
@@ -47,6 +49,7 @@ src_configure() {
 			--dlmincdir=/usr/include \
 			--cmanlibdir=/usr/$(get_libdir) \
 			--cmanincdir=/usr/include \
+			${myopts} \
 	) || die "configure problem"
 }
 

@@ -19,7 +19,7 @@ SRC_URI="https://fedorahosted.org/releases/c/l/cluster/${MY_P}.tar.gz"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE=""
+IUSE="dbus"
 
 RDEPEND="dev-libs/libxml2
 	sys-cluster/corosync
@@ -56,6 +56,8 @@ src_configure() {
 		dlm/{tool,tests/usertest}/Makefile \
 		|| die "sed failed"
 
+	local myopts=""
+	use dbus || myopts="--disable_dbus"
 	./configure \
 		--cc=$(tc-getCC) \
 		--cflags="-Wall" \
@@ -66,6 +68,7 @@ src_configure() {
 		--sominor="$MIN_PV" \
 		--without_rgmanager \
 		--without_bindings \
+		${myopts} \
 		|| die "configure problem"
 }
 
