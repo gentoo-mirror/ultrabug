@@ -22,6 +22,8 @@ KEYWORDS="~amd64 ~x86"
 IUSE="dbus"
 
 RDEPEND="
+	~sys-cluster/libcman-${PV}
+	~sys-cluster/liblogthread-${PV}
 	~sys-cluster/libccs-${PV}
 	~sys-cluster/libdlm-${PV}"
 DEPEND="${RDEPEND}
