@@ -16,9 +16,10 @@ SRC_URI="http://downloads.mongodb.org/src/${MY_P}.tar.gz"
 LICENSE="AGPL-3 Apache-2.0"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="v8"
+IUSE="pcap static-libs v8"
 
-RDEPEND="!v8? ( dev-lang/spidermonkey )
+RDEPEND="pcap? ( net-libs/libpcap )
+	!v8? ( dev-lang/spidermonkey )
 	v8? ( dev-lang/v8 )
 	dev-libs/boost
 	dev-libs/libpcre"
@@ -34,6 +35,7 @@ pkg_setup() {
 	enewuser mongodb -1 -1 /var/lib/${PN} mongodb
 
 	scons_opts="${MAKEOPTS}"
+	use static-libs || scons_opts+=" --sharedclient"
 	if use v8; then
 		scons_opts+=" --usev8"
 	else
@@ -44,6 +46,7 @@ pkg_setup() {
 src_prepare() {
 	epatch "${FILESDIR}/${PN}-1.8-fix-scons.patch"
 	if use v8; then
+		# TODO: is this still true ?
 		# Suppress known test failure with v8:
 		# http://jira.mongodb.org/browse/SERVER-1147
 		sed -i -e '/add< NumberLong >/d' dbtests/jstests.cpp || die
@@ -57,6 +60,10 @@ src_compile() {
 src_install() {
 	scons ${scons_opts} --full --nostrip install --prefix="${D}"/usr || die "Install failed"
 
+	# TODO: check for other possible .a files ?
+	use static-libs || rm ${D}/usr/*/libmongoclient.a
+
+	# TODO: wouldn't we prefer keepdir for this ?
 	for x in /var/{lib,log,run}/${PN}; do
 		dodir "${x}" || die "Install failed"
 		fowners mongodb:mongodb "${x}"
