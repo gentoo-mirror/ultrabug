@@ -1,5 +1,5 @@
 --- a/SConstruct	2011-04-05 09:24:54.828004785 +0200
-+++ b/SConstruct	2011-04-05 09:26:56.651400663 +0200
++++ b/SConstruct	2011-04-08 09:56:19.401717001 +0200
 @@ -670,9 +670,7 @@
          
      env.Append( CPPFLAGS="-fPIC -fno-strict-aliasing -ggdb -pthread -Wall -Wsign-compare -Wno-unknown-pragmas -Winvalid-pch" )
@@ -25,3 +25,15 @@
  
      if debugLogging:
          env.Append( CPPFLAGS=" -D_DEBUG" );
+@@ -911,8 +902,9 @@
+                 
+         myCheckLib( J , True )
+         mozHeader = "js"
+-        if bigLibString(myenv).find( "mozjs" ) >= 0:
+-            mozHeader = "mozjs"
++
++        env.Append( CPPPATH=["/usr/include/nspr"] )
++        env.Append( CPPDEFINES=[ "XULRUNNER" ] )
+ 
+         if not conf.CheckHeader( mozHeader + "/jsapi.h" ):
+             if conf.CheckHeader( "jsapi.h" ):
