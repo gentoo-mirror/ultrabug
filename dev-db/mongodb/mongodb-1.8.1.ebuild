@@ -18,7 +18,7 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE="v8"
 
-RDEPEND="!v8? ( =dev-lang/spidermonkey-1.7 )
+RDEPEND="!v8? ( dev-lang/spidermonkey )
 	v8? ( dev-lang/v8 )
 	dev-libs/boost
 	dev-libs/libpcre"
