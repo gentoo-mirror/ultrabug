@@ -51,6 +51,11 @@ src_compile() {
 	scons ${scons_opts} all || die "Compile failed"
 }
 
+pkg_preinst() {
+	has_version '<dev-db/mongodb-1.8'
+	PREVIOUS_LESS_THAN_1_8=$?
+}
+
 src_install() {
 	scons ${scons_opts} --full --nostrip install --prefix="${D}"/usr || die "Install failed"
 
@@ -74,9 +79,9 @@ src_install() {
 # }
 
 pkg_postinst() {
-	if has_version '<dev-db/mongodb-1.8'; then
+	if [ ${PREVIOUS_LESS_THAN_1_8} -eq 0 ]; then
 		ewarn "You just upgraded from a previous version of mongodb !"
 		ewarn "Make sure you run 'mongod --upgrade' before using this version."
 	fi
-	elog "Journalling is now set as default, see ${CONFDIR}/${PN}."
+	elog "Journaling is now set as default, see ${CONFDIR}/${PN}."
 }
