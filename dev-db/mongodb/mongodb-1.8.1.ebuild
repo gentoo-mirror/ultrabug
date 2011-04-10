@@ -16,15 +16,15 @@ SRC_URI="http://downloads.mongodb.org/src/${MY_P}.tar.gz"
 LICENSE="AGPL-3 Apache-2.0"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="pcap static-libs v8"
+IUSE="static-libs v8"
 
-RDEPEND="pcap? ( net-libs/libpcap )
-	!v8? ( dev-lang/spidermonkey )
+RDEPEND="!v8? ( dev-lang/spidermonkey )
 	v8? ( dev-lang/v8 )
 	dev-libs/boost
-	dev-libs/libpcre"
+	dev-libs/libpcre[cxx]
+	net-libs/libpcap"
 DEPEND="${RDEPEND}
-	>=dev-util/scons-1.2.0-r1
+	dev-util/scons
 	sys-libs/readline
 	sys-libs/ncurses"
 
@@ -45,12 +45,12 @@ pkg_setup() {
 
 src_prepare() {
 	epatch "${FILESDIR}/${PN}-1.8-fix-scons.patch"
-	if use v8; then
-		# TODO: is this still true ?
+	# TODO: is this still true ?
+	#if use v8; then
 		# Suppress known test failure with v8:
 		# http://jira.mongodb.org/browse/SERVER-1147
-		sed -i -e '/add< NumberLong >/d' dbtests/jstests.cpp || die
-	fi
+		#sed -i -e '/add< NumberLong >/d' dbtests/jstests.cpp || die
+	#fi
 }
 
 src_compile() {
@@ -60,12 +60,10 @@ src_compile() {
 src_install() {
 	scons ${scons_opts} --full --nostrip install --prefix="${D}"/usr || die "Install failed"
 
-	# TODO: check for other possible .a files ?
-	use static-libs || rm ${D}/usr/*/libmongoclient.a
+	use static-libs || rm "${D}/usr/$(get_libdir)/libmongoclient.a"
 
-	# TODO: wouldn't we prefer keepdir for this ?
-	for x in /var/{lib,log,run}/${PN}; do
-		dodir "${x}" || die "Install failed"
+	for x in /var/{lib,log}/${PN}; do
+		keepdir "${x}" || die "Install failed"
 		fowners mongodb:mongodb "${x}"
 	done
 
@@ -78,4 +76,12 @@ src_install() {
 
 src_test() {
 	scons ${scons_opts} smoke --smokedbprefix='testdir' test || die "Tests failed"
+}
+
+pkg_postinst() {
+	if has_version '<dev-db/mongodb-1.8'; then
+		ewarn "You just upgraded from a previous version of mongodb !"
+		ewarn "Make sure you run 'mongod --upgrade' before using this version."
+	fi
+	elog "Journalling is now set as default, see ${CONFDIR}/${PN}."
 }
