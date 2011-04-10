@@ -4,7 +4,7 @@
 
 EAPI=3
 
-inherit eutils versionator
+inherit eutils multilib versionator
 
 MY_PATCHVER=$(get_version_component_range 1-2)
 MY_P="${PN}-src-r${PV}"
@@ -18,7 +18,7 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE="static-libs v8"
 
-RDEPEND="!v8? ( dev-lang/spidermonkey )
+RDEPEND="!v8? ( >=dev-lang/spidermonkey-1.9 )
 	v8? ( dev-lang/v8 )
 	dev-libs/boost
 	dev-libs/libpcre[cxx]
@@ -45,12 +45,6 @@ pkg_setup() {
 
 src_prepare() {
 	epatch "${FILESDIR}/${PN}-1.8-fix-scons.patch"
-	# TODO: is this still true ?
-	#if use v8; then
-		# Suppress known test failure with v8:
-		# http://jira.mongodb.org/browse/SERVER-1147
-		#sed -i -e '/add< NumberLong >/d' dbtests/jstests.cpp || die
-	#fi
 }
 
 src_compile() {
@@ -74,9 +68,10 @@ src_install() {
 	newconfd "${FILESDIR}/${PN}.confd" ${PN} || die "Install failed"
 }
 
-src_test() {
-	scons ${scons_opts} smoke --smokedbprefix='testdir' test || die "Tests failed"
-}
+# FIXME: test phase depends on pymongo which is not in tree
+# src_test() {
+	#scons ${scons_opts} smoke --smokedbprefix='testdir' test || die "Tests failed"
+# }
 
 pkg_postinst() {
 	if has_version '<dev-db/mongodb-1.8'; then

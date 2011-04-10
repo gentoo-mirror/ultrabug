@@ -17,6 +17,7 @@ start() {
 		--bind_ip ${MONGODB_IP:-127.0.0.1} \
 		--port ${MONGODB_PORT:-27017} \
 		--dbpath ${MONGODB_DATA:-/var/lib/mongodb} \
+		--unixSocketPrefix /var/run/${SVCNAME}.sock \
 		--logappend --logpath /var/log/mongodb/${SVCNAME}.log \
 		${MONGODB_OPTIONS}
 	eend $?
