@@ -33,11 +33,12 @@ pkg_setup() {
 	enewgroup mongodb
 	enewuser mongodb -1 -1 /var/lib/${PN} mongodb
 
-	use static-libs || EXTRA_ESCONS+=" --sharedclient"
+	scons_opts=""
+	use static-libs || scons_opts+=" --sharedclient"
 	if use v8; then
-		EXTRA_ESCONS+=" --usev8"
+		scons_opts+=" --usev8"
 	else
-		EXTRA_ESCONS+=" --usesm"
+		scons_opts+=" --usesm"
 	fi
 }
 
@@ -46,7 +47,7 @@ src_prepare() {
 }
 
 src_compile() {
-	escons all || die "Compile failed"
+	escons ${scons_opts} all || die "Compile failed"
 }
 
 pkg_preinst() {
@@ -55,7 +56,7 @@ pkg_preinst() {
 }
 
 src_install() {
-	escons --full --nostrip install --prefix="${D}"/usr || die "Install failed"
+	escons ${scons_opts} --full --nostrip install --prefix="${D}"/usr || die "Install failed"
 
 	use static-libs || rm "${D}/usr/$(get_libdir)/libmongoclient.a"
 
@@ -74,7 +75,7 @@ src_install() {
 }
 
 src_test() {
-	escons test || die "Build test failed"
+	scons ${scons_opts} test || die "Build test failed"
 	${S}/test --dbpath=unittest || die "Tests failed"
 }
 
