@@ -7,7 +7,20 @@ depend() {
 	need net
 }
 
+checkconfig() {
+	if [ -z "${MONGOS_CONFIGDB}" ]; then
+		eerror "MONGOS_CONFIGDB is not defined, check your configuration file !"
+		return 1
+	fi
+	return 0
+}
+
 start() {
+	checkconfig || return 1
+
+	mkdir -p ${MONGODB_RUN:-/var/run/mongodb}
+	chown ${MONGODB_USER:-mongodb}: ${MONGODB_RUN:-/var/run/mongodb}
+
 	ebegin "Starting ${SVCNAME}"
 	start-stop-daemon --background --start --make-pidfile \
 		--pidfile ${MONGODB_RUN:-/var/run/mongodb}/${SVCNAME}.pid \
@@ -18,12 +31,13 @@ start() {
 		--port ${MONGOS_PORT:-27018} \
 		--unixSocketPrefix ${MONGOS_RUN:-/var/run/mongodb} \
 		--logappend --logpath /var/log/mongodb/${SVCNAME}.log \
+		--configdb ${MONGOS_CONFIGDB} \
 		${MONGOS_OPTIONS}
 	eend $?
 }
 
 stop() {
 	ebegin "Stopping ${SVCNAME}"
-	start-stop-daemon --stop --pidfile ${MONGODB_RUN:-/var/run/mongodb}/${SVCNAME}.pid
+	start-stop-daemon --stop --pidfile ${MONGOS_RUN:-/var/run/mongodb}/${SVCNAME}.pid
 	eend $?
 }
