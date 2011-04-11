@@ -75,7 +75,7 @@ src_install() {
 }
 
 src_test() {
-	scons ${scons_opts} test || die "Build test failed"
+	escons ${scons_opts} test || die "Build test failed"
 	${S}/test --dbpath=unittest || die "Tests failed"
 }
 

@@ -28,6 +28,6 @@ start() {
 
 stop() {
 	ebegin "Stopping ${SVCNAME}"
-	start-stop-daemon --stop --pidfile /var/run/${SVCNAME}.pid
+	start-stop-daemon --stop --pidfile ${MONGODB_RUN:-/var/run/mongodb}/${SVCNAME}.pid
 	eend $?
 }
