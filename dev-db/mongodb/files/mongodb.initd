@@ -8,16 +8,19 @@ depend() {
 }
 
 start() {
+	mkdir -p ${MONGODB_RUN:-/var/run/mongodb}
+	chown ${MONGODB_USER:-mongodb}: ${MONGODB_RUN:-/var/run/mongodb}
+
 	ebegin "Starting ${SVCNAME}"
 	start-stop-daemon --background --start --make-pidfile \
-		--pidfile /var/run/${SVCNAME}.pid \
-		--user ${MONGODB_USER:-mongodb} \
+		--pidfile ${MONGODB_RUN:-/var/run/mongodb}/${SVCNAME}.pid \
+		--chuid ${MONGODB_USER:-mongodb} \
 		--exec ${MONGODB_EXEC:-/usr/bin/mongod} \
 		-- \
 		--bind_ip ${MONGODB_IP:-127.0.0.1} \
 		--port ${MONGODB_PORT:-27017} \
 		--dbpath ${MONGODB_DATA:-/var/lib/mongodb} \
-		--unixSocketPrefix /var/run \
+		--unixSocketPrefix ${MONGODB_RUN:-/var/run/mongodb} \
 		--logappend --logpath /var/log/mongodb/${SVCNAME}.log \
 		${MONGODB_OPTIONS}
 	eend $?

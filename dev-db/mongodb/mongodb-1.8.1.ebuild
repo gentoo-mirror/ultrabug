@@ -3,8 +3,9 @@
 # $Header: $
 
 EAPI=3
+SCONS_MIN_VERSION="1.2.0"
 
-inherit eutils multilib versionator
+inherit eutils multilib scons-utils versionator
 
 MY_P="${PN}-src-r${PV/_rc/-rc}"
 
@@ -23,7 +24,6 @@ RDEPEND="!v8? ( >=dev-lang/spidermonkey-1.9 )
 	dev-libs/libpcre[cxx]
 	net-libs/libpcap"
 DEPEND="${RDEPEND}
-	dev-util/scons
 	sys-libs/readline
 	sys-libs/ncurses"
 
@@ -47,7 +47,7 @@ src_prepare() {
 }
 
 src_compile() {
-	scons ${scons_opts} all || die "Compile failed"
+	escons ${scons_opts} all || die "Compile failed"
 }
 
 pkg_preinst() {
@@ -56,11 +56,11 @@ pkg_preinst() {
 }
 
 src_install() {
-	scons ${scons_opts} --full --nostrip install --prefix="${D}"/usr || die "Install failed"
+	escons ${scons_opts} --full --nostrip install --prefix="${D}"/usr || die "Install failed"
 
 	use static-libs || rm "${D}/usr/$(get_libdir)/libmongoclient.a"
 
-	for x in /var/{lib,log}/${PN}; do
+	for x in /var/{lib,log,run}/${PN}; do
 		keepdir "${x}" || die "Install failed"
 		fowners mongodb:mongodb "${x}"
 	done
@@ -70,6 +70,8 @@ src_install() {
 
 	newinitd "${FILESDIR}/${PN}.initd" ${PN} || die "Install failed"
 	newconfd "${FILESDIR}/${PN}.confd" ${PN} || die "Install failed"
+	newinitd "${FILESDIR}/${PN/db/s}.initd" ${PN/db/s} || die "Install failed"
+	newconfd "${FILESDIR}/${PN/db/s}.confd" ${PN/db/s} || die "Install failed"
 }
 
 src_test() {
