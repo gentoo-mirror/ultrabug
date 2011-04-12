@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI=3
+EAPI=4
 SCONS_MIN_VERSION="1.2.0"
 
 inherit eutils multilib scons-utils versionator
@@ -46,40 +46,35 @@ src_prepare() {
 }
 
 src_compile() {
-	escons ${scons_opts} all || die
-}
-
-pkg_preinst() {
-	has_version '<dev-db/mongodb-1.8'
-	PREVIOUS_LESS_THAN_1_8=$?
+	escons ${scons_opts} all
 }
 
 src_install() {
-	escons ${scons_opts} --full --nostrip install --prefix="${D}"/usr || die
+	escons ${scons_opts} --full --nostrip install --prefix="${D}"/usr
 
 	use static-libs || rm "${D}/usr/$(get_libdir)/libmongoclient.a"
 
 	for x in /var/{lib,log,run}/${PN}; do
-		keepdir "${x}" || die
+		keepdir "${x}"
 		fowners mongodb:mongodb "${x}"
 	done
 
-	doman debian/mongo*.1 || die
+	doman debian/mongo*.1
 	dodoc README docs/building.md
 
-	newinitd "${FILESDIR}/${PN}.initd" ${PN} || die
-	newconfd "${FILESDIR}/${PN}.confd" ${PN} || die
-	newinitd "${FILESDIR}/${PN/db/s}.initd" ${PN/db/s} || die
-	newconfd "${FILESDIR}/${PN/db/s}.confd" ${PN/db/s} || die
+	newinitd "${FILESDIR}/${PN}.initd" ${PN}
+	newconfd "${FILESDIR}/${PN}.confd" ${PN}
+	newinitd "${FILESDIR}/${PN/db/s}.initd" ${PN/db/s}
+	newconfd "${FILESDIR}/${PN/db/s}.confd" ${PN/db/s}
 }
 
 src_test() {
-	escons ${scons_opts} test || die
+	escons ${scons_opts} test
 	"${S}"/test --dbpath=unittest || die
 }
 
 pkg_postinst() {
-	if [ ${PREVIOUS_LESS_THAN_1_8} -eq 0 ]; then
+	if [[ ${REPLACING_VERSIONS} < 1.8 ]]; then
 		ewarn "You just upgraded from a previous version of mongodb !"
 		ewarn "Make sure you run 'mongod --upgrade' before using this version."
 	fi
