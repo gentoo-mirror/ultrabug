@@ -16,9 +16,8 @@ SRC_URI="http://downloads.mongodb.org/src/${MY_P}.tar.gz"
 LICENSE="AGPL-3 Apache-2.0"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
+IUSE="static-libs v8"
 
-# Prefer static-libs as recommended by upstream
-IUSE="+static-libs v8"
 RDEPEND="!v8? ( >=dev-lang/spidermonkey-1.9 )
 	v8? ( dev-lang/v8 )
 	dev-libs/boost
@@ -34,8 +33,7 @@ pkg_setup() {
 	enewgroup mongodb
 	enewuser mongodb -1 -1 /var/lib/${PN} mongodb
 
-	scons_opts=""
-	use static-libs || scons_opts+=" --sharedclient"
+	scons_opts=" --sharedclient"
 	if use v8; then
 		scons_opts+=" --usev8"
 	else
