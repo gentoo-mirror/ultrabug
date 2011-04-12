@@ -7,7 +7,7 @@ SCONS_MIN_VERSION="1.2.0"
 
 inherit eutils multilib scons-utils versionator
 
-MY_P="${PN}-src-r${PV/_rc/-rc}"
+MY_P=${PN}-src-r${PV/_rc/-rc}
 
 DESCRIPTION="A high-performance, open source, schema-free document-oriented database"
 HOMEPAGE="http://www.mongodb.org"
@@ -28,7 +28,7 @@ DEPEND="${RDEPEND}
 	sys-libs/readline
 	sys-libs/ncurses"
 
-S="${WORKDIR}/${MY_P}"
+S=${WORKDIR}/${MY_P}
 
 pkg_setup() {
 	enewgroup mongodb
@@ -48,7 +48,7 @@ src_prepare() {
 }
 
 src_compile() {
-	escons ${scons_opts} all || die "Compile failed"
+	escons ${scons_opts} all || die
 }
 
 pkg_preinst() {
@@ -57,27 +57,27 @@ pkg_preinst() {
 }
 
 src_install() {
-	escons ${scons_opts} --full --nostrip install --prefix="${D}"/usr || die "Install failed"
+	escons ${scons_opts} --full --nostrip install --prefix="${D}"/usr || die
 
 	use static-libs || rm "${D}/usr/$(get_libdir)/libmongoclient.a"
 
 	for x in /var/{lib,log,run}/${PN}; do
-		keepdir "${x}" || die "Install failed"
+		keepdir "${x}" || die
 		fowners mongodb:mongodb "${x}"
 	done
 
-	doman debian/mongo*.1 || die "Install failed"
+	doman debian/mongo*.1 || die
 	dodoc README docs/building.md
 
-	newinitd "${FILESDIR}/${PN}.initd" ${PN} || die "Install failed"
-	newconfd "${FILESDIR}/${PN}.confd" ${PN} || die "Install failed"
-	newinitd "${FILESDIR}/${PN/db/s}.initd" ${PN/db/s} || die "Install failed"
-	newconfd "${FILESDIR}/${PN/db/s}.confd" ${PN/db/s} || die "Install failed"
+	newinitd "${FILESDIR}/${PN}.initd" ${PN} || die
+	newconfd "${FILESDIR}/${PN}.confd" ${PN} || die
+	newinitd "${FILESDIR}/${PN/db/s}.initd" ${PN/db/s} || die
+	newconfd "${FILESDIR}/${PN/db/s}.confd" ${PN/db/s} || die
 }
 
 src_test() {
-	escons ${scons_opts} test || die "Build test failed"
-	${S}/test --dbpath=unittest || die "Tests failed"
+	escons ${scons_opts} test || die
+	"${S}"/test --dbpath=unittest || die
 }
 
 pkg_postinst() {
