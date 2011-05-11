@@ -36,7 +36,6 @@ RESTRICT="test"
 AUTOTOOLS_IN_SOURCE_BUILD=1
 
 DOCS=(AUTHORS ChangeLog doc/rsyslog-example.conf)
-HTML_DOCS=("${S}/doc/")
 
 src_configure() {
 	# Maintainer notes:
@@ -46,37 +45,37 @@ src_configure() {
 	#   The maintainer says there is no real installation support
 	#   for the java GUI, so we disable it for now.
 	local myeconfargs=(
-		--disable-gui \
-		--disable-rfc3195 \
-		--enable-largefile \
-		--enable-unlimited-select \
-		--enable-imdiag \
-		--enable-imfile \
-		--enable-imtemplate \
-		--enable-imptcp \
-		--enable-mail \
-		--enable-omprog \
-		--enable-omstdout \
-		--enable-omtemplate \
-		--enable-omdbalerting \
-		--enable-omuxsock \
-		--enable-pmlastmsg \
-		--enable-pmrfc3164sd \
-		$(use_enable extras omudpspoof) \
-		$(use_enable zlib) \
-		$(use_enable mysql) \
-		$(use_enable dbi libdbi) \
-		$(use_enable postgres pgsql) \
-		$(use_enable oracle oracle) \
-		$(use_enable gnutls) \
-		$(use_enable kerberos gssapi-krb5) \
-		$(use_enable relp) \
-		$(use_enable snmp) \
-		$(use_enable debug) \
-		$(use_enable debug rtinst) \
-		$(use_enable debug diagtools) \
-		$(use_enable debug memcheck) \
-		$(use_enable debug valgrind) \
+		--disable-gui
+		--disable-rfc3195
+		--enable-largefile
+		--enable-unlimited-select
+		--enable-imdiag
+		--enable-imfile
+		--enable-imtemplate
+		--enable-imptcp
+		--enable-mail
+		--enable-omprog
+		--enable-omstdout
+		--enable-omtemplate
+		--enable-omdbalerting
+		--enable-omuxsock
+		--enable-pmlastmsg
+		--enable-pmrfc3164sd
+		$(use_enable extras omudpspoof)
+		$(use_enable zlib)
+		$(use_enable mysql)
+		$(use_enable dbi libdbi)
+		$(use_enable postgres pgsql)
+		$(use_enable oracle oracle)
+		$(use_enable gnutls)
+		$(use_enable kerberos gssapi-krb5)
+		$(use_enable relp)
+		$(use_enable snmp)
+		$(use_enable debug)
+		$(use_enable debug rtinst)
+		$(use_enable debug diagtools)
+		$(use_enable debug memcheck)
+		$(use_enable debug valgrind)
 		$(use_enable static-libs static)
 	)
 
@@ -85,28 +84,29 @@ src_configure() {
 }
 
 src_install() {
+	use doc && HTML_DOCS=(doc/)
 	autotools-utils_src_install
 
 	insinto /etc
-	newins "${FILESDIR}/${BRANCH}/rsyslog-gentoo.conf" rsyslog.conf || die
-	newconfd "${FILESDIR}/${BRANCH}/rsyslog.confd" rsyslog || die
-	newinitd "${FILESDIR}/${BRANCH}/rsyslog.initd" rsyslog || die
+	newins "${FILESDIR}/${BRANCH}/rsyslog-gentoo.conf" rsyslog.conf
+	newconfd "${FILESDIR}/${BRANCH}/rsyslog.confd" rsyslog
+	newinitd "${FILESDIR}/${BRANCH}/rsyslog.initd" rsyslog
 	keepdir /var/spool/rsyslog
 	keepdir /etc/ssl/rsyslog
 	keepdir /etc/rsyslog.d
 
 	if use mysql; then
 		insinto /usr/share/doc/${PF}/scripts/mysql
-		doins plugins/ommysql/{createDB.sql,contrib/delete_mysql} || die
+		doins plugins/ommysql/{createDB.sql,contrib/delete_mysql}
 	fi
 
 	if use postgres; then
 		insinto /usr/share/doc/${PF}/scripts/pgsql
-		doins plugins/ompgsql/createDB.sql || die
+		doins plugins/ompgsql/createDB.sql
 	fi
 
 	insinto /etc/logrotate.d/
-	newins "${FILESDIR}/${BRANCH}/rsyslog.logrotate" rsyslog || die
+	newins "${FILESDIR}/${BRANCH}/rsyslog.logrotate" rsyslog
 }
 
 pkg_postinst() {
