@@ -32,7 +32,8 @@ BRANCH="5-stable"
 # need access to certain device nodes
 RESTRICT="test"
 
-# see bug 123456
+# Maitainer note : open a bug to upstream
+# showing that building in a separate dir fails
 AUTOTOOLS_IN_SOURCE_BUILD=1
 
 DOCS=(AUTHORS ChangeLog doc/rsyslog-example.conf)
@@ -76,7 +77,6 @@ src_configure() {
 		$(use_enable debug diagtools)
 		$(use_enable debug memcheck)
 		$(use_enable debug valgrind)
-		$(use_enable static-libs static)
 	)
 
 	systemd_to_myeconfargs
