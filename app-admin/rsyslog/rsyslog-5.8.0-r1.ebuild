@@ -88,12 +88,12 @@ src_install() {
 	autotools-utils_src_install
 
 	insinto /etc
-	newins "${FILESDIR}/${BRANCH}/rsyslog-gentoo.conf" rsyslog.conf
-	newconfd "${FILESDIR}/${BRANCH}/rsyslog.confd" rsyslog
-	newinitd "${FILESDIR}/${BRANCH}/rsyslog.initd" rsyslog
-	keepdir /var/spool/rsyslog
-	keepdir /etc/ssl/rsyslog
-	keepdir /etc/rsyslog.d
+	newins "${FILESDIR}/${BRANCH}/${PN}-gentoo.conf" ${PN}.conf
+	newconfd "${FILESDIR}/${BRANCH}/${PN}.confd" ${PN}
+	newinitd "${FILESDIR}/${BRANCH}/${PN}.initd" ${PN}
+	keepdir /var/spool/${PN}
+	keepdir /etc/ssl/${PN}
+	keepdir /etc/${PN}.d
 
 	if use mysql; then
 		insinto /usr/share/doc/${PF}/scripts/mysql
@@ -106,7 +106,7 @@ src_install() {
 	fi
 
 	insinto /etc/logrotate.d/
-	newins "${FILESDIR}/${BRANCH}/rsyslog.logrotate" rsyslog
+	newins "${FILESDIR}/${BRANCH}/${PN}.logrotate" ${PN}
 }
 
 pkg_postinst() {
