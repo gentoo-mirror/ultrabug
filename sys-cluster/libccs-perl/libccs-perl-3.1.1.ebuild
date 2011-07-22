@@ -39,7 +39,7 @@ src_compile() {
 			--ccslibdir=/usr/lib \
 			--ccsincdir=/usr/include \
 	) || die "configure problem"
-	
+
 	emake -j1 || die "compile problem"
 }
 

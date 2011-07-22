@@ -1,22 +1,36 @@
+CCSD_OPTS=
+
 # CMAN_CLUSTER_TIMEOUT -- amount of time to wait for joinging a cluster
 #     before giving up.  If CMAN_CLUSTER_TIMEOUT is positive, then we will
 #     wait CMAN_CLUSTER_TIMEOUT seconds before giving up and failing when
 #     a cluster is not joined.  If CMAN_CLUSTER_TIMEOUT is zero, then
 #     wait indefinately for a cluster join.  If CMAN_CLUSTER_TIMEOUT is
 #     negative, do not check to see that the cluster has been joined
-[ -z "$CMAN_CLUSTER_TIMEOUT" ] && CMAN_CLUSTER_TIMEOUT=60
+CMAN_CLUSTER_TIMEOUT=120
 
 # CMAN_QUORUM_TIMEOUT -- amount of time to wait for a quorate cluster on
 #     startup quorum is needed by many other applications, so we may as
-#     well wait here.  If CMAN_QUORUM_TIMEOUT is zero, quorum will
+#     well wait here.  If CMAN_QUORUM_TIMEOUT is less than 1, quorum will
 #     be ignored.
-[ -z "$CMAN_QUORUM_TIMEOUT" ] && CMAN_QUORUM_TIMEOUT=20
+CMAN_QUORUM_TIMEOUT=300
 
 # CMAN_SHUTDOWN_TIMEOUT -- amount of time to wait for cman to become a
 #     cluster member before calling cman_tool leave during shutdown.
-#     The default is 60 seconds
-[ -z "$CMAN_SHUTDOWN_TIMEOUT" ] && CMAN_SHUTDOWN_TIMEOUT=60
+#     default is 60 seconds
+CMAN_SHUTDOWN_TIMEOUT=60
 
+# CMAN_JOIN_OPTIONS
+#CMAN_JOIN_OPTS="-c ...."
+
+# CMAN_LEAVE_OPTIONS
+#CMAN_LEAVE_OPTS=""
+
+
+# ex: FENCED_OPTS="-w -t 300"
+FENCED_OPTS=""
+
+
+# TODO ?
 # CMAN_NOTIFYD_START - control the startup behaviour for cmannotifyd
 # the variable can take 3 values:
 # yes                   | will always start cmannotifyd
@@ -51,55 +65,3 @@
 
 # FENCED_OPTS -- allow extra options to be passed to fence daemon.
 [ -z "$FENCED_OPTS" ] && FENCED_OPTS=""
-
-# NETWORK_BRIDGE_SCRIPT -- script to use for xen network bridging.
-#     This script must exist in the /etc/xen/scripts directory.
-#     The default script is "network-bridge".
-[ -z "$NETWORK_BRIDGE_SCRIPT" ] && NETWORK_BRIDGE_SCRIPT="network-bridge"
-
-# CMAN_JOIN_OPTS -- allows extra options to be passed to cman_tool when join
-#     operation is performed.
-#     NOTES:
-#	$CLUSTERNAME   automatically appends "-c $CLUSTERNAME"
-#	$NODENAME      automatically appends "-n $NODENAME"
-#	$CONFIG_LOADER automatically appends "-C $CONFIG_LOADER"
-
-[ -n "$CMAN_JOIN_OPTS" ] && cman_join_opts="$CMAN_JOIN_OPTS"
-
-[ -n "$CLUSTERNAME" ] && cman_join_opts+="-c $CLUSTERNAME"
-
-[ -n "$NODENAME" ] && cman_join_opts+=" -n $NODENAME"
-
-# CONFIG_LOADER -- select default config parser.
-# This can be:
-# xmlconfig       - read directly from cluster.conf and use ricci as default
-#                   config propagation method. (default)
-# ldapconfig      - read configuration from an ldap server.
-#                   Requires: COROSYNC_LDAP_URL or/and COROSYNC_LDAP_BASEDN
-#                   envvar to be set.
-#                   LDAP_BINDDN and LDAP_BINDPWD have to be either both set
-#                   or both unset.
-# corosync_parser - use internal corosync config file parser.
-# openaisparser   - use internal openais config file parser.
-[ -n "$CONFIG_LOADER" ] && cman_join_opts+=" -C $CONFIG_LOADER"
-
-# CONFIG_VALIDATION -- select default config validation behaviour
-# This can be:
-# FAIL - Use a very strict checking. The config will not be loaded if there
-#        for any kind of warnings/errors.
-# WARN - Same as FAIL, but will allow the config to load (this is temporary
-#        the default behaviour)
-# NONE - Disable config validation. Highly discouraged.
-[ -z "$CONFIG_VALIDATION" ] && CONFIG_VALIDATION=WARN
-cman_join_opts+=" -D$CONFIG_VALIDATION"
-
-# CMAN_LEAVE_OPTS -- allows extra options to be passed to cman_tool when leave
-#     operation is performed.
-[ -n "$CMAN_LEAVE_OPTS" ] && cman_leave_opts="$CMAN_LEAVE_OPTS"
-
-# INITLOGLEVEL -- select how verbose the init script should be
-# possible values:
-# quiet           - only one line notification for start/stop operations
-# terse (default) - show only required activity
-# full            - show everything
-[ -z "$INITLOGLEVEL" ] && INITLOGLEVEL=terse

@@ -1,683 +1,304 @@
-#!/bin/bash
-# Ultrabug sez :
-# WORK IN PROGRESS, DONT USE ME
-# THIS FILE IS NOT INCLUDED IN THE EBUILD YET ON PURPOSE
+#!/sbin/runscript
+# Copyright 1999-2005 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Header: /var/cvsroot/gentoo-x86/sys-cluster/cman/files/Attic/cman-2.0x.rc,v 1.4 2009/11/14 16:34:17 scarabeus dead $
 
-# set secure PATH
-PATH="/bin:/usr/bin:/sbin:/usr/sbin:@SBINDIR@"
+CMAN_TOOL="/usr/sbin/cman_tool"
+FENCE_TOOL="/usr/sbin/fence_tool"
+GFS_CONTROLD="/usr/sbin/gfs_controld"
+DLM_CONTROLD="/usr/sbin/dlm_controld"
+GROUPD="/usr/sbin/groupd"
+FENCED="/usr/sbin/fenced"
+CCSD="/usr/sbin/ccsd"
+
+[ -z "$CCSD_OPTS" ] && CCSD_OPTS=""
+[ -z "$CMAN_CLUSTER_TIMEOUT" ] && CMAN_CLUSTER_TIMEOUT=120
+[ -z "$CMAN_QUORUM_TIMEOUT" ] && CMAN_QUORUM_TIMEOUT=0
+[ -z "$CMAN_SHUTDOWN_TIMEOUT" ] && CMAN_SHUTDOWN_TIMEOUT=60
+[ -z "$FENCED_START_TIMEOUT" ] && FENCED_START_TIMEOUT=300
+[ -z "$FENCED_MEMBER_DELAY" ] && FENCED_MEMBER_DELAY=300
 
 depend() {
-	need net
+	use net
+	after xend
+	after xendomains
 }
 
-checkconfig() {
-	return 0
+load_modules() {
+	local module modules
+	modules=$1
+
+	for module in ${modules}; do
+		ebegin "Loading ${module} kernel module"
+		modprobe ${module} > /dev/null
+		eend $? "Failed to load ${module} kernel module"
+	done
 }
 
-status()
-{
-	pid=$(pidof $1 2>/dev/null)
-	rtrn=$?
-	if [ $rtrn -ne 0 ]; then
-		echo "$1 is stopped"
-	else
-		echo "$1 (pid $pid) is running..."
+unload_modules() {
+	local module modules
+	modules=$1
+
+	for module in ${modules}; do
+		ebegin "Unloading ${module} kernel module"
+		modprobe -r ${module} > /dev/null
+		eend $? "Failed to unload ${module} kernel module"
+	done
+}
+
+check_configfs() {
+	awk '{ print $2 }' /etc/mtab | grep "/sys/kernel/config" &> /dev/null\
+		&& awk '{ print $3 }' /etc/mtab | grep "configfs" &> /dev/null
+
+	if [ $? -ne 0 ]; then
+		ewarn "Please add the following line to /etc/fstab:"
+		ewarn "none configfs /sys/kernel/config defaults 0 0"
+		eend 1 "configfs not mounted at /sys/kernel/config"
 	fi
-	return $rtrn
 }
 
-# rpm based distros
-if [ -d /etc/sysconfig ]; then
-	[ -f @INITDDIR@/functions ] && . @INITDDIR@/functions
-	[ -f /etc/sysconfig/cluster ] && . /etc/sysconfig/cluster
-	[ -f /etc/sysconfig/cman ] && . /etc/sysconfig/cman
-	[ -z "$LOCK_FILE" ] && LOCK_FILE="/var/lock/subsys/cman"
-	netmanager=NetworkManager
-fi
-
-# deb based distros
-if [ ! -d /etc/sysconfig ]; then
-	[ -f /etc/default/cluster ] && . /etc/default/cluster
-	[ -f /etc/default/cman ] && . /etc/default/cman
-	[ -z "$LOCK_FILE" ] && LOCK_FILE="/var/lock/cman"
-	netmanager=network-manager
-fi
-
-
-### check functions (enable/disable) (on/off)
-
-sshd_enabled()
+mount_configfs()
 {
-	case "$CMAN_SSHD_START" in
-	yes)
-		return 0
-	;;
-	esac
-	return 1
-}
+	local module=$(awk '$2 == "configfs" { print $2 }' /proc/filesystems)
 
-gfs_controld_enabled()
-{
-	if [ -f @INITDDIR@/gfs2-cluster ] && ! chkconfig2 gfs2-cluster; then
-		return 0
+	if [ -z "${module}" ]; then
+		load_modules "configfs"
+		sleep 1s
 	fi
-	return 1
-}
 
-cluster_disabled_at_boot()
-{
-	if grep -q nocluster /proc/cmdline && \
-	   [ "$(tty)" = "/dev/console" ]; then
-		errmsg="not configured to run at boot"
-		return 1
+	# configfs
+	awk '{ print $2 }' /etc/mtab | grep "/sys/kernel/config" &> /dev/null \
+		&& awk '{ print $3 }' /etc/mtab | grep "configfs" &> /dev/null
+
+	if [ $? -ne 0 ]
+	then
+		ebegin "Mounting ConfigFS"
+		/bin/mount -t configfs none /sys/kernel/config 2>&1
+		eend $?
 	fi
 	return 0
 }
 
-network_manager_enabled()
-{
-	if status $netmanager > /dev/null 2>&1 || \
-	   chkconfig2 $netmanager; then
-		errmsg="\nNetwork Manager is either running or configured to run. Please disable it in the cluster."
-		return 1
-	fi
-	return 0
-}
+umount_configfs() {
+	local sig retry
+	local entry entries
 
-mtab_configfs()
-{
-	awk '{ print $2 }' /etc/mtab | \
-		grep '^/sys/kernel/config$' > /dev/null 2>&1 && \
-	awk '{ print $3 }' /etc/mtab | \
-		grep '^configfs$' > /dev/null 2>&1
-}
+	entries="$(awk '$3 == "configfs" { print $2 }' /proc/mounts | sort -r)"
 
-cman_running()
-{
-	cman_tool status > /dev/null 2>&1
-}
-
-# NOTE: this could probably grow a bit to do config sanity checks
-cman_checkconfig()
-{
-	case "$CONFIG_LOADER" in
-	ldapconfig)
-		if [ -n "$COROSYNC_LDAP_URL" ] || [ -n "$COROSYNC_LDAP_BASEDN" ]; then
-			if [ -n "$COROSYNC_LDAP_BINDDN" ]; then
-				if [ -z "$LDAP_BINDPWD" ]; then
-					errmsg="ldapconfig has been selected \
-						but LDAP_BINDPWD is not set"
-					return 1
-				fi
-			fi
-			if [ -n "$LDAP_BINDPWD" ]; then
-				if [ -z "$COROSYNC_LDAP_BINDDN" ]; then
-					errmsg="ldapconfig has been selected \
-						but LDAP_BINDDN is not set"
-					return 1
-				fi
-			fi
-		else
-			errmsg="ldapconfig has been selected but neither \
-				COROSYNC_LDAP_URL or COROSYNC_LDAP_BASEDN have been set"
-			return 1
-		fi
-	;;
-	xmlconfig|"")
-		configfile=@CONFDIR@/@CONFFILE@
-		[ -n "$COROSYNC_CLUSTER_CONFIG_FILE" ] && \
-			configfile=$COROSYNC_CLUSTER_CONFIG_FILE
-
-		if [ ! -f $configfile ]; then
-			errmsg="xmlconfig cannot find $configfile"
-			return 1
-		fi
-	;;
-	esac
-}
-
-xend_bridged_net_enabled() {
-	# Not a xen kernel
-	[ -d /proc/xen ] || return 1
-
-	# uanble to determine current runlevel
-	current_runlevel=$( runlevel 2>/dev/null | \
-				awk '{ print $2 }' 2>/dev/null )
-	[ -z "$current_runlevel" ] && return 1
-
-	# xend doesn't start at this runlevel.
-	! chkconfig2 --levels "$current_runlevel" xend 2>/dev/null && return 1
-
-	# xend isn't configured to use bridged networking.
-	[ ! -f /etc/xen/xend-config.sxp ] && return 1
-
-	# xend isn't configured to use bridged networking.
-	! egrep \
-		"^[[:blank:]]*\([[:blank:]]*network-script[[:blank:]]+(')?[[:blank:]]*${NETWORK_BRIDGE_SCRIPT}([[:blank:]]*\)|[[:blank:]]+)" \
-		/etc/xen/xend-config.sxp >&/dev/null && return 1
-}
-
-qdiskd_enabled()
-{
-	ccs_tool query /cluster/quorumd >/dev/null 2>&1
-}
-
-groupd_enabled()
-{
-	groupd_compat="$(ccs_tool query /cluster/group/@groupd_compat \
-			2>/dev/null || true)"
-
-	[ -z "$groupd_compat" ] && return 1
-	[ "$groupd_compat" = 0 ] && return 1
-	return 0
-}
-
-ocfs2_enabled()
-{
-	ocfs2_cluster="$(cat /sys/fs/ocfs2/cluster_stack 2>/dev/null || true)"
-	[ "$ocfs2_cluster" != cman ] && return 1
-	return 0
-}
-
-cmannotifyd_enabled()
-{
-	case "$CMAN_NOTIFYD_START" in
-	yes)
-		return 0
-	;;
-	conditional)
-		if [ -n "$(ls -1 @NOTIFYDDIR@ 2>/dev/null)" ]; then
-			return 0
-		fi
-	;;
-	esac
-	return 1
-}
-
-fence_join_enabled()
-{
-	#
-	# Check the value of FENCE_JOIN.
-	# If FENCE_JOIN is set to "no", we will not attempt to join
-	# the fence domain. If FENCE_JOIN is set to any other value,
-	# we will attempt to join the fence domain (default).
-	#
-	if [ "$FENCE_JOIN" = "no" ]; then
-		return 1
-	fi
-}
-
-### the real stuff starts here
-
-start_global()
-{
-	## global bits
-	# guarantee enough limits
-	ulimit -c unlimited
-	# required for distributions that use tmpfs for /var/run
-	mkdir -p /var/run/cluster
-}
-
-load_kernel_modules()
-{
-	errmsg=$( modprobe configfs 2>&1 ) || return 1
-	errmsg=$( modprobe dlm 2>&1 ) || return 1
-}
-
-unload_kernel_modules()
-{
-	modprobe -r dlm > /dev/null 2>&1 || true
-}
-
-start_configfs()
-{
-	mtab_configfs && return 0
-	errmsg=$( mount -t configfs none /sys/kernel/config 2>&1 )
-}
-
-stop_configfs()
-{
-	if mtab_configfs && [ -z "$(ls -1 /sys/kernel/config)" ]; then
-		errmsg=$( umount /sys/kernel/config 2>&1 ) || return 1
-		modprobe -r configfs > /dev/null 2>&1 || true
-	fi
-}
-
-corosync_running()
-{
-	[ -f /var/run/corosync.pid ] || return 1
-
-	read corosync_pid foo < /var/run/corosync.pid
-	if [ "$(pidof corosync)" == "$corosync_pid" ];then
-		errmsg="Corosync Cluster Engine is already running"
-		return 0
-	fi
-
-	return 1
-}
-
-start_cman()
-{
-	check_exec cman_tool || return $?
-	cman_running && return 0
-	cman_checkconfig || return 1
-	corosync_running && return 1
-
-	tmpfile=$(mktemp -t cmanstartup.XXXXXXXXXX)
-	if [ -z "$tmpfile" ]; then
-		errmsg="Unable to create temporary file"
-		return 1
-	fi
-
-	cman_tool -t $CMAN_CLUSTER_TIMEOUT -w join $cman_join_opts > $tmpfile 2>&1 &
-
-	while status cman_tool >/dev/null 2>&1; do
-		sleep 0.2
+	for entry in $entries; do
+		ebegin "Unmounting ConfigFS"
+		umount $entry &>/dev/null
+		eend $?
 	done
 
-	sleep 2
+	local module=$(awk '$1 == "configfs" { print $1 }' /proc/modules)
 
-	if ! cman_running; then
-		errmsg="$(cat $tmpfile) Check cluster logs for details"
-		ret=1
-	else
-		if [ "$CONFIG_VALIDATION" = "WARN" ] && \
-		   [ -s $tmpfile ] && \
-		   grep -q Relax-NG $tmpfile ; then
-			cat $tmpfile >&2
-		fi
-		pidof /usr/sbin/corosync > /var/run/cman.pid
-		ret=0
-	fi
-
-	rm -f $tmpfile
-	return $ret
-}
-
-wait_for_quorum()
-{
-	if [ $CMAN_QUORUM_TIMEOUT -gt 0 ]; then
-		errmsg=$( cman_tool -t $CMAN_QUORUM_TIMEOUT \
-			 -q wait 2>&1 ) || return 1
+	if [ ! -z "${module}" ]; then
+		unload_modules "configfs"
+		sleep 1s
 	fi
 }
 
-stop_cman()
-{
-	if cman_running; then
-		errmsg=$( cman_tool $cman_leave_opts -t $CMAN_SHUTDOWN_TIMEOUT \
-			-w leave $cmanremove 2>&1 ) || return 1
-		ok
-		echo -n "   Waiting for corosync to shutdown:"
-		while status corosync > /dev/null 2>&1; do
-			sleep 1
-			echo -n "."
+umount_gfs_filesystems() {
+	local sig retry
+	local remaining="$(awk '$3 == "gfs" || $3 == "gfs2" { print $2 }' /proc/mounts | sort -r)"
+
+	if [ -n "${remaining}" ]
+	then
+		sig=
+		retry=3
+		while [ -n "${remaining}" -a "${retry}" -gt 0 ]
+		do
+			if [ "${retry}" -lt 3 ]
+			then
+				ebegin "Unmounting GFS filesystems (retry)"
+				umount ${remaining} &>/dev/null
+				eend $? "Failed to unmount GFS filesystems this retry"
+			else
+				ebegin "Unmounting GFS filesystems"
+				umount ${remaining} &>/dev/null
+				eend $? "Failed to unmount GFS filesystems"
+			fi
+			remaining="$(awk '$3 == "gfs" || $3 == "gfs2" { if ($2 != "/") print $2 }' /proc/mounts | sort -r)"
+			[ -z "${remaining}" ] && break
+			/bin/fuser -k -m ${sig} ${remaining} &>/dev/null
+			sleep 5
+			retry=$((${retry} -1))
+			sig=-9
 		done
-		rm -f /var/run/cman.pid
 	fi
-	return 0
 }
 
-start_qdiskd()
-{
-	start_daemon qdiskd "-Q" || return 1
+unload_allmodules() {
+	local modules
 
-	if [ "$INITLOGLEVEL" = "full" ]; then
-		ok
-		echo -n "   Waiting for qdiskd to be active: "
-	fi
-	retries=0
-	while ! cman_tool status |grep -q "Quorum device" && \
-		status qdiskd > /dev/null 2>&1 && \
-		[ $retries -lt 10 ]; do
-		sleep 2
-		if [ "$INITLOGLEVEL" = "full" ]; then
-			echo -n "$retries "
-		fi
-		((retries++))
-	done
-	status qdiskd > /dev/null 2>&1
+	modules=$(awk '$1 == "lock_gulm" || \
+		$1 == "lock_dlm" || $1 == "dlm" || \
+		$1 == "lock_harness" || $1 == "gfs2" || \
+		$1 == "gfs" { print $1 }' /proc/modules)
+
+	#modules=$(awk '$1 == "lock_harness" || \
+	#	$1 == "gfs" { print $1 }' /proc/modules)
+
+	unload_modules "${modules}"
 }
 
-stop_qdiskd()
-{
-	stop_daemon qdiskd 5
+start_ccsd() {
+	ebegin "Starting ccsd"
+	start-stop-daemon --start --quiet --exec ${CCSD} -- ${CCSD_OPTS}
+	eend $?
 }
 
-start_groupd()
-{
-	start_daemon groupd || return 1
-
-	if [ "$INITLOGLEVEL" = "full" ]; then
-		ok
-		echo -n "   Waiting groupd protocol negotiation: "
-	fi
-	retries=0
-	while group_tool ls | \
-		grep -q pending && [ $retries -lt 10 ]; do
-		sleep 1
-		if [ "$INITLOGLEVEL" = "full" ]; then
-			echo -n "$retries "
-		fi
-		((retries++))
-	done
-	return 0
+stop_ccsd() {
+	ebegin "Stopping ccsd"
+	start-stop-daemon --stop --quiet -s 9 --exec ${CCSD}
+	eend $?
 }
 
-stop_groupd()
-{
-	stop_daemon groupd
-}
+start_cman() {
+	${CMAN_TOOL} status &> /dev/null
+	if [ $? -ne 0 ]
+	then
+	        ebegin "Starting cman"
+        	${CMAN_TOOL} -t ${CMAN_CLUSTER_TIMEOUT} \
+                	-w join ${CMAN_JOIN_OPTS} &> /dev/null
 
-start_fenced()
-{
-	start_daemon fenced "$FENCED_OPTS"
-}
+	        if [ "$?" -ne 0 ]
+        	then
+                	eend 1 "Failed to start cman"
+	        else
+        	        eend 0
 
-stop_fenced()
-{
-	stop_daemon fenced
-}
-
-start_dlm_controld()
-{
-	start_daemon dlm_controld || return 1
-
-	if [ "$INITLOGLEVEL" = "full" ]; then
-		ok
-		echo -n "   Waiting dlm_controld to complete initialization: "
-	fi
-
-	retries=0
-	while ! dlm_tool ls >/dev/null 2>&1 && [ $retries -lt 10 ]; do
-		sleep 1
-		if [ "$INITLOGLEVEL" = "full" ]; then
-			echo -n "$retries "
-		fi
-		((retries++))
-	done
-
-	return 0
-}
-
-stop_dlm_controld()
-{
-	stop_daemon dlm_controld
-}
-
-start_ocfs2_controld()
-{
-	start_daemon ocfs2_controld.cman
-}
-
-start_cmannotifyd()
-{
-	start_daemon cmannotifyd
-}
-
-stop_cmannotifyd()
-{
-	stop_daemon cmannotifyd
-}
-
-unfence_self()
-{
-	# fence_node returns 0 on success, 1 on failure, 2 if unconfigured
-	# 0 and 2 are ok. Everything else should report error.
-	fence_err=$(fence_node -U 2>&1)
-	case $? in
-	0|2)
-		return 0
-	;;
-	esac
-	errmsg="$fence_err"
-	return 1
-}
-
-join_fence_domain()
-{
-	if ! cman_tool status | grep Flags | grep 2node \
-		> /dev/null 2>&1; then
-		errmsg=$( fence_tool join -w $FENCE_JOIN_TIMEOUT \
-			2>&1 ) || return 1
+                	# make sure that we are quorate?
+	                if [ ${CMAN_QUORUM_TIMEOUT} -gt 0 ]
+        	        then
+                	        ebegin "Waiting for quorum (${CMAN_QUORUM_TIMEOUT} secs)"
+                        	${CMAN_TOOL} -t ${CMAN_QUORUM_TIMEOUT} -q wait
+	                        eend $?
+        	        fi
+	        fi
 	else
-		errmsg=$( fence_tool join -w $FENCE_JOIN_TIMEOUT \
-			-m $FENCED_MEMBER_DELAY join \
-			2>&1 ) || return 1
+		einfo "cman already running"
 	fi
 }
 
-leave_fence_domain()
-{
-	if status fenced > /dev/null 2>&1; then
-		errmsg=$( fence_tool leave -w 10 2>&1 )
-		return $?
+stop_cman() {
+	ebegin "Stopping cman"
+	local stat=0
+	${CMAN_TOOL} status > /dev/null 2>&1
+	if [ $? -eq 0 ]; then
+		retry=3
+		stat=1
+		while [ "${stat}" -eq 1 -a "${retry}" -gt 0 ]
+		do
+			#sleep 2
+			#${CMAN_TOOL} -w -t ${CMAN_SHUTDOWN_TIMEOUT} \
+			#	leave remove ${CMAN_LEAVE_OPTS} > /dev/null
+			${CMAN_TOOL} -w -t 60 \
+				leave remove ${CMAN_LEAVE_OPTS} &> /dev/null
+				stat=$?
+				retry=$((${retry} -1))
+		done
 	fi
+	eend ${stat}
 }
 
-start()
-{
-	breakpoint="$1"
-
-	sshd_enabled && cd @INITDDIR@ && ./sshd start
-
-	if [ "$INITLOGLEVEL" = "quiet" ]; then
-		echoarg="-n"
-	fi
-
-	echo $echoarg "Starting cluster: "
-
-	runwrap cluster_disabled_at_boot \
-		none \
-		"Checking if cluster has been disabled at boot"
-
-	runwrap network_manager_enabled \
-		none \
-		"Checking Network Manager"
-
-	runwrap start_global \
-		none \
-		"Global setup"
-
-	runwrap xend_bridged_net_start \
-		xend_bridged_net_enabled \
-		"Enable Xend bridge net workaround"
-
-	runwrap load_kernel_modules \
-		none \
-		"Loading kernel modules"
-
-	runwrap start_configfs \
-		none \
-		"Mounting configfs"
-
-	[ "$breakpoint" = "setup" ] && exit 0
-
-	runwrap start_cman \
-		none \
-		"Starting cman"
-
-	[ "$breakpoint" = "join" ] && exit 0
-
-	runwrap start_qdiskd \
-		qdiskd_enabled \
-		"Starting qdiskd"
-
-	runwrap wait_for_quorum \
-		none \
-		"Waiting for quorum"
-
-	[ "$breakpoint" = "quorum" ] && exit 0
-
-	runwrap start_groupd \
-		groupd_enabled \
-		"Starting groupd"
-
-	runwrap start_fenced \
-		none \
-		"Starting fenced"
-
-	runwrap start_dlm_controld \
-		none \
-		"Starting dlm_controld"
-
-	gfs_controld_enabled && cd @INITDDIR@ && ./gfs2-cluster start
-
-	runwrap start_ocfs2_controld \
-		ocfs2_enabled \
-		"Starting ocfs2_controld"
-
-	runwrap start_cmannotifyd \
-		cmannotifyd_enabled \
-		"Starting cmannotifyd"
-
-	[ "$breakpoint" = "daemons" ] && exit 0
-
-	runwrap unfence_self \
-		none \
-		"Unfencing self"
-
-	runwrap join_fence_domain \
-		fence_join_enabled \
-		"Joining fence domain"
+start_groupd() {
+	ebegin "Starting groupd"
+	start-stop-daemon --start --exec ${GROUPD} --name groupd
+	eend $?
 }
 
-stop()
-{
-	if [ "$INITLOGLEVEL" = "quiet" ]; then
-		echoarg="-n"
-	fi
-
-	echo $echoarg "Stopping cluster: "
-
-	runwrap leave_fence_domain \
-		fence_join_enabled \
-		"Leaving fence domain"
-
-	gfs_controld_enabled && cd @INITDDIR@ && ./gfs2-cluster stop
-
-	runwrap stop_dlm_controld \
-		none \
-		"Stopping dlm_controld"
-
-	runwrap stop_fenced \
-		none \
-		"Stopping fenced"
-
-	runwrap stop_groupd \
-		groupd_enabled \
-		"Stopping groupd"
-
-	runwrap stop_qdiskd \
-		qdiskd_enabled \
-		"Stopping qdiskd"
-
-	runwrap stop_cman \
-		none \
-		"Stopping cman"
-
-	runwrap stop_cmannotifyd \
-		cmannotifyd_enabled \
-		"Stopping cmannotifyd"
-
-	runwrap unload_kernel_modules \
-		none \
-		"Unloading kernel modules"
-
-	runwrap stop_configfs \
-		none \
-		"Unmounting configfs"
+stop_groupd() {
+	ebegin "Stopping groupd"
+	start-stop-daemon --stop --exec ${GROUPD} --name groupd
+	eend $?
 }
 
-cmanstatus()
-{
-	errmsg=$( status corosync 2>&1 )
-	ret=$?
-	if [ "$ret" != "0" ]; then
-		if [ -f /var/run/cman.pid ]; then
-			errmsg="Found stale pid file"
-			return 1
-		fi
-		if [ -f $LOCK_FILE ]; then
-			errmsg="Found stale lock file"
-			return 2
-		fi
-		return $ret
-	fi
+start_fenced() {
+	ebegin "Starting fenced"
+	start-stop-daemon --start --exec ${FENCED} --name fenced
+	eend $?
 
-	if ! cman_running; then
-		errmsg="cman is not running"
-		return 3
-	fi
+	${CMAN_TOOL} status | grep Flags | grep 2node &> /dev/null
+	local errmsg=$?
 
-	if qdiskd_enabled; then
-		errmsg=$( status qdiskd 2>&1 ) || return $?
-	fi
-
-	if groupd_enabled; then
-		errmsg=$( status groupd 2>&1 ) || return $?
-	fi
-
-	errmsg=$( status fenced 2>&1 ) || return $?
-	errmsg=$( status dlm_controld 2>&1 ) || return $?
-
-	if cmannotifyd_enabled; then
-		errmsg=$( status cmannotifyd 2>&1 ) || return $?
-	fi
-}
-
-rtrn=0
-
-if [ "$EUID" != "0" ]; then
-	echo "Only root can execute $0 script"
-	exit 4
-fi
-
-# See how we were called.
-case "$1" in
-start)
-	start "$2" && touch $LOCK_FILE
-	if [ "$INITLOGLEVEL" = "quiet" ]; then
-		success
-		echo
-	fi
-;;
-stop)
-	cmanremove=""
-	if [ -n "$2" ] && [ "$2" = "remove" ]; then
-		cmanremove=remove
-	fi
-	stop && rm -f $LOCK_FILE
-	if [ "$INITLOGLEVEL" = "quiet" ]; then
-		success
-		echo
-	fi
-;;
-restart|reload|force-reload)
-	cmanremove=remove
-	stop
-	start
-;;
-condrestart|try-restart)
-	if cmanstatus; then
-		cmanremove=remove
-		stop
-		start
-	fi
-;;
-status)
-	cmanstatus
-	rtrn=$?
-	if [ "$rtrn" = 0 ]; then
-		echo "cluster is running."
+	ebegin "Joining fence domain"
+	if [ "${errmsg}" -ne 0 ]
+	then
+		${FENCE_TOOL} -w -t $FENCED_START_TIMEOUT join &> /dev/null
+		[ $? -eq 0 ] && errmsg=$? || errmsg=1
 	else
-		echo -e "$errmsg"
+		${FENCE_TOOL} -w -m $FENCED_MEMBER_DELAY join &> /dev/null
+		[ $? -eq 0 ] && errmsg=$? || errmsg=1
 	fi
-;;
-*)
-	echo "Usage: $0 {start|stop|restart|reload|force-reload|condrestart|try-restart|status}"
-	rtrn=2
-;;
-esac
+	eend $errmsg
+}
 
-exit $rtrn
+stop_fenced() {
+	# fenced services
+	local fence_status="$( ${CMAN_TOOL} services | awk '$1 ~ /fence/ { print $3 }')"
+	if [ -n "${fence_status}" ]; then
+		if [ -x ${FENCE_TOOL} ]; then
+			ebegin "Leaving fence domain"
+			${FENCE_TOOL} leave > /dev/null 2>&1
+			eend $?
+		fi
+	fi
+
+	#ebegin "Stopping fenced"
+	#start-stop-daemon --stop --exec ${FENCED} --name fenced
+	#eend $?
+}
+
+start_gfs_controld() {
+	ebegin "Starting gfs_controld"
+	start-stop-daemon --start --exec ${GFS_CONTROLD} --name gfs_controld
+	eend $?
+}
+
+stop_gfs_controld() {
+	ebegin "Stopping gfs_controld"
+	start-stop-daemon --stop --exec ${GFS_CONTROLD} --name gfs_controld
+	eend $?
+}
+
+start_dlm_controld() {
+	ebegin "Starting dlm_controld"
+	start-stop-daemon --start --exec ${DLM_CONTROLD} --name dlm_controld
+	eend $?
+}
+
+stop_dlm_controld() {
+	ebegin "Stopping dlm_controld"
+	start-stop-daemon --stop --exec ${DLM_CONTROLD} --name dlm_controld
+	eend $?
+}
+
+start() {
+	load_modules "dlm lock_dlm"
+
+	mount_configfs
+	start_ccsd
+	start_cman
+	start_groupd
+	start_fenced
+	start_dlm_controld
+	start_gfs_controld
+}
+
+stop() {
+	# umount GFS filesystems
+	umount_gfs_filesystems
+
+	stop_fenced
+	stop_cman
+
+	#stop_gfs_controld
+	#stop_dlm_controld
+	#stop_groupd
+
+	stop_ccsd
+	unload_allmodules
+	umount_configfs
+}
