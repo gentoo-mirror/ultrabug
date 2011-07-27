@@ -7,7 +7,7 @@ EAPI=4
 inherit autotools linux-info
 
 DESCRIPTION="GFS2 Utilities"
-HOMEPAGE="http://sources.redhat.com/cluster/wiki/"
+HOMEPAGE="https://fedorahosted.org/cluster/wiki/HomePage"
 SRC_URI="https://fedorahosted.org/releases/${PN:0:1}/${PN:1:1}/${PN}/${P}.tar.gz"
 
 LICENSE="GPL-2"
@@ -44,7 +44,7 @@ src_install() {
 	rm -rf "${D}/usr/share/doc"
 	dodoc doc/*.txt
 
-	rmdir "${D}/var/run/cluster" # cman-init.d creates it
+	rmdir "${D}"/var/run/{cluster,} # cman-init.d creates it
 
 	keepdir /var/{lib,log}/cluster
 }
