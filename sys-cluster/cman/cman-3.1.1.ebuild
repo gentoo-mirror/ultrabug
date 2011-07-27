@@ -24,6 +24,7 @@ IUSE="dbus"
 RDEPEND="dev-libs/libxml2
 	net-nds/openldap
 	sys-cluster/corosync
+	sys-cluster/openais
 	~sys-cluster/libccs-${PV}
 	~sys-cluster/libfence-${PV}
 	~sys-cluster/libcman-${PV}
