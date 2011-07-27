@@ -10,7 +10,7 @@ CLUSTER_RELEASE="${PV}"
 MY_P="cluster-${CLUSTER_RELEASE}"
 
 MAJ_PV="$(get_major_version)"
-MIN_PV="$(get_version_component_range 2).$(get_version_component_range 3)"
+MIN_PV="$(get_version_component_range 2-3)"
 
 DESCRIPTION="Cluster Configuration System Library"
 HOMEPAGE="https://fedorahosted.org/cluster/wiki/HomePage"
