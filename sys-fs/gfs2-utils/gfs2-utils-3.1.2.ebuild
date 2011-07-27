@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI=3
+EAPI=4
 
 inherit autotools linux-info
 
@@ -40,8 +40,11 @@ src_configure() {
 }
 
 src_install() {
-	emake DESTDIR="${D}" install || die "emake failed"
+	default
 	rm -rf "${D}/usr/share/doc"
 	dodoc doc/*.txt
-	keepdir /var/{lib,log,run}/cluster
+
+	rmdir "${D}/var/run/cluster" # cman-init.d creates it
+
+	keepdir /var/{lib,log}/cluster
 }
