@@ -25,6 +25,7 @@ RDEPEND="dev-libs/libxml2
 	dbus? ( sys-apps/dbus )
 	ldap? ( net-nds/openldap )
 	sys-cluster/corosync
+	sys-cluster/openais
 	~sys-cluster/libccs-${PV}
 	~sys-cluster/libfence-${PV}
 	~sys-cluster/libcman-${PV}
