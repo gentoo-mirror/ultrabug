@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI=3
+EAPI=4
 
 inherit linux-info multilib toolchain-funcs versionator
 
@@ -10,19 +10,20 @@ CLUSTER_RELEASE="${PV}"
 MY_P="cluster-${CLUSTER_RELEASE}"
 
 MAJ_PV="$(get_major_version)"
-MIN_PV="$(get_version_component_range 2).$(get_version_component_range 3)"
+MIN_PV="$(get_version_component_range 2-3)"
 
 DESCRIPTION="Cluster Manager"
-HOMEPAGE="http://sources.redhat.com/cluster/wiki/"
+HOMEPAGE="https://fedorahosted.org/cluster/wiki/HomePage"
 SRC_URI="https://fedorahosted.org/releases/c/l/cluster/${MY_P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="dbus"
+IUSE="dbus ldap"
 
 RDEPEND="dev-libs/libxml2
-	net-nds/openldap
+	dbus? ( sys-apps/dbus )
+	ldap? ( net-nds/openldap )
 	sys-cluster/corosync
 	~sys-cluster/libccs-${PV}
 	~sys-cluster/libfence-${PV}
@@ -38,7 +39,6 @@ S="${WORKDIR}/${MY_P}"
 
 # TODO:
 # * Gentoo'ise the init script
-# * fix magic dep on openldap
 
 src_configure() {
 	# cluster libs have their own separate packages
@@ -57,6 +57,9 @@ src_configure() {
 		dlm/{tool,tests/usertest}/Makefile \
 		|| die "sed failed"
 
+	if ! use ldap ; then
+		sed -i -e 's|ldap||' config/plugins/Makefile || die "sed failed"
+	fi
 	local myopts=""
 	use dbus || myopts="--disable_dbus"
 	./configure \
@@ -74,9 +77,13 @@ src_configure() {
 }
 
 src_install() {
-	emake DESTDIR="${D}" install || die "emake failed"
+	emake DESTDIR="${D}" install
 
-	keepdir /var/{lib,log,run}/cluster
+	# we have to create it in the init.d script anyway
+	rmdir "${D}"/var/run/{cluster,}
+
+	keepdir /var/{lib,log}/cluster
+	keepdir /etc/cluster/cman-notify.d
 
 	rm -rf "${D}/usr/share/doc"
 	dodoc \
@@ -85,5 +92,8 @@ src_install() {
 	dohtml doc/*.html
 
 	# lib-specific man pages are provided by the corresponding packages
-	rm -rf "${D}/usr/share/man/man3/libdlm.3"
+	rm "${D}/usr/share/man/man3/libdlm.3"
+
+	newinitd "${FILESDIR}/${PN}.initd" "${PN}"
+	newconfd "${FILESDIR}/${PN}.confd" "${PN}"
 }

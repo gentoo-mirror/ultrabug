@@ -278,6 +278,8 @@ stop_dlm_controld() {
 start() {
 	load_modules "dlm lock_dlm"
 
+    mkdir -p /var/run/cluster
+
 	mount_configfs
 	start_ccsd
 	start_cman
