@@ -2,4 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: /var/cvsroot/gentoo-x86/sys-cluster/rgmanager/files/rgmanager-2.0x.conf,v 1.1 2008/03/17 17:14:00 xmerlin Exp $
 
+PIDFILE="/var/run/rgmanager.pid"
+
 RGMGR_OPTS=""
+
