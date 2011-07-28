@@ -22,6 +22,7 @@ depend() {
 	use net
 	after xend
 	after xendomains
+	provide cman
 }
 
 load_modules() {
@@ -194,8 +195,8 @@ stop_cman() {
 			#sleep 2
 			#${CMAN_TOOL} -w -t ${CMAN_SHUTDOWN_TIMEOUT} \
 			#	leave remove ${CMAN_LEAVE_OPTS} > /dev/null
-			${CMAN_TOOL} -w -t 60 \
-				leave remove ${CMAN_LEAVE_OPTS} &> /dev/null
+			${CMAN_TOOL} leave -t ${CMAN_SHUTDOWN_TIMEOUT} ${CMAN_LEAVE_OPTS} \
+				remove &> /dev/null
 				stat=$?
 				retry=$((${retry} -1))
 		done
@@ -226,10 +227,10 @@ start_fenced() {
 	ebegin "Joining fence domain"
 	if [ "${errmsg}" -ne 0 ]
 	then
-		${FENCE_TOOL} -w -t $FENCED_START_TIMEOUT join &> /dev/null
+		${FENCE_TOOL} join -t $FENCED_START_TIMEOUT &> /dev/null
 		[ $? -eq 0 ] && errmsg=$? || errmsg=1
 	else
-		${FENCE_TOOL} -w -m $FENCED_MEMBER_DELAY join &> /dev/null
+		${FENCE_TOOL} join -m $FENCED_MEMBER_DELAY &> /dev/null
 		[ $? -eq 0 ] && errmsg=$? || errmsg=1
 	fi
 	eend $errmsg
@@ -237,18 +238,26 @@ start_fenced() {
 
 stop_fenced() {
 	# fenced services
-	local fence_status="$( ${CMAN_TOOL} services | awk '$1 ~ /fence/ { print $3 }')"
-	if [ -n "${fence_status}" ]; then
-		if [ -x ${FENCE_TOOL} ]; then
+#	local fence_status="$( ${CMAN_TOOL} services | awk '$1 ~ /fence/ { print $3 }')"
+#	if [ -n "${fence_status}" ]; then
+#		if [ -x ${FENCE_TOOL} ]; then
+#			ebegin "Leaving fence domain"
+#			${FENCE_TOOL} leave > /dev/null 2>&1
+#			eend $?
+#		fi
+#	fi
+
+	if [ -x ${FENCE_TOOL} ]; then
+		if ${FENCE_TOOL} ls >/dev/null 2>&1; then
 			ebegin "Leaving fence domain"
 			${FENCE_TOOL} leave > /dev/null 2>&1
 			eend $?
 		fi
 	fi
 
-	#ebegin "Stopping fenced"
-	#start-stop-daemon --stop --exec ${FENCED} --name fenced
-	#eend $?
+	ebegin "Stopping fenced"
+	start-stop-daemon --stop --exec ${FENCED} --name fenced
+	eend $?
 }
 
 start_gfs_controld() {
@@ -276,23 +285,26 @@ stop_dlm_controld() {
 }
 
 start() {
-	load_modules "dlm lock_dlm"
+	load_modules "dlm"
 
     mkdir -p /var/run/cluster
 
 	mount_configfs
-	start_ccsd
+#	start_ccsd
 	start_cman
-	start_groupd
 	start_fenced
+	start_groupd
 	start_dlm_controld
-	start_gfs_controld
+#	start_gfs_controld
 }
 
 stop() {
-	# umount GFS filesystems
-	umount_gfs_filesystems
 
+# umount GFS filesystems
+#	umount_gfs_filesystems
+
+	stop_dlm_controld
+	stop_groupd
 	stop_fenced
 	stop_cman
 
@@ -300,7 +312,8 @@ stop() {
 	#stop_dlm_controld
 	#stop_groupd
 
-	stop_ccsd
-	unload_allmodules
+	unload_modules "dlm"
+#	stop_ccsd
+#	unload_allmodules
 	umount_configfs
 }
