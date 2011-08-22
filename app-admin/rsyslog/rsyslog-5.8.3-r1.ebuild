@@ -9,13 +9,12 @@ inherit autotools-utils systemd
 DESCRIPTION="An enhanced multi-threaded syslogd with database support and more."
 HOMEPAGE="http://www.rsyslog.com/"
 SRC_URI="http://www.rsyslog.com/files/download/${PN}/${P}.tar.gz
-	https://github.com/aggregateknowledge/rsyslog-zeromq/tarball/master -> ${PN}-zeromq.tar.gz
-	"
+	https://github.com/aggregateknowledge/rsyslog-zeromq/tarball/master -> ${PN}-zeromq.tar.gz"
 
 LICENSE="GPL-3 LGPL-3"
 KEYWORDS="~amd64 ~arm ~hppa ~sparc ~x86"
 SLOT="0"
-IUSE="dbi debug doc extras gnutls kerberos mysql oracle postgres relp snmp static-libs +zeromq zlib"
+IUSE="dbi debug doc extras gnutls kerberos mysql oracle postgres relp snmp static-libs zeromq zlib"
 
 DEPEND="dbi? ( dev-db/libdbi )
 	extras? ( net-libs/libnet )
@@ -26,6 +25,7 @@ DEPEND="dbi? ( dev-db/libdbi )
 	oracle? ( dev-db/oracle-instantclient-basic )
 	relp? ( >=dev-libs/librelp-0.1.3 )
 	snmp? ( net-analyzer/net-snmp )
+	zeromq? ( net-libs/zeromq )
 	zlib? ( sys-libs/zlib )"
 RDEPEND="${DEPEND}"
 
