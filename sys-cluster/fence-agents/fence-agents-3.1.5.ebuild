@@ -43,7 +43,7 @@ pkg_postinst() {
 		ewarn "Otherwise you will not be able to define ressources."
 	else
 		elog "Running ccs_update_schema to update the configuration file schema"
-		/usr/sbin/ccs_update_schema
+		/usr/sbin/ccs_update_schema -v -f
 	fi
 }
 
@@ -55,6 +55,6 @@ pkg_postrm() {
 		ewarn "are not present anymore."
 	else
 		elog "Running ccs_update_schema to update the configuration file schema"
-		/usr/sbin/ccs_update_schema
+		/usr/sbin/ccs_update_schema -v -f
 	fi
 }
