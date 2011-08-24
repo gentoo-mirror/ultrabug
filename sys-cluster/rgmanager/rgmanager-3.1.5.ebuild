@@ -21,17 +21,15 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE="dbus"
 
-CDEPEND="
-	~sys-cluster/libcman-${PV}
+DEPEND="~sys-cluster/libcman-${PV}
 	~sys-cluster/liblogthread-${PV}
 	~sys-cluster/libccs-${PV}
 	~sys-cluster/libdlm-${PV}
 	dev-libs/libxml2
+	=sys-libs/slang-2*
 	dbus? ( sys-apps/dbus )"
-RDEPEND="${CDEPEND}
+RDEPEND="${DEPEND}
 	~sys-cluster/cman-${PV}"
-DEPEND="${CDEPEND}
-	=sys-libs/slang-2*"
 
 S=${WORKDIR}/${MY_P}/${PN}
 
