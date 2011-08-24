@@ -22,6 +22,7 @@ KEYWORDS="~amd64 ~x86"
 IUSE="dbus ldap"
 
 RDEPEND="dev-libs/libxml2
+	dev-libs/libxslt
 	dbus? ( sys-apps/dbus )
 	ldap? ( net-nds/openldap )
 	sys-cluster/corosync
