@@ -35,3 +35,26 @@ src_configure() {
 		--libdir=/usr/$(get_libdir) \
 		--localstatedir=/var
 }
+
+pkg_postinst() {
+	if [[ "${ROOT}" != "/" ]] ; then
+		ewarn "You have to run 'ccs_update_schema' in the chroot-environment"
+		ewarn "to update the schema file for the cluster configuration."
+		ewarn "Otherwise you will not be able to define ressources."
+	else
+		elog "Running ccs_update_schema to update the configuration file schema"
+		/usr/sbin/ccs_update_schema
+	fi
+}
+
+pkg_postrm() {
+	if [[ "${ROOT}" != "/" ]] ; then
+		ewarn "You have to run 'ccs_update_schema' in the chroot-environment"
+		ewarn "to update the schema file for the cluster configuration."
+		ewarn "Otherwise you may be able to define ressources even though they"
+		ewarn "are not present anymore."
+	else
+		elog "Running ccs_update_schema to update the configuration file schema"
+		/usr/sbin/ccs_update_schema
+	fi
+}
