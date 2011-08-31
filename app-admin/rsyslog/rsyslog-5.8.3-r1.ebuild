@@ -9,7 +9,7 @@ inherit autotools-utils systemd
 DESCRIPTION="An enhanced multi-threaded syslogd with database support and more."
 HOMEPAGE="http://www.rsyslog.com/"
 SRC_URI="http://www.rsyslog.com/files/download/${PN}/${P}.tar.gz
-	https://github.com/aggregateknowledge/rsyslog-zeromq/tarball/master -> ${PN}-zeromq.tar.gz"
+	https://github.com/aggregateknowledge/rsyslog-zeromq/tarball/44b551abc29dd5b541884bd51b45b413855a93d8 -> ${PN}-zeromq.tar.gz"
 
 LICENSE="GPL-3 LGPL-3"
 KEYWORDS="~amd64 ~arm ~hppa ~sparc ~x86"
@@ -42,7 +42,7 @@ DOCS=(AUTHORS ChangeLog doc/rsyslog-example.conf)
 
 src_prepare() {
 	if use zeromq; then
-		local ZEROPATH=${WORKDIR}/aggregateknowledge-rsyslog-zeromq-a81ff2f
+		local ZEROPATH=${WORKDIR}/aggregateknowledge-rsyslog-zeromq-44b551a
 		epatch ${ZEROPATH}/rsyslog-zeromq.patch
 		cp -r ${ZEROPATH}/{i,o}mzeromq ${S}/plugins
 		eautoreconf
