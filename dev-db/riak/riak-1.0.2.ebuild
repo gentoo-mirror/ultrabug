@@ -4,7 +4,7 @@
 
 EAPI=4
 
-inherit eutils versionator
+inherit versionator
 
 MAJ_PV="$(get_major_version)"
 MED_PV="$(get_version_component_range 2)"
@@ -22,21 +22,44 @@ IUSE=""
 RDEPEND="dev-lang/erlang"
 DEPEND="${RDEPEND}"
 
-PATCHES=()
+pkg_setup() {
+	enewgroup riak
+	enewuser riak -1 -1 /var/lib/${PN} riak
+}
 
 src_prepare() {
-# 	epatch "${FILESDIR}/riak-1.0.2-erlang_js.patch"
-	sed -i -e 's/R14B0\[23\]/R14B0\[234\]/g' -e "s@compile generate@compile generate --target_dir=${D}@g" rebar.config || die
+	epatch "${FILESDIR}/riak-1.0.2-rel.patch"
+	sed -i -e 's/R14B0\[23\]/R14B0\[234\]/g' rebar.config || die
 	sed -i -e 's/XLDFLAGS="$(LDFLAGS)"//g' -e 's/ $(CFLAGS)//g' deps/erlang_js/c_src/Makefile || die
 }
 
+src_compile() {
+	emake rel
+}
+
 src_install() {
-	emake DESTDIR="${D}" rel
+	# install /usr/lib stuff
+	insinto /usr/lib/${PN}
+	cp -R rel/riak/lib "${D}"/usr/lib/riak
+	cp -R rel/riak/releases "${D}"/usr/lib/riak
+	cp -R rel/riak/erts* "${D}"/usr/lib/riak
+	chmod 0755 "${D}"/usr/lib/riak/erts*/bin/*
 
-	mkdir -p ${D}/{usr/sbin,etc,var/lib/${PN}}
+	# install /usr/sbin stuff
+	dosbin rel/riak/bin/*
 
-	cp -a rel/riak/bin/ "${D}"/usr/sbin
-	cp -a rel/riak/etc/ "${D}"/etc
-	cp -a rel/riak/lib/* "${D}"/var/lib/${PN}
-	cp -a rel/riak/data/* "${D}"/var/lib/${PN}
+	# install /etc/riak stuff
+	insinto /etc/${PN}
+	doins rel/riak/etc/*
+
+	# create neccessary directories
+	keepdir /var/lib/${PN}/{bitcask,ring}
+	keepdir /var/log/${PN}/sasl
+	keepdir /var/run/${PN}
+
+	# create docs
+	doman doc/man/man1/*
+	dodoc doc/*.txt
+
+	# TODO: init.d / conf.d files
 }
