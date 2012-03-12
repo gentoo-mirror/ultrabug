@@ -45,6 +45,7 @@ UWSGI_USER=
 
 # Run the uwsgi emperor which loads vassals dynamically from this PATH
 # see http://projects.unbit.it/uwsgi/wiki/Emperor
+# The advised Gentoo folder is /etc/uwsgi.d/
 UWSGI_EMPEROR_PATH=
 
 # Additional options you might want to pass to uWSGI

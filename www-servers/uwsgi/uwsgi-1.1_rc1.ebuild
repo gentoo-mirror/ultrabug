@@ -15,7 +15,7 @@ inherit apache-module python multilib ruby-ng
 
 DESCRIPTION="uWSGI server for Python web applications"
 HOMEPAGE="http://projects.unbit.it/uwsgi/"
-SRC_URI="http://projects.unbit.it/downloads/uwsgi-1.1-snapshot17.tar.gz"
+SRC_URI="http://projects.unbit.it/downloads/${MY_P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
@@ -41,7 +41,7 @@ DEPEND="${CDEPEND}
 RDEPEND="${CDEPEND}
 	rrdtool? ( net-analyzer/rrdtool )"
 
-S="${WORKDIR}/uwsgi-1.1-snapshot17"
+S="${WORKDIR}/${MY_P}"
 APXS2_S="${S}/apache2"
 APACHE2_MOD_CONF="42_mod_${PN}"
 
