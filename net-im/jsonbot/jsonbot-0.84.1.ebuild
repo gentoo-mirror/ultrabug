@@ -8,7 +8,7 @@ MY_P="jsb-${PV}"
 
 inherit distutils
 
-DESCRIPTION=""
+DESCRIPTION="Python based extensible and multi-protocol bot framework"
 HOMEPAGE="http://code.google.com/p/jsonbot/"
 SRC_URI="http://jsonbot.googlecode.com/files/${MY_P}.tar.gz"
 
