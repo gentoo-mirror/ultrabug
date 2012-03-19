@@ -36,9 +36,7 @@ CDEPEND="caps? ( sys-libs/libcap )
 	xml? ( dev-libs/libxml2 )
 	yaml? ( dev-libs/libyaml )
 	zeromq? ( net-libs/zeromq )"
-# depending on app-misc/pax-utils (bug #408863)
 DEPEND="${CDEPEND}
-	app-misc/pax-utils
 	dev-util/pkgconfig"
 RDEPEND="${CDEPEND}
 	rrdtool? ( net-analyzer/rrdtool )"
