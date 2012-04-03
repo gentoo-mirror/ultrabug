@@ -1,0 +1,39 @@
+# ChangeLog for www-servers/jetty-bin
+# Copyright 1999-2012 Gentoo Foundation; Distributed under the GPL v2
+# $Header: $
+
+  02 Feb 2012; Sven Eden <sven.eden@gmx.de>
+  -jetty-bin-7.5.4.ebuild :
+  It is not possible to make Eclipse be happy with jetty-7, so
+  drop it.
+
+*jetty-bin-7.5.4.ebuild (02 Feb 2012)
+*jetty-bin-6.1.26-r3.ebuild (02 Feb 2012)
+
+  02 Feb 2012; Sven Eden <sven.eden@gmx.de>
+  +jetty-bin-7.5.4.ebuild :
+  First Ebuild for Jetty-7
+  +jetty-bin-6.1.26-r3.ebuild :
+  Cleaned up some issues
+
+  - jetty-bin-6.1.26.ebuild
+  - jetty-bin-6.1.26-r1.ebuild
+  - jetty-bin-6.1.26-r2.ebuild
+  Removed old ebuilds
+
+*jetty-bin-6.1.26-r2.ebuild (22 Nov 2011)
+
+  15 Aug 2011; Sven Eden <sven.eden@gmx.de> +jetty-bin-6.1.26-r2.ebuild :
+  Added USE_Flag "tomcat7" to depend on tomcat:3.0 instead of 2.5.
+
+*jetty-bin-6.1.26-r1.ebuild (16 Aug 2011)
+
+  15 Aug 2011; Sven Eden <sven.eden@gmx.de> +jetty-bin-6.1.26-r1.ebuild :
+  Changed the ebuild to install as "jetty" and not "jetty-bin". Eclipse
+  3.7 now merges fine with it.
+
+*jetty-bin-6.1.26.ebuild (15 Aug 2011)
+
+  15 Aug 2011; Sven Eden <sven.eden@gmx.de> +jetty-bin-6.1.26.ebuild :
+  Initial commit of the ebuild. Ebuild taken from Bug #328747, written
+  by John J. Aylward (johnjaylward@yahoo.com)
