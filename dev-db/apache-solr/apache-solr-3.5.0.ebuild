@@ -2,11 +2,13 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI="4"
+EAPI=4
+
+MY_PN=${PN/apache-}
 
 DESCRIPTION="Popular, blazing fast open source enterprise search platform from the Apache Lucene project"
 HOMEPAGE="http://lucene.apache.org/solr/"
-SRC_URI="http://www.apache.org/dist/lucene/${PN}/${PV}/apache-${P}.tgz"
+SRC_URI="http://www.apache.org/dist/lucene/${MY_PN}/${PV}/${P}.tgz"
 
 LICENSE="Apache"
 SLOT="0"
@@ -17,15 +19,13 @@ DEPEND="app-arch/unzip"
 RDEPEND="${DEPEND}
 	www-servers/jetty-bin"
 
-S="${WORKDIR}/apache-${P}"
-
 SOLR_HOME="/usr/share/solr"
 
 src_install() {
 	dodir "${SOLR_HOME}"
 	dodir /etc/solr
 
-	unzip dist/apache-"${P}.war" -d "${D}/${SOLR_HOME}" || die
+	unzip dist/"${P}.war" -d "${D}/${SOLR_HOME}" || die
 	sed -i -e 's@\.\./\.\./@\./@g' example/solr/conf/solrconfig.xml || die
 	rm -rf "${D}/${SOLR_HOME}"/META-INF  || die
 
