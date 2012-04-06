@@ -2,6 +2,8 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
+EAPI=4
+
 inherit eutils
 
 DESCRIPTION="Jetty is an full-featured web and applicaction server implemented entirely in Java."
@@ -13,12 +15,14 @@ LICENSE="Apache-2.0"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
 
+MY_PN=${PN/-bin}
+
 DEPEND=">=virtual/jdk-1.5
 	app-arch/unzip
 	dev-java/java-config"
 RDEPEND=">=virtual/jdk-1.5"
 
-JETTY_HOME="/opt/${PN}"
+JETTY_HOME="/opt/${MY_PN}"
 
 pkg_setup() {
 	enewgroup jetty
@@ -28,8 +32,8 @@ pkg_setup() {
 src_install() {
 	sed -i -e 's@default="./logs"@default="/var/log/jetty"@g' etc/jetty.xml || die
 
-# 	newinitd "${FILESDIR}"/jetty.initd jetty
-# 	newconfd "${FILESDIR}"/jetty.confd jetty
+	newinitd "${FILESDIR}"/"${MY_PN}".initd "${MY_PN}"
+	newconfd "${FILESDIR}"/"${MY_PN}".confd "${MY_PN}"
 
 	dodir "${JETTY_HOME}"
 	insinto "${JETTY_HOME}"
@@ -40,16 +44,13 @@ src_install() {
 
 	dodir "${JETTY_HOME}"/webapps
 	dodir "${JETTY_HOME}"/etc/contexts
-	dosym "${JETTY_HOME}"/etc /etc/jetty
-
-# 	exeinto "${JETTY_HOME}"/bin
-# 	doexe bin/jetty.sh
+	dosym "${JETTY_HOME}"/etc /etc/"${MY_PN}"
 
 	fowners -R jetty:jetty "${JETTY_HOME}"
 
-	keepdir /var/log/jetty
-	fowners jetty:jetty /var/log/jetty
+	keepdir /var/log/"${MY_PN}"
+	fowners jetty:jetty /var/log/"${MY_PN}"
 
-	keepdir /var/run/jetty
-	fowners jetty:jetty /var/run/jetty
+	keepdir /var/run/"${MY_PN}"
+	fowners jetty:jetty /var/run/"${MY_PN}"
 }

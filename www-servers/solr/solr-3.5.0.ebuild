@@ -13,9 +13,9 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
 
-CDEPEND="app-arch/unzip"
-DEPEND="www-servers/jetty"
-RDEPEND="${DEPEND}"
+DEPEND="app-arch/unzip"
+RDEPEND="${DEPEND}
+	www-servers/jetty"
 
 S="${WORKDIR}/apache-${P}"
 
