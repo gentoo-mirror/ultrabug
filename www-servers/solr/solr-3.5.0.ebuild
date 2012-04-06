@@ -4,8 +4,6 @@
 
 EAPI="4"
 
-# inherit apache-module python multilib ruby-ng
-
 DESCRIPTION="Popular, blazing fast open source enterprise search platform from the Apache Lucene project"
 HOMEPAGE="http://lucene.apache.org/solr/"
 SRC_URI="http://www.apache.org/dist/lucene/${PN}/${PV}/apache-${P}.tgz"
@@ -15,42 +13,34 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
 
-DEPEND="www-servers/jetty-bin"
+CDEPEND="app-arch/unzip"
+DEPEND="www-servers/jetty"
 RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/apache-${P}"
 
-
-# 	cd "$srcdir/apache-solr-$pkgver"
-# 
-# 	install -d "$pkgdir/etc/solr"
-# 	install -d "$pkgdir/usr/share/solr"
-# 	install -d "$pkgdir/opt/jetty/webapps"
-# 
-# 	unzip "dist/apache-solr-$pkgver.war" -d "$pkgdir/usr/share/solr"
-# 	rm -rf "$pkgdir/usr/share/solr/META-INF"
-# 
-# 	cp -R example/solr/conf "$pkgdir/etc/solr"
-# 	ln -s /etc/solr/conf "$pkgdir/usr/share/solr/conf"
-# 
-# 	mv "$pkgdir/usr/share/solr/WEB-INF/web.xml" "$pkgdir/etc/solr"
-# 	ln -s /etc/solr/web.xml "$pkgdir/usr/share/solr/WEB-INF/web.xml"
-# 
-# 	install -m0644 "$srcdir/jetty-env.xml" "$pkgdir/usr/share/solr/WEB-INF/jetty-env.xml"
-# 	ln -s /usr/share/solr "$pkgdir/opt/jetty/webapps/solr"
-
+SOLR_HOME="/usr/share/solr"
 
 src_install() {
-	dodir /usr/share/solr
-	unzip dist/apache-"${P}.war" -d "${D}"/usr/share/solr || die
-	rm -rf "${D}"/usr/share/solr/META-INF  || die
-
+	dodir "${SOLR_HOME}"
 	dodir /etc/solr
-	cp -R example/solr/conf "${D}"/etc/solr || die
-	dosym /etc/solr/conf /usr/share/solr/conf
 
-	mv "${D}"/usr/share/solr/WEB-INF/web.xml "${D}"/etc/solr/ || die
-	dosym /etc/solr/web.xml /usr/share/solr/WEB-INF/web.xml
+	unzip dist/apache-"${P}.war" -d "${D}/${SOLR_HOME}" || die
+	sed -i -e 's@\.\./\.\./@\./@g' example/solr/conf/solrconfig.xml || die
+	rm -rf "${D}/${SOLR_HOME}"/META-INF  || die
 
-	cp ${FILESDIR}/jetty-env.xml ${D}/usr/share/solr/WEB-INF/
+	insinto "${SOLR_HOME}"
+	doins -r dist
+	doins -r contrib
+	doins -r example/solr/conf
+	doins "${FILESDIR}"/solr.xml
+
+	dosym "${SOLR_HOME}"/conf /etc/solr/conf
+	dosym "${SOLR_HOME}"/WEB-INF/web.xml /etc/solr/web.xml
+
+	# jetty env
+	insinto /opt/jetty/etc
+	doins "${FILESDIR}"/jetty-solr.xml
+	dosym "${SOLR_HOME}" /opt/jetty/webapps/solr
+	dosym "${SOLR_HOME}"/solr.xml /opt/jetty/etc/solr.xml
 }
