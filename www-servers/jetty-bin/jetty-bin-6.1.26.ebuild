@@ -6,16 +6,16 @@ EAPI=4
 
 inherit eutils
 
+MY_PN=${PN/-bin}
+
 DESCRIPTION="Jetty is an full-featured web and applicaction server implemented entirely in Java."
 HOMEPAGE="http://www.mortbay.org/jetty-6/"
-SRC_URI="http://dist.codehaus.org/jetty/${P}/${P}.zip"
+SRC_URI="http://dist.codehaus.org/jetty/${MY_PN}-${PV}/${MY_PN}-${PV}.zip"
 SLOT="0"
 
 LICENSE="Apache-2.0"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
-
-MY_PN=${PN/-bin}
 
 DEPEND=">=virtual/jdk-1.5
 	app-arch/unzip
