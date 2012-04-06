@@ -15,7 +15,7 @@ IUSE=""
 
 DEPEND="app-arch/unzip"
 RDEPEND="${DEPEND}
-	www-servers/jetty"
+	www-servers/jetty-bin"
 
 S="${WORKDIR}/apache-${P}"
 
