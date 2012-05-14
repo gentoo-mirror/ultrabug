@@ -1,4 +1,4 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -8,10 +8,14 @@ PYTHON_MODNAME="uwsgidecorators"
 SUPPORT_PYTHON_ABIS="1"
 USE_RUBY="ruby18 ree18 ruby19"
 RUBY_OPTIONAL="yes"
+PHP_EXT_NAME="dummy"
+PHP_EXT_INI="no"
+USE_PHP="php5-3 php5-4" # deps must be registered separately below
+PHP_EXT_OPTIONAL_USE="php"
 
 MY_P="${P/_/-}"
 
-inherit apache-module python multilib pax-utils ruby-ng
+inherit apache-module eutils python multilib pax-utils php-ext-source-r2 ruby-ng
 
 DESCRIPTION="uWSGI server for Python web applications"
 HOMEPAGE="http://projects.unbit.it/uwsgi/"
@@ -20,15 +24,21 @@ SRC_URI="http://projects.unbit.it/downloads/${MY_P}.tar.gz"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="apache2 +caps +carbon debug json ldap lua +nagios perl +pcre python rrdtool rsyslog ruby spooler sqlite syslog +uuid +xml yaml zeromq"
-REQUIRED_USE="|| ( lua perl python ruby )"
+IUSE="apache2 +caps +carbon debug erlang graylog2 json ldap lua +nagios perl +pcre php python rrdtool rsyslog ruby spooler sqlite syslog +uuid +xml yaml zeromq"
+REQUIRED_USE="|| ( erlang lua perl php python ruby )"
 
 CDEPEND="caps? ( sys-libs/libcap )
 	json? ( dev-libs/jansson )
+	erlang? ( dev-lang/erlang )
+	graylog2? ( sys-libs/zlib )
 	ldap? ( net-nds/openldap )
 	lua? ( dev-lang/lua )
 	pcre? ( dev-libs/libpcre )
 	perl? ( dev-lang/perl )
+	php? (
+		php_targets_php5-3? ( dev-lang/php:5.3[embed] )
+		php_targets_php5-4? ( dev-lang/php:5.4[embed] )
+	)
 	ruby? ( $(ruby_implementations_depend) )
 	sqlite? ( dev-db/sqlite:3 )
 	rsyslog? ( app-admin/rsyslog )
@@ -65,6 +75,8 @@ pkg_setup() {
 }
 
 src_prepare() {
+	epatch "${FILESDIR}/1.1.2-threaded-php.patch"
+
 	sed -i \
 		-e "s|'-O2', ||" \
 		-e "s|'-Werror', ||" \
@@ -74,11 +86,16 @@ src_prepare() {
 	sed -i \
 		-e 's|python\([0-9].[0-9]\)-config|python-config-\1|' \
 		plugins/python/uwsgiplugin.py || die "sed failed"
+
+	sed -i \
+		-e "s|/lib|/$(get_libdir)|" \
+		plugins/php/uwsgiplugin.py || die "sed failed"
 }
 
 src_configure() {
 	local plugins=""
 	use carbon && plugins+=", carbon"
+	use graylog2 && plugins+=", graylog2"
 	use nagios && plugins+=", nagios"
 	use rrdtool && plugins+=", rrdtool"
 	use rsyslog && plugins+=", rsyslog"
@@ -115,7 +132,7 @@ bin_name = uwsgi
 append_version =
 plugin_dir = /usr/$(get_libdir)/uwsgi
 plugin_build_dir = ${T}/plugins
-embedded_plugins =  ping, cache, rpc, fastrouter, http, ugreen, signal, logsocket, ${plugins:1}
+embedded_plugins =  ping, cache, rpc, fastrouter, http, ugreen, signal, logsocket, router_uwsgi, router_redirect, router_basicauth, zergpool, ${plugins:1}
 as_shared_library = false
 
 locking = auto
@@ -137,11 +154,10 @@ EOF
 each_ruby_compile() {
 	cd "${WORKDIR}/${MY_P}"
 
-	sed -i -e "s|^NAME=.*|NAME='rack_${RUBY##*/}'|" plugins/rack/uwsgiplugin.py || die "sed failed"
-	UWSGICONFIG_RUBYPATH="${RUBY}" python uwsgiconfig.py --plugin plugins/rack gentoo || die "building plugin for ${RUBY} failed"
+	UWSGICONFIG_RUBYPATH="${RUBY}" python uwsgiconfig.py --plugin plugins/rack gentoo rack_${RUBY##*/} || die "building plugin for ${RUBY} failed"
 
 	if [[ "${RUBY}" == *ruby19 ]] ; then
-		UWSGICONFIG_RUBYPATH="${RUBY}" python uwsgiconfig.py --plugin plugins/ruby19 gentoo || die "building plugin for ${RUBY} failed"
+		UWSGICONFIG_RUBYPATH="${RUBY}" python uwsgiconfig.py --plugin plugins/fiber gentoo || die "building fiber plugin for ${RUBY} failed"
 	fi
 }
 
@@ -155,12 +171,22 @@ src_compile() {
 
 	mkdir -p "${T}/plugins"
 
+	if use erlang ; then
+		python uwsgiconfig.py --plugin plugins/erlang gentoo || die "building plugin for erlang failed"
+	fi
+
 	if use lua ; then
 		python uwsgiconfig.py --plugin plugins/lua gentoo || die "building plugin for lua failed"
 	fi
 
 	if use perl ; then
 		python uwsgiconfig.py --plugin plugins/psgi gentoo || die "building plugin for perl failed"
+	fi
+
+	if use php ; then
+		for s in $(php_get_slots); do
+			UWSGICONFIG_PHPDIR="/usr/$(get_libdir)/${s}" python uwsgiconfig.py --plugin plugins/php gentoo ${s/.} || die "building plugin for ${s} failed"
+		done
 	fi
 
 	if use python ; then
@@ -196,6 +222,12 @@ src_install() {
 
 	use perl && dosym uwsgi /usr/bin/uwsgi_perl
 
+	if use php ; then
+		for a in ${PYTHON_ABIS} ; do
+			dosym uwsgi /usr/bin/uwsgi_${s/.}
+		done
+	fi
+
 	if use python ; then
 		python_execute_function install_python_lib
 		for a in ${PYTHON_ABIS} ; do
@@ -226,8 +258,29 @@ pkg_postinst() {
 		elog "mod_Ruwsgi is newer and more Apache-API friendly but not commercially supported."
 	fi
 
-	if use lua || use perl || use ruby || use python; then
-		elog "The lua, perl and ruby modules are built as plugins."
-		elog "Use '--plugins lua', '--plugins psgi', '--plugins rack_ruby18' or '--plugins python27' to load them."
+	elog "Append the following options to the uwsgi call to load the respective language plugin:"
+	use erlang && elog "  '--plugins erlang' for erlang"
+	use lua    && elog "  '--plugins lua' for lua"
+	use perl   && elog "  '--plugins psgi' for perl"
+
+	if use php ; then
+		for s in $(php_get_slots); do
+			elog "  '--plugins ${s/.}' for ${s}"
+		done
+	fi
+
+	if use python ; then
+		for a in ${PYTHON_ABIS} ; do
+			elog "  '--plugins python${a/.}' for python-${a}"
+		done
+	fi
+
+	if use ruby ; then
+		for ruby in $USE_RUBY; do
+			use ruby_targets_${ruby} && elog "  '--plugins rack_${ruby/.}' for ${ruby}"
+			if [[ "${ruby}" == *ruby19 ]] ; then
+				elog "  '--plugins fibre' for ruby-1.9 fibres"
+			fi
+		done
 	fi
 }
