@@ -6,7 +6,7 @@ EAPI="3"
 PYTHON_DEPEND="2:2.5"
 SUPPORT_PYTHON_ABIS="1"
 RESTRICT_PYTHON_ABIS="2.4 3.*"
-DISTUTILS_SRC_TEST="nosetests"
+DISTUTILS_SRC_TEST=""
 
 inherit distutils
 
@@ -14,7 +14,7 @@ MY_PN="pybrowscap"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Python port of PHP function get_browser() based on the browscap project"
-HOMEPAGE="http://pypi.python.org/pypi/Flask-PyMongo"
+HOMEPAGE="http://pypi.python.org/pypi/pybrowscap/"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="BSD"
