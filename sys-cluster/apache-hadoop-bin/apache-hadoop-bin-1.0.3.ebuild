@@ -62,7 +62,7 @@ EOF
 	dodir /var/run/"${MY_PN}"
 
 	# conf
-	mv "${S}"/conf/* "${D}${HADOOP_CONF}" || die "install failed"
+	mv "${S}"/conf/* "${D}"/etc/"${MY_PN}" || die "install failed"
 	rm -rf "${S}"/conf || die "install failed"
 
 	# /usr/bin stuff
