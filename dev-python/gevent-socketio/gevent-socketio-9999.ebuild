@@ -26,6 +26,7 @@ IUSE=""
 
 RDEPEND=""
 DEPEND="${RDEPEND}
+	dev-python/gevent
 	dev-python/setuptools"
 
 S="${WORKDIR}/${MY_P}"
