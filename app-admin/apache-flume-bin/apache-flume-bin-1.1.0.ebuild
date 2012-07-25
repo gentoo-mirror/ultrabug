@@ -52,5 +52,5 @@ src_install() {
 }
 
 pkg_postinst() {
-	elog "For info on configuration see https://cwiki.apache.org/FLUME/"
+	elog "For info on configuration see https://cwiki.apache.org/confluence/display/FLUME/Getting+Started"
 }
