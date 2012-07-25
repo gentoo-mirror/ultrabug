@@ -13,7 +13,7 @@ inherit distutils
 MY_PN="gevent-socketio"
 MY_P="${MY_PN}-${PV/_/-}"
 
-DESCRIPTION="Python port of PHP function get_browser() based on the browscap project"
+DESCRIPTION="Python implementation of the Socket.IO protocol"
 HOMEPAGE="http://pypi.python.org/pypi/gevent-socketio/"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 

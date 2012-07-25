@@ -16,7 +16,7 @@ inherit distutils git-2
 MY_PN="gevent-socketio"
 MY_P="${MY_PN}-${PV/_/-}"
 
-DESCRIPTION=""
+DESCRIPTION="Python implementation of the Socket.IO protocol"
 HOMEPAGE="https://github.com/abourget/gevent-socketio"
 
 LICENSE="BSD"

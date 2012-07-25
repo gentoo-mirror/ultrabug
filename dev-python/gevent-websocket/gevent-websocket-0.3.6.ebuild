@@ -13,7 +13,7 @@ inherit distutils
 MY_PN="gevent-websocket"
 MY_P="${MY_PN}-${PV/_/-}"
 
-DESCRIPTION="Python port of PHP function get_browser() based on the browscap project"
+DESCRIPTION="Websocket library for gevent"
 HOMEPAGE="http://pypi.python.org/pypi/gevent-websocket/"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
