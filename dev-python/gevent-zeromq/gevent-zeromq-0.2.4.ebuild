@@ -22,7 +22,7 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
 
-RDEPEND=""
+RDEPEND="dev-python/pyzmq"
 DEPEND="${RDEPEND}
 	dev-python/gevent
 	dev-python/setuptools"
