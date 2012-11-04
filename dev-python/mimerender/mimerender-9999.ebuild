@@ -26,6 +26,7 @@ IUSE=""
 
 RDEPEND=""
 DEPEND="${RDEPEND}
+	dev-python/mimeparse
 	dev-python/setuptools"
 
 S="${WORKDIR}/${MY_P}"
