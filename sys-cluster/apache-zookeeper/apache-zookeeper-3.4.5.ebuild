@@ -37,8 +37,8 @@ src_install() {
 
 	# env file
 	cat > 99"${PN}" <<-EOF
-		PATH="${INSTALL_DIR}"/bin
-		CONFIG_PROTECT="${INSTALL_DIR}"/conf
+		PATH="${INSTALL_DIR}/bin"
+		CONFIG_PROTECT="${INSTALL_DIR}/conf"
 	EOF
 	doenvd 99"${PN}" || die "doenvd failed"
 
