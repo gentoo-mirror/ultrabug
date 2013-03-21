@@ -10,8 +10,8 @@ MY_PV="1.3.0"
 MY_PN="flume-ng"
 MY_P="${MY_PN}-${PV}"
 
-DESCRIPTION="Cloudera’s Distribution for Apache Hadoop"
-HOMEPAGE="https://ccp.cloudera.com"
+DESCRIPTION="Cloudera’s Distribution for Apache Flume"
+HOMEPAGE="http://flume.apache.org"
 SRC_URI="http://archive.cloudera.com/cdh4/cdh/4/${MY_PN}-${MY_PV}-cdh${PV}.tar.gz"
 
 LICENSE="Apache-2.0"
@@ -20,10 +20,8 @@ KEYWORDS="~amd64 ~x86"
 RESTRICT="mirror binchecks"
 IUSE=""
 
-DEPEND=""
-RDEPEND=">=virtual/jre-1.6
-	net-misc/openssh
-	net-misc/rsync"
+DEPEND="=sys-cluster/cloudera-hadoop-${PV}"
+RDEPEND=">=virtual/jre-1.6"
 
 CONFIG_DIR=/etc/"${MY_PN}"/conf
 export CONFIG_PROTECT="${CONFIG_PROTECT} ${CONFIG_DIR}"
