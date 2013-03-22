@@ -21,7 +21,8 @@ RESTRICT="mirror binchecks"
 IUSE=""
 
 DEPEND="=sys-cluster/cloudera-hadoop-${PV}"
-RDEPEND=">=virtual/jre-1.6"
+RDEPEND=">=virtual/jre-1.6
+	dev-java/java-config-wrapper"
 
 CONFIG_DIR=/etc/"${MY_PN}"/conf
 export CONFIG_PROTECT="${CONFIG_PROTECT} ${CONFIG_DIR}"
@@ -55,7 +56,8 @@ src_install() {
 	dosym ${CONFIG_DIR} /usr/lib/"${MY_PN}"/conf
 
 	# bin
-	dobin bin/flume-ng
+	dobin "${FILESDIR}"/flume-ng
+	fperms 755 /usr/lib/flume-ng/bin/flume-ng
 
 	# init script
 	newinitd "${FILESDIR}"/"${MY_PN}".initd "${MY_PN}"
