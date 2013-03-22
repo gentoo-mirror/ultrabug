@@ -1,0 +1,5 @@
+#!/bin/sh
+
+export JAVA_HOME=$(java-config -O)
+
+exec /usr/lib/pig/bin/pig "$@"
