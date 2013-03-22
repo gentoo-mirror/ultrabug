@@ -1,0 +1,48 @@
+#!/sbin/runscript
+# Copyright 1999-2011 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Header: $
+
+DAEMON=${SVCNAME/hive-}
+HIVE_PORT=${HIVE_PORT:-9083}
+
+extra_commands=""
+
+depend() {
+	use net
+}
+
+init_env_vars() {
+	export HIVE_HOME=/usr/lib/hive
+	export HIVE_LOG_DIR=/var/log/hive
+	export HIVE_RUN_DIR=/var/run/hive
+	export HIVE_PID_FILE=${HIVE_RUN_DIR}/hive-${DAEMON}.pid
+
+	# source env
+	if test -f /etc/hive/conf/hive-env.sh; then
+		. /etc/hive/conf/hive-env.sh
+	fi
+
+	# check for the required paths
+	checkpath -d -m 0755 -o hive:hive ${HIVE_RUN_DIR}
+}
+
+start() {
+	ebegin "Starting hive ${DAEMON}"
+	init_env_vars
+
+	start-stop-daemon --start --quiet --background -w 5000 \
+		--pidfile ${HIVE_PID_FILE} --make-pidfile \
+		--env HADOOP_OPTS="-Dhive.log.dir=${HIVE_LOG_DIR} -Dhive.log.file=hive-${DAEMON}.log -Dhive.log.threshold=INFO" \
+		--user hive --exec /usr/lib/hive/bin/hive -- \
+		--service ${DAEMON} ${HIVE_PORT}
+	eend $?
+}
+
+stop() {
+	ebegin "Stopping hive ${DAEMON}"
+	init_env_vars
+	start-stop-daemon --stop --quiet \
+		--pidfile ${HIVE_PID_FILE}
+	eend $?
+}
