@@ -1,0 +1,75 @@
+#!/sbin/runscript
+# Copyright 1999-2011 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Header: $
+
+extra_commands="format"
+
+DAEMON=${SVCNAME/hadoop-0.20-}
+
+depend() {
+	use dns net
+}
+
+chk_initd() {
+	if [ "${DAEMON}" == "${SVCNAME}" ]; then
+		eerror "You should not run this init script, use the provided aliases"
+		eend 1
+		return 1
+	fi
+}
+
+init_env_vars() {
+	if [ -n "${HADOOP_CONF_DIR}" ]; then
+		export HADOOP_CONF_DIR=${HADOOP_CONF_DIR}
+	else
+		export HADOOP_CONF_DIR=/etc/hadoop/conf
+	fi
+
+	# source hadoop-env.sh for configuration
+	if test -f ${HADOOP_CONF_DIR}/hadoop-env.sh; then
+		. ${HADOOP_CONF_DIR}/hadoop-env.sh
+	fi
+	export JAVA_HOME=${JAVA_HOME}
+
+	# fixed
+	export HADOOP_PREFIX=/usr/lib/hadoop-0.20-mapreduce
+	export HADOOP_LIBEXEC_DIR=/usr/lib/hadoop/libexec/
+	export HADOOP_PID_DIR=/var/run/hadoop-0.20-mapreduce
+	export HADOOP_LOG_DIR=/var/log/hadoop-0.20-mapreduce
+	export HADOOP_HOME=/usr/lib/hadoop-0.20-mapreduce
+	export HADOOP_MAPRED_HOME=/usr/lib/hadoop-0.20-mapreduce
+
+	# user defined, in hadoop-env.sh
+	if [ "${HADOOP_IDENT_STRING}" == "" ]; then
+		export HADOOP_IDENT_STRING=$HADOOP_IDENT_STRING
+	else
+		export HADOOP_IDENT_STRING=hadoop
+	fi
+
+	DN_USER=mapred
+	IDENT_USER=${DN_USER}
+
+	# check for the required paths
+	checkpath -d -m 0775 -o root:hadoop "${HADOOP_PID_DIR}"
+}
+
+start() {
+	chk_initd || exit 1
+	ebegin "Starting Cloudera Hadoop 0.20 ${DAEMON}"
+	init_env_vars
+	start-stop-daemon --start --quiet --wait 3000 \
+		--pidfile ${HADOOP_PID_DIR}/hadoop-${IDENT_USER}-${DAEMON}.pid \
+		-u ${DN_USER} -x ${HADOOP_PREFIX}/bin/hadoop-daemon.sh -- \
+		--config ${HADOOP_CONF_DIR} start ${DAEMON}
+	eend $?
+}
+
+stop() {
+	chk_initd || exit 1
+	ebegin "Stopping Cloudera Hadoop 0.20 ${DAEMON}"
+	init_env_vars
+	start-stop-daemon --stop --quiet \
+		--pidfile ${HADOOP_PID_DIR}/hadoop-${IDENT_USER}-${DAEMON}.pid
+	eend $?
+}
