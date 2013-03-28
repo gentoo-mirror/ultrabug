@@ -18,10 +18,10 @@ LICENSE="Apache-2.0"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
 RESTRICT="mirror" # binchecks
-IUSE="hdfs httpfs mapreduce"
+IUSE="hdfs mapreduce"
 
 #TODO: mapreduce use is missing hadoop-yarn dep
-DEPEND=""
+DEPEND=">=dev-java/maven-bin-3.0"
 RDEPEND=">=virtual/jre-1.6
 	dev-java/java-config-wrapper
 	=dev-libs/protobuf-2.4.0a"
