@@ -1,4 +1,4 @@
-# Copyright 1999-2010 Gentoo Foundation
+# Copyright 1999-2013 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -10,7 +10,7 @@ MY_PV="2.0.0"
 MY_PN="hadoop"
 MY_P="${MY_PN}-${PV}"
 
-DESCRIPTION="Cloudera’s Distribution for Apache Hadoop"
+DESCRIPTION="Cloudera Distribution for Apache Hadoop"
 HOMEPAGE="http://hadoop.apache.org"
 SRC_URI="http://archive.cloudera.com/cdh4/cdh/4/${MY_PN}-${MY_PV}-cdh${PV}.tar.gz"
 
@@ -21,6 +21,7 @@ RESTRICT="mirror" # binchecks
 IUSE="hdfs mapreduce"
 
 #TODO: mapreduce use is missing hadoop-yarn dep
+#FIXME: httpfs wont work for now because of tomcat
 DEPEND=">=dev-java/maven-bin-3.0"
 RDEPEND=">=virtual/jre-1.6
 	dev-java/java-config-wrapper
@@ -37,6 +38,10 @@ pkg_setup(){
 		enewgroup hdfs
 		enewuser hdfs -1 /bin/bash /var/lib/hdfs "hdfs,hadoop"
 	fi
+# 	if use httpfs; then
+# 		enewgroup httpfs
+# 		enewuser httpfs -1 /bin/bash /var/run/httpfs httpfs
+# 	fi
 	if use mapreduce; then
 		enewgroup mapred
 		enewuser mapred -1 /bin/bash /var/lib/hadoop-mapreduce "mapred,hadoop"
@@ -155,6 +160,31 @@ install_mapreduce() {
 	fperms 1777 /var/lib/hadoop-mapreduce/cache
 }
 
+install_httpfs() {
+	diropts -m755 -o root -g root
+
+	pushd src/hadoop-hdfs-project/hadoop-hdfs-httpfs
+		insinto /etc/hadoop-httpfs
+		doins -r src/main/conf
+	popd
+
+	insinto /usr/lib/hadoop-httpfs/
+	doins -r share/hadoop/httpfs/tomcat/conf share/hadoop/httpfs/tomcat/webapps
+
+	insinto /usr/lib/hadoop-httpfs/sbin
+	doins sbin/httpfs.sh
+	fperms 0755 /usr/lib/hadoop-httpfs/sbin/httpfs.sh
+
+	insinto /usr/lib/hadoop/libexec
+	doins libexec/httpfs-config.sh
+	fperms 0755 /usr/lib/hadoop/libexec/httpfs-config.sh
+
+	diropts -m775 -o httpfs -g httpfs
+	dodir /var/log/hadoop-httpfs
+
+	newinitd "${FILESDIR}"/httpfs/httpfs.initd hadoop-httpfs
+}
+
 src_install() {
 	# config dir
 	insinto ${CONFIG_DIR}
@@ -175,19 +205,19 @@ src_install() {
 		doins hadoop-common-"${MY_PV}"-cdh"${PV}".jar
 		doins hadoop-common-"${MY_PV}"-cdh"${PV}"-tests.jar
 	popd
-	dosym hadoop-common-2.0.0-cdh4.2.0.jar /usr/lib/"${MY_PN}"/hadoop-common.jar
+	dosym hadoop-common-"${MY_PV}"-cdh"${PV}".jar /usr/lib/"${MY_PN}"/hadoop-common.jar
 
 	# annotations
 	pushd src/hadoop-common-project/hadoop-annotations/target
 		doins hadoop-annotations-"${MY_PV}"-cdh"${PV}".jar
 	popd
-	dosym hadoop-annotations-2.0.0-cdh4.2.0.jar /usr/lib/"${MY_PN}"/hadoop-annotations.jar
+	dosym hadoop-annotations-"${MY_PV}"-cdh"${PV}".jar /usr/lib/"${MY_PN}"/hadoop-annotations.jar
 
 	# auth
 	pushd src/hadoop-common-project/hadoop-auth/target
 		doins hadoop-auth-"${MY_PV}"-cdh"${PV}".jar
 	popd
-	dosym hadoop-auth-2.0.0-cdh4.2.0.jar /usr/lib/"${MY_PN}"/hadoop-auth.jar
+	dosym hadoop-auth-"${MY_PV}"-cdh"${PV}".jar /usr/lib/"${MY_PN}"/hadoop-auth.jar
 
 	## bin
 	insinto /usr/lib/"${MY_PN}"/bin
@@ -232,6 +262,9 @@ src_install() {
 
 	# HDFS ?
 	use hdfs && install_hdfs
+
+	# HTTPFS ?
+	#use httpfs && install_httpfs
 
 	# MAPREDUCE ?
 	use mapreduce && install_mapreduce
