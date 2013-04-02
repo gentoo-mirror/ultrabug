@@ -1,4 +1,4 @@
-# Copyright 1999-2010 Gentoo Foundation
+# Copyright 1999-2013 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -16,7 +16,7 @@ else
 	MY_ARCH='Linux-i386-32'
 fi
 
-DESCRIPTION="Cloudera’s Distribution for Apache Hadoop MapReduce v1"
+DESCRIPTION="Cloudera Distribution for Apache Hadoop MapReduce v1"
 HOMEPAGE="http://hadoop.apache.org"
 SRC_URI="http://archive.cloudera.com/cdh4/cdh/4/mr1-${MY_PV}-mr1-cdh${PV}.tar.gz"
 

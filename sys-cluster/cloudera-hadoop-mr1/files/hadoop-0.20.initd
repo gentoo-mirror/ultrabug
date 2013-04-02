@@ -3,8 +3,6 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-extra_commands="format"
-
 DAEMON=${SVCNAME/hadoop-0.20-}
 
 depend() {
