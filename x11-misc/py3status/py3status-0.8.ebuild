@@ -2,16 +2,15 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: /var/cvsroot/gentoo-x86/dev-python/flask-pymongo/flask-pymongo-0.1.1.ebuild,v 1.1 2012/06/18 08:45:36 ultrabug Exp $
 
-EAPI="3"
+EAPI="5"
 PYTHON_DEPEND="2:2.5"
 SUPPORT_PYTHON_ABIS="1"
 RESTRICT_PYTHON_ABIS="2.4 3.*"
 # DISTUTILS_SRC_TEST=""
 
-EGIT_REPO_URI="git://github.com/ultrabug/py3status.git
-	https://github.com/ultrabug/py3status.git"
+SRC_URI="https://github.com/ultrabug/py3status/archive/${PV}.tar.gz"
 
-inherit distutils git-2
+inherit distutils
 
 MY_PN="py3status"
 MY_P="${MY_PN}-${PV/_/-}"
