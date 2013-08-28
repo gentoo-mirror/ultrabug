@@ -2,10 +2,10 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header:
 
-EAPI="4"
-PYTHON_DEPEND="*:2.6"
-SUPPORT_PYTHON_ABIS="1"
-RESTRICT_PYTHON_ABIS="2.4 2.5"
+EAPI="5"
+PYTHON_COMPAT=( python{2_6,2_7} )
+
+inherit distutils-r1
 
 DESCRIPTION="GRequests allows you to use Requests with Gevent to make asyncronous HTTP Requests easily."
 HOMEPAGE="https://crate.io/packages/grequests"
