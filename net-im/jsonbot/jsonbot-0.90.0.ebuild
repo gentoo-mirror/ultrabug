@@ -12,8 +12,7 @@ MY_P="jsb-${PV}"
 
 DESCRIPTION="Python based extensible and multi-protocol bot framework"
 HOMEPAGE="http://code.google.com/p/jsonbot/"
-SRC_URI="http://jsonbot.googlecode.com/files/${MY_P}.tar.gz"
-SRC_URI="https://bthate-jsb090.googlecode.com/archive/f69e1ab43e07c348280cde4c047951a117b4c4cd.zip"
+SRC_URI="https://bthate-jsb090.googlecode.com/archive/f69e1ab43e07c348280cde4c047951a117b4c4cd.zip -> ${P}.zip"
 
 LICENSE="MIT"
 SLOT="0"
