@@ -1,0 +1,24 @@
+--- a/src/mongo/db/db.cpp	2013-12-31 10:47:50.125065072 +0100
++++ b/src/mongo/db/db.cpp	2013-12-31 10:50:49.252477950 +0100
+@@ -528,6 +528,7 @@
+     /// warn if readahead > 256KB (gridfs chunk size)
+     static void checkReadAhead(const string& dir) {
+ #ifdef __linux__
++    try {
+         const dev_t dev = getPartition(dir);
+ 
+         // This path handles the case where the filesystem uses the whole device (including LVM)
+@@ -561,6 +562,13 @@
+                 }
+             }
+         }
++    }
++    catch (const std::exception& e) {
++        log() << "unable to validate readahead settings due to error: " << e.what()
++              << startupWarningsLog;
++        log() << "for more information, see http://dochub.mongodb.org/core/readahead"
++              << startupWarningsLog;
++    }
+ #endif // __linux__
+     }
+ 
