@@ -3,8 +3,9 @@
 # $Header: $
 
 EAPI=5
+PYTHON_COMPAT=( python2_{6,7} )
 
-inherit eutils java-utils-2 user autotools
+inherit autotools distutils-r1 eutils java-utils-2 user
 
 DESCRIPTION="ZooKeeper is a high-performance coordination service for distributed applications."
 HOMEPAGE="http://zookeeper.apache.org/"
@@ -27,6 +28,13 @@ pkg_setup() {
 	enewuser zookeeper -1 /bin/sh /var/lib/zookeeper zookeeper
 }
 
+src_prepare() {
+	# python
+	sed -e "s|src/c/zookeeper.c|zookeeper.c|g" \
+		-e "s|../../../|${S}|g" \
+		-i contrib/zkpython/src/python/setup.py || die
+}
+
 src_configure() {
 	cd "${S}"/src/c || die
 	econf
@@ -40,9 +48,17 @@ src_compile() {
 src_install() {
 	local DATA_DIR=/var/lib/${PN}
 
+	# C client
 	cd "${S}"/src/c || die
 	emake DESTDIR="${D}" install
 	cd "${S}" || die
+
+	# python
+	cd ${S}/contrib/zkpython/ || die
+	mv src/python/setup.py .
+	mv src/c/* .
+	python_foreach_impl distutils-r1_src_install
+	cd -
 
 	# cleanup sources
 	rm -rf src/ || die
@@ -53,7 +69,7 @@ src_install() {
 	cp "${FILESDIR}"/log4j.properties conf/ || die "cp log4j conf failed"
 
 	dodir "${INSTALL_DIR}"
-	mv "${S}"/* "${D}${INSTALL_DIR}" || die "install failed"
+	cp -a "${S}"/* "${D}${INSTALL_DIR}" || die "install failed"
 
 	# data dir perms
 	fowners zookeeper:zookeeper "${DATA_DIR}"
