@@ -20,7 +20,6 @@ DEPEND=""
 RDEPEND=">=virtual/jre-1.6"
 
 INSTALL_DIR=/opt/${PN}
-DATA_DIR=/var/lib/${PN}
 export CONFIG_PROTECT="${CONFIG_PROTECT} ${INSTALL_DIR}/conf"
 
 pkg_setup() {
@@ -39,20 +38,29 @@ src_compile() {
 }
 
 src_install() {
+	local DATA_DIR=/var/lib/${PN}
+
 	cd "${S}"/src/c || die
 	emake DESTDIR="${D}" install
 	cd "${S}" || die
+
+	# cleanup sources
 	rm -rf src/ || die
 	rm bin/*.cmd || die
 
-	dodir "${DATA_DIR}"
+	keepdir "${DATA_DIR}"
 	sed "s:^dataDir=.*:dataDir=${DATA_DIR}:" conf/zoo_sample.cfg > conf/zoo.cfg || die "sed failed"
+	cp "${FILESDIR}"/log4j.properties conf/ || die "cp log4j conf failed"
 
 	dodir "${INSTALL_DIR}"
 	mv "${S}"/* "${D}${INSTALL_DIR}" || die "install failed"
 
-	keepdir /var/lib/zookeeper
-	fowners zookeeper:zookeeper /var/lib/zookeeper
+	# data dir perms
+	fowners zookeeper:zookeeper "${DATA_DIR}"
+
+	# log dir
+	keepdir /var/log/zookeeper
+	fowners zookeeper:zookeeper /var/log/zookeeper
 
 	# init script
 	newinitd "${FILESDIR}"/zookeeper.initd ${PN}
