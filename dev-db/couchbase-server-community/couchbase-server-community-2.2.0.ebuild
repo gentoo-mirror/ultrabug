@@ -24,7 +24,7 @@ RDEPEND=">=sys-libs/ncurses-5[tinfo]
 		~media-video/rtmpdump-2.3"
 DEPEND="${RDEPEND}"
 
-export CONFIG_PROTECT="${CONFIG_PROTECT} /opt/couchbase/var/lib/"
+export CONFIG_PROTECT="${CONFIG_PROTECT} /opt/couchbase/var/lib/couchbase/"
 
 S=${WORKDIR}
 
@@ -45,6 +45,7 @@ src_install() {
 
 	# bin install / copy
 	dodir /opt/couchbase
+	find opt/couchbase/var/lib/couchbase/ -type f -delete || die
 	tar xfm opt/couchbase/lib/python/pysqlite2.tar -C opt/couchbase/lib/python || die
 	cp -a opt/couchbase/* "${D}"/opt/couchbase/
 
