@@ -25,9 +25,24 @@ checkconfig() {
 start() {
 	checkconfig || return $?
 
-	ebegin "Starting ${SVCNAME} (waiting 10 seconds for startup)"
-	start-stop-daemon --start --chdir ${BASEDIR} --user couchbase --pidfile ${PIDFILE} --wait 10000 \
+	ebegin "Starting ${SVCNAME}"
+	start-stop-daemon --start --chdir ${BASEDIR} --user couchbase --pidfile ${PIDFILE} \
 		--exec /bin/sh -- -c "${DAEMON} -- -noinput -detached > /opt/couchbase/var/lib/couchbase/logs/start.log 2>&1"
+
+	einfon "Waiting for startup ."
+	nc=0
+	while true; do
+		[ -f ${PIDFILE} ] && ps --pid $(cat ${PIDFILE}) &>/dev/null && break
+		nc=$(expr $nc + 1)
+		if [ $nc -gt 60 ]; then
+			echo
+			eend 1 "Timeout waiting for ${SVCNAME} startup !"
+			exit 1
+		fi
+		sleep 1
+		echo -n "."
+	done
+
 	eend $? "Failed to start ${SVCNAME}"
 }
 
