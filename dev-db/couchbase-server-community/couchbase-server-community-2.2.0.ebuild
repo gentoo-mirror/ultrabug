@@ -57,4 +57,7 @@ src_install() {
 
 	doinitd "${FILESDIR}"/couchbase-server
 	dosym /opt/couchbase/etc/logrotate.d/couchdb /etc/logrotate.d/couchdb
+
+	insinto /etc/security/limits.d/
+	doins "${FILESDIR}"/90-couchbase.conf
 }
