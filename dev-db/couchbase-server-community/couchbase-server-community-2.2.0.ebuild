@@ -21,7 +21,8 @@ IUSE=""
 RDEPEND=">=sys-libs/ncurses-5[tinfo]
 		>=dev-libs/libevent-1.4.13
 		>=dev-libs/cyrus-sasl-2
-		~media-video/rtmpdump-2.3"
+		~media-video/rtmpdump-2.3
+		virtual/jre"
 DEPEND="${RDEPEND}"
 
 export CONFIG_PROTECT="${CONFIG_PROTECT} /opt/${PN}/var/lib/${PN}/"
