@@ -1,2 +1,2 @@
 # extra arguments for the consul agent
-command_args="-server -bootstrap -data-dir=/tmp/consul-server"
+command_args="-server -bootstrap -data-dir=/tmp/consul-agent -config-dir=/etc/consul.d"

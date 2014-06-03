@@ -7,18 +7,34 @@ pidfile=${pidfile:-"/run/${SVCNAME}.pid"}
 
 command="/usr/bin/consul"
 command_args="agent ${command_args} -pid-file ${pidfile}"
-start_stop_daemon_args="--background --stdout /var/log/consul/${SVCNAME}.log"
+command_background="true"
+start_stop_daemon_args="--stdout /var/log/consul/${SVCNAME}.log"
 
 description="tool for service discovery, monitoring and configuration."
-extra_started_commands="reload"
+extra_started_commands="reload telemetry"
 
 depend() {
 	need hostname
 	use net
 }
 
+stop() {
+	# We need to override the default stop function
+	# because it uses SIGTERM whereas consul needs a SIGINT
+	# to shutdown gracefully
+    ebegin "Stopping ${SVCNAME}"
+    start-stop-daemon --signal SIGINT --pidfile "${pidfile}"
+    eend $?
+}
+
 reload() {
 	ebegin "Reloading ${SVCNAME}"
 	start-stop-daemon --signal SIGHUP --pidfile "${pidfile}"
 	eend $?
+}
+
+telemetry() {
+    ebegin "Logging telemetry for ${SVCNAME}"
+    start-stop-daemon --signal SIGUSR1 --pidfile "${pidfile}"
+    eend $?
 }
