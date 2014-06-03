@@ -18,23 +18,23 @@ depend() {
 	use net
 }
 
-stop() {
-	# We need to override the default stop function
-	# because it uses SIGTERM whereas consul needs a SIGINT
-	# to shutdown gracefully
-    ebegin "Stopping ${SVCNAME}"
-    start-stop-daemon --signal SIGINT --pidfile "${pidfile}"
-    eend $?
-}
-
 reload() {
 	ebegin "Reloading ${SVCNAME}"
 	start-stop-daemon --signal SIGHUP --pidfile "${pidfile}"
 	eend $?
 }
 
+stop() {
+	# We need to override the default stop function
+	# because it uses SIGTERM whereas consul needs a SIGINT
+	# to shutdown gracefully
+	ebegin "Stopping ${SVCNAME}"
+	start-stop-daemon --stop --signal SIGINT --pidfile "${pidfile}"
+	eend $?
+}
+
 telemetry() {
-    ebegin "Logging telemetry for ${SVCNAME}"
-    start-stop-daemon --signal SIGUSR1 --pidfile "${pidfile}"
-    eend $?
+	ebegin "Logging telemetry for ${SVCNAME}"
+	start-stop-daemon --signal SIGUSR1 --pidfile "${pidfile}"
+	eend $?
 }
