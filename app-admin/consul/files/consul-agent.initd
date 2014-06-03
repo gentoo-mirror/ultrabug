@@ -1,0 +1,24 @@
+#!/sbin/runscript
+# Copyright 1999-2014 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Header: $
+
+pidfile=${pidfile:-"/run/${SVCNAME}.pid"}
+
+command="/usr/bin/consul"
+command_args="agent ${command_args} -pid-file ${pidfile}"
+start_stop_daemon_args="--background --stdout /var/log/consul/${SVCNAME}.log"
+
+description="tool for service discovery, monitoring and configuration."
+extra_started_commands="reload"
+
+depend() {
+	need hostname
+	use net
+}
+
+reload() {
+	ebegin "Reloading ${SVCNAME}"
+	start-stop-daemon --signal SIGHUP --pidfile "${pidfile}"
+	eend $?
+}

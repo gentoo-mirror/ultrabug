@@ -16,7 +16,7 @@ else
 	KEYWORDS="~amd64 ~x86"
 fi
 
-inherit git-2
+inherit git-2 user
 
 LICENSE="MPL-2.0"
 SLOT="0"
@@ -27,6 +27,11 @@ DEPEND="
 	dev-vcs/git
 "
 RDEPEND="${DEPEND}"
+
+pkg_setup() {
+	enewgroup consul
+	enewuser consul -1 -1 /var/lib/${PN} consul
+}
 
 src_prepare() {
 	# see : https://github.com/hashicorp/consul/pull/188
@@ -40,10 +45,12 @@ src_compile() {
 
 	local MY_S="${GOPATH}/src/github.com/hashicorp/consul"
 
-	# make sure consul itself is in our GOPATH
+	# move consul itself in our GOPATH
 	mkdir -p "${GOPATH}/src/github.com/hashicorp" || die
 	mv "${S}" "${MY_S}" || die
-	ln -sf "${MY_S}" "${S}"
+
+	# piggyback our $S
+	ln -sf "${MY_S}" "${S}" || die
 
 	# let's do something fun
 	emake
@@ -51,4 +58,14 @@ src_compile() {
 
 src_install() {
 	dobin bin/consul
+
+	dodir /etc/consul.d
+
+	for x in /var/{lib,log}/${PN}; do
+		keepdir "${x}"
+		fowners consul:consul "${x}"
+	done
+
+	newinitd "${FILESDIR}/consul-agent.initd" "${PN}-agent"
+	newconfd "${FILESDIR}/consul-agent.confd" "${PN}-agent"
 }
