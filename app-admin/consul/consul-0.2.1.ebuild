@@ -20,11 +20,12 @@ inherit git-2 user
 
 LICENSE="MPL-2.0"
 SLOT="0"
-IUSE=""
+IUSE="web"
 
 DEPEND="
 	>=dev-lang/go-1.2
 	dev-vcs/git
+	web? ( dev-ruby/bundler dev-ruby/sass )
 "
 RDEPEND="${DEPEND}"
 
@@ -54,6 +55,13 @@ src_compile() {
 
 	# let's do something fun
 	emake
+
+	# build the web UI
+	if use web; then
+		cd ui
+		bundle
+		emake dist
+	fi
 }
 
 src_install() {
@@ -65,6 +73,11 @@ src_install() {
 		keepdir "${x}"
 		fowners consul:consul "${x}"
 	done
+
+	if use web; then
+		insinto /var/lib/${PN}/ui
+		doins -r ui/dist/*
+	fi
 
 	newinitd "${FILESDIR}/consul-agent.initd" "${PN}-agent"
 	newconfd "${FILESDIR}/consul-agent.confd" "${PN}-agent"
