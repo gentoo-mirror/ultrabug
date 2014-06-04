@@ -8,7 +8,7 @@ pidfile=${pidfile:-"/run/${SVCNAME}.pid"}
 command="/usr/bin/consul"
 command_args="agent ${command_args} -pid-file ${pidfile}"
 command_background="true"
-start_stop_daemon_args="--stdout /var/log/consul/${SVCNAME}.log"
+start_stop_daemon_args="--stdout /var/log/consul/${SVCNAME}.log --stderr /var/log/consul/${SVCNAME}.telemetry.log"
 
 description="tool for service discovery, monitoring and configuration."
 extra_started_commands="reload telemetry"
