@@ -36,7 +36,7 @@ pkg_setup() {
 
 src_prepare() {
 	# see : https://github.com/hashicorp/consul/pull/188
-	sed -e 's/format:/format: deps/g' -i Makefile
+	sed -e 's/format:/format: deps/g' -i Makefile || die
 }
 
 src_compile() {
