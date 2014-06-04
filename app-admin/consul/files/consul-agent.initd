@@ -3,6 +3,8 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
+export GOMAXPROCS=10
+
 pidfile=${pidfile:-"/run/${SVCNAME}.pid"}
 
 command="/usr/bin/consul"
