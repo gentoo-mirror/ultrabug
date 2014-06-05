@@ -3,14 +3,15 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-export GOMAXPROCS=10
-
-pidfile=${pidfile:-"/run/${SVCNAME}.pid"}
+data_dir=${data_dir:-"/var/lib/consul/${SVCNAME}"}
+group=${group:-consul}
+pidfile=${pidfile:-"/run/consul/${SVCNAME}.pid"}
+user=${user:-consul}
 
 command="/usr/bin/consul"
-command_args="agent ${command_args} -pid-file ${pidfile}"
+command_args="agent -data-dir=${data_dir} ${command_args}"
 command_background="true"
-start_stop_daemon_args="--stdout /var/log/consul/${SVCNAME}.log --stderr /var/log/consul/${SVCNAME}.telemetry.log"
+start_stop_daemon_args="--user ${user} --group ${group} --stdout /var/log/consul/${SVCNAME}.log --stderr /var/log/consul/${SVCNAME}.telemetry.log"
 
 description="tool for service discovery, monitoring and configuration."
 extra_started_commands="reload telemetry"
@@ -24,6 +25,10 @@ reload() {
 	ebegin "Reloading ${SVCNAME}"
 	start-stop-daemon --signal SIGHUP --pidfile "${pidfile}"
 	eend $?
+}
+
+start_pre() {
+	checkpath -d -m 0750 -o "${user}":"${group}" $(dirname "${pidfile}")
 }
 
 stop() {
