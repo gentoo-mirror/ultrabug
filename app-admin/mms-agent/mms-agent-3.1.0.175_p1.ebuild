@@ -25,8 +25,7 @@ IUSE="+monitoring"
 REQUIRED_USE="|| ( monitoring )"
 
 RDEPEND=""
-DEPEND="dev-python/pymongo
-	app-arch/unzip"
+DEPEND=""
 
 S=${WORKDIR}
 
