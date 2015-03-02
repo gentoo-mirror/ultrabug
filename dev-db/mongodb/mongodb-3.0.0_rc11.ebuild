@@ -19,7 +19,7 @@ SRC_URI="http://downloads.mongodb.org/src/${MY_P}.tar.gz"
 LICENSE="AGPL-3 Apache-2.0"
 SLOT="0"
 KEYWORDS=""
-IUSE="debug kerberos mms-monitoring-agent ssl static-libs +tools"
+IUSE="debug kerberos mms-agent ssl static-libs +tools"
 
 PDEPEND=""
 RDEPEND="
@@ -30,8 +30,8 @@ RDEPEND="
 	dev-libs/snowball-stemmer
 	dev-util/google-perftools[-minimal]
 	net-libs/libpcap
-	>=sys-devel/gcc-4.8.2
-	mms-monitoring-agent? ( app-admin/mms-monitoring-agent )
+	>=sys-devel/gcc-4.8.2:*
+	mms-agent? ( app-admin/mms-agent )
 	ssl? ( >=dev-libs/openssl-1.0.1g )
 	tools? ( =app-admin/mongo-tools-${PV} )"
 DEPEND="${RDEPEND}
@@ -141,4 +141,3 @@ pkg_postinst() {
 		ewarn "  http://docs.mongodb.org/master/release-notes/3.0-upgrade/#change-storage-engine-to-wiredtiger"
 	fi
 }
-
