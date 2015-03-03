@@ -21,7 +21,7 @@ SLOT="0"
 KEYWORDS=""
 IUSE="debug kerberos mms-agent ssl static-libs +tools"
 
-PDEPEND=""
+PDEPEND="tools? ( =app-admin/mongo-tools-${PV} )"
 RDEPEND="
 	app-arch/snappy
 	>=dev-cpp/yaml-cpp-0.5.1
@@ -32,8 +32,7 @@ RDEPEND="
 	net-libs/libpcap
 	>=sys-devel/gcc-4.8.2:*
 	mms-agent? ( app-admin/mms-agent )
-	ssl? ( >=dev-libs/openssl-1.0.1g )
-	tools? ( =app-admin/mongo-tools-${PV} )"
+	ssl? ( >=dev-libs/openssl-1.0.1g )"
 DEPEND="${RDEPEND}
 	sys-libs/ncurses
 	sys-libs/readline
