@@ -18,8 +18,8 @@ SRC_URI="http://downloads.mongodb.org/src/${MY_P}.tar.gz"
 
 LICENSE="AGPL-3 Apache-2.0"
 SLOT="0"
-KEYWORDS=""
-IUSE="debug kerberos mms-agent ssl static-libs +tools"
+KEYWORDS="~amd64 ~x86"
+IUSE="debug kerberos mms-agent ssl +tools"
 
 RDEPEND="app-arch/snappy
 	>=dev-cpp/yaml-cpp-0.5.1
@@ -29,7 +29,7 @@ RDEPEND="app-arch/snappy
 	dev-util/google-perftools[-minimal]
 	net-libs/libpcap
 	mms-agent? ( app-admin/mms-agent )
-	ssl? ( >=dev-libs/openssl-1.0.1g )"
+	ssl? ( >=dev-libs/openssl-1.0.1g:= )"
 DEPEND="${RDEPEND}
 	>=sys-devel/gcc-4.8.2:*
 	sys-libs/ncurses
@@ -86,8 +86,6 @@ src_compile() {
 
 src_install() {
 	escons ${scons_opts} --nostrip install --prefix="${ED}"/usr
-
-	use static-libs || find "${ED}"/usr/ -type f -name "*.a" -delete
 
 	for x in /var/{lib,log}/${PN}; do
 		keepdir "${x}"
