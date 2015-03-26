@@ -9,6 +9,8 @@ HOMEPAGE="http://www.consul.io"
 SRC_URI=""
 
 EGIT_REPO_URI="git://github.com/hashicorp/consul.git"
+S="${WORKDIR}/src/github.com/hashicorp/${PN}"
+
 if [[ ${PV} == *9999 ]]; then
 	KEYWORDS=""
 else
@@ -22,11 +24,10 @@ LICENSE="MPL-2.0"
 SLOT="0"
 IUSE="web"
 
-DEPEND="
-	>=dev-lang/go-1.2
+DEPEND=">=dev-lang/go-1.4
 	dev-vcs/git
-	web? ( dev-ruby/bundler dev-ruby/sass )
-"
+	dev-vcs/mercurial
+	web? ( dev-ruby/bundler dev-ruby/sass )"
 RDEPEND="${DEPEND}"
 
 pkg_setup() {
@@ -36,17 +37,7 @@ pkg_setup() {
 
 src_compile() {
 	# create a suitable GOPATH
-	export GOPATH="${WORKDIR}/gopath"
-	mkdir -p "$GOPATH" || die
-
-	local MY_S="${GOPATH}/src/github.com/hashicorp/consul"
-
-	# move consul itself in our GOPATH
-	mkdir -p "${GOPATH}/src/github.com/hashicorp" || die
-	mv "${S}" "${MY_S}" || die
-
-	# piggyback our $S
-	ln -sf "${MY_S}" "${S}" || die
+	export GOPATH="${WORKDIR}"
 
 	# let's do something fun
 	emake
