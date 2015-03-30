@@ -1,11 +1,11 @@
-# Copyright 1999-2012 Gentoo Foundation
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
 EAPI=5
-PYTHON_COMPAT=( python2_{6,7} )
+PYTHON_COMPAT=( python2_7 )
 
-inherit autotools distutils-r1 eutils java-utils-2 user
+inherit distutils-r1 eutils java-utils-2 user
 
 DESCRIPTION="ZooKeeper is a high-performance coordination service for distributed applications."
 HOMEPAGE="http://zookeeper.apache.org/"
@@ -54,7 +54,7 @@ src_install() {
 	cd "${S}" || die
 
 	# python
-	cd ${S}/contrib/zkpython/ || die
+	cd "${S}"/contrib/zkpython/ || die
 	mv src/python/setup.py .
 	mv src/c/* .
 	python_foreach_impl distutils-r1_src_install
