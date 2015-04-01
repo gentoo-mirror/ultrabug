@@ -3,7 +3,7 @@
 # $Header: $
 
 EAPI=5
-PYTHON_COMPAT=( python2_{6,7} python3_{2,3} )
+PYTHON_COMPAT=( python2_7 python3_{2,3,4} )
 
 inherit distutils-r1
 
@@ -16,7 +16,7 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE="doc"
 
-RDEPEND=">=dev-libs/libcouchbase-2.1.0"
+RDEPEND=">=dev-libs/libcouchbase-2.4.8"
 DEPEND="${RDEPEND}
 	doc? ( dev-python/sphinx[${PYTHON_USEDEP}] )"
 
