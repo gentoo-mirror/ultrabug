@@ -4,9 +4,7 @@
 
 EAPI=5
 
-AUTOTOOLS_AUTORECONF=yes
-
-inherit autotools-utils
+inherit cmake-utils
 
 DESCRIPTION="Couchbase C Client Library"
 HOMEPAGE="http://www.couchbase.com/communities/c-client-library"
@@ -15,28 +13,18 @@ SRC_URI="http://packages.couchbase.com/clients/c/${P}.tar.gz"
 LICENSE="Apache-2.0"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="doc static-libs tools"
+IUSE="doc ssl static-libs"
 
-# tests fails to build
+# tests fails to build ?
 RESTRICT="test"
 
-RDEPEND=">=dev-libs/libevent-1.4.13"
+RDEPEND=">=dev-util/cmake-2.8.9
+	>=dev-libs/libevent-1.4.13
+	ssl? ( >=dev-libs/openssl-1.0.1g:= )"
 DEPEND="${RDEPEND}"
 
-# building in a separate dir fails
-AUTOTOOLS_IN_SOURCE_BUILD=1
-
-src_configure() {
-	local myeconfargs=(
-		$(use_enable tools)
-	)
-	autotools-utils_src_configure
-}
-
 src_install() {
-	default
-	use doc || rm -rf "${D}"/usr/share/doc
+	cmake-utils_src_install
+	use doc || rm -rf "${D}"/usr/share
 	use static-libs || find "${D}" -type f -name "*.la" -delete
-	use tools || rm -rf "${D}"/usr/share/man
-	rmdir "${D}"/usr/share 2>/dev/null
 }
