@@ -7,15 +7,12 @@ inherit eutils user
 
 DESCRIPTION="Distributed key-value database management system"
 HOMEPAGE="http://www.couchbase.com"
-SRC_URI="
-	amd64? ( http://packages.couchbase.com/releases/${PV}/${PN}_${PV}_x86_64.deb )
-	x86? ( http://packages.couchbase.com/releases/${PV}/${PN}_${PV}_x86.deb )
-"
+SRC_URI="http://packages.couchbase.com/releases/${PV}/${PN}_${PV}-debian7_amd64.deb"
 
 
 LICENSE="COUCHBASE INC. COMMUNITY EDITION"
 SLOT="0"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS="~amd64"
 IUSE=""
 
 RDEPEND=">=sys-libs/ncurses-5[tinfo]
