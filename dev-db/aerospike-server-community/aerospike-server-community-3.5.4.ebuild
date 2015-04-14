@@ -1,6 +1,6 @@
 # Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header $
+# $Header: $
 
 EAPI=5
 inherit eutils user
@@ -9,7 +9,7 @@ DESCRIPTION="Flash-optimized, in-memory, nosql database"
 HOMEPAGE="http://www.aerospike.com"
 SRC_URI="http://www.aerospike.com/artifacts/${PN}/${PV}/${P}-debian7.tgz"
 
-LICENSE="AEROSPIKE SERVER LICENSE"
+LICENSE="Apache-2.0"
 SLOT="0"
 KEYWORDS="~amd64"
 IUSE=""
