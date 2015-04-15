@@ -42,7 +42,7 @@ set_shmmax() {
 }
 
 start_pre() {
-	checkpath -d -m 0750 -o "${user}":"${group}" "${run_dir}"
+	checkpath -d -m 0755 -o "${user}":"${group}" "${run_dir}"
 	set_shmall
 	set_shmmax
 	ulimit -n 100000

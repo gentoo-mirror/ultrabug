@@ -14,7 +14,12 @@ SLOT="0"
 KEYWORDS="~amd64"
 IUSE=""
 
-RDEPEND="app-crypt/gcr"
+RDEPEND="app-crypt/gcr
+	dev-python/eventlet
+	dev-python/flask
+	dev-python/greenlet
+	dev-python/setproctitle
+	www-servers/gunicorn"
 DEPEND="${RDEPEND}"
 
 src_unpack() {
@@ -32,6 +37,9 @@ src_install() {
 	rm -f opt/amc/install
 	rm -f opt/amc/bin/uninstall
 	rm -f opt/amc/bin/amc_*.sh
+	rm -f opt/amc/bin/gunicorn
+	rm -rf opt/amc/server/site-packages/
+	rm -rf opt/amc/server/setups/
 
 	insinto /etc/logrotate.d
 	newins opt/amc/config/logrotate amc
@@ -53,7 +61,6 @@ src_install() {
 	doins -r opt/amc/*
 
 	keepdir /var/log/amc
-	fperms +x /opt/amc/bin/gunicorn
 
 	newinitd "${FILESDIR}"/amc.init amc
 }
