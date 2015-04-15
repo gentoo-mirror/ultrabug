@@ -20,7 +20,7 @@ DEPEND="${RDEPEND}"
 S="${WORKDIR}/${P}-debian7"
 
 # change me at every version bump
-TOOLS_PV="3.5.3"
+TOOLS_PV="3.5.5"
 
 pkg_setup() {
 	enewgroup aerospike
