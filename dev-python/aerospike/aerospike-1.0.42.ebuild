@@ -23,6 +23,10 @@ DEPEND="${RDEPEND}"
 
 RESTRICT="test"
 
+src_prepare() {
+	sed -e "s@aerospike_c_prefix = './aerospike-client-c'@aerospike_c_prefix = '/usr'@g" -i setup.py || die
+}
+
 python_install_all() {
 	AEROSPIKE_LUA_PATH=/opt/aerospike/client/sys/udf/lua/ PREFIX=/usr distutils-r1_python_install_all
 	rm -rf "${D}"/usr/aerospike

@@ -6,13 +6,13 @@ EAPI=5
 
 EGIT_REPO_URI="https://github.com/aerospike/aerospike-server.git"
 
-inherit autotools base eutils git-2 user
+inherit base git-2 systemd user
 
 DESCRIPTION="Flash-optimized, in-memory, nosql database"
 HOMEPAGE="http://www.aerospike.com"
 SRC_URI=""
 
-LICENSE="AGPL"
+LICENSE="AGPL Apache-2.0"
 SLOT="0"
 KEYWORDS="~amd64"
 IUSE="+tools"
@@ -22,6 +22,13 @@ RDEPEND="app-crypt/gcr
 	dev-libs/jemalloc"
 DEPEND="${RDEPEND}"
 
+DOCS=(
+	README.md
+)
+
+PATCHES=(
+	"${FILESDIR}"/3.5.8-use-system-libs.patch
+)
 
 pkg_setup() {
 	enewgroup aerospike
@@ -29,9 +36,9 @@ pkg_setup() {
 }
 
 src_prepare() {
-	git submodule update --init
+	base_src_prepare
 
-	epatch "${FILESDIR}/3.5.8-use-system-libs.patch"
+	git submodule update --init
 
 	sed \
 		-e 's/USE_SYSTEM_JEM = 0/USE_SYSTEM_JEM = 1/g' \
@@ -46,6 +53,8 @@ src_prepare() {
 }
 
 src_install() {
+	base_src_install_docs
+
 	dobin target/Linux-x86_64/bin/asd
 
 	insinto /opt/aerospike/sys/udf/lua
@@ -70,6 +79,7 @@ src_install() {
 	newins as/etc/logrotate_asd aerospike
 
 	newinitd "${FILESDIR}"/aerospike.init aerospike
+	systemd_newunit as/etc/aerospike-server.service aerospike.service
 
 	fowners -R aerospike:aerospike /opt/aerospike/
 	fowners aerospike:aerospike /usr/bin/asd
