@@ -39,6 +39,8 @@ src_prepare() {
 }
 
 src_compile() {
+	# forced MAKEOPTS, see:
+	# https://github.com/aerospike/aerospike-client-c/issues/22
 	CC=$(tc-getCC) LD=$(tc-getCC) MAKEOPTS="-j1" emake all
 }
 
