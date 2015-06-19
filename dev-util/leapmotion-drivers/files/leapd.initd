@@ -1,0 +1,18 @@
+#!/sbin/runscript
+# Copyright 1999-2013 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Header: $
+
+start() {
+	ebegin "Starting leapd"
+	start-stop-daemon --start --exec /opt/Leap/usr/sbin/leapd \
+	    --pidfile /var/run/leapd.pid --make-pidfile --background
+	eend $? "Failed to start leapd"
+}
+
+stop() {
+	ebegin "Stopping leapd"
+	start-stop-daemon --stop \
+		--pidfile /var/run/leapd.pid
+	eend $? "Failed to stop leapd"
+}

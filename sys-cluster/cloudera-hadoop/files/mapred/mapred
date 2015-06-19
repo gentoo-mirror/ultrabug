@@ -1,0 +1,7 @@
+#!/bin/sh
+
+export JAVA_HOME=$(java-config -g JAVA_HOME)
+
+export HADOOP_LIBEXEC_DIR=/usr/lib/hadoop/libexec/
+
+exec /usr/lib/hadoop-mapreduce/bin/mapred "$@"

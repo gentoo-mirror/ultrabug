@@ -1,0 +1,15 @@
+#!/bin/sh
+
+export JAVA_HOME=$(java-config -g JAVA_HOME)
+
+export HADOOP_HOME_WARN_SUPPRESS=true
+export HADOOP_PREFIX=/usr/lib/hadoop
+export HADOOP_LIBEXEC_DIR=/usr/lib/hadoop/libexec
+export HADOOP_CONF_DIR=/etc/hadoop/conf
+export HADOOP_COMMON_HOME=/usr/lib/hadoop
+export HADOOP_HDFS_HOME=/usr/lib/hadoop-hdfs
+export HADOOP_MAPRED_HOME=/usr/lib/hadoop-mapreduce
+# export YARN_HOME=/usr/lib/hadoop-yarn
+# export JSVC_HOME=/usr/lib/bigtop-utils
+
+exec /usr/lib/hadoop/bin/hadoop "$@"

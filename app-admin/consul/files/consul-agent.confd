@@ -1,0 +1,11 @@
+# you can change the init script behavior by setting those parameters
+# - data_dir (default: /var/lib/consul/${SVCNAME})
+# - group (default: consul)
+# - pidfile (default: /run/consul/${SVCNAME}.pid)
+# - user (default: consul)
+
+# extra arguments for the consul agent
+command_args="-server -config-dir=/etc/consul.d -bootstrap"
+
+# upstream strongly recommends > 1
+export GOMAXPROCS=10

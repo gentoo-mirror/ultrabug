@@ -1,0 +1,47 @@
+#!/sbin/runscript
+# Copyright 1999-2014 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Header: $
+
+data_dir=${data_dir:-"/var/lib/consul/${SVCNAME}"}
+group=${group:-consul}
+pidfile=${pidfile:-"/run/consul/${SVCNAME}.pid"}
+user=${user:-consul}
+
+command="/usr/bin/consul"
+command_args="agent -data-dir=${data_dir} ${command_args}"
+command_background="true"
+start_stop_daemon_args="--user ${user} --group ${group} --stdout /var/log/consul/${SVCNAME}.log --stderr /var/log/consul/${SVCNAME}.telemetry.log"
+
+description="tool for service discovery, monitoring and configuration."
+extra_started_commands="reload telemetry"
+
+depend() {
+	need hostname
+	use net
+}
+
+reload() {
+	ebegin "Reloading ${SVCNAME}"
+	start-stop-daemon --signal SIGHUP --pidfile "${pidfile}"
+	eend $?
+}
+
+start_pre() {
+	checkpath -d -m 0750 -o "${user}":"${group}" $(dirname "${pidfile}")
+}
+
+stop() {
+	# We need to override the default stop function
+	# because it uses SIGTERM whereas consul needs a SIGINT
+	# to shutdown gracefully
+	ebegin "Stopping ${SVCNAME}"
+	start-stop-daemon --stop --signal SIGINT --pidfile "${pidfile}"
+	eend $?
+}
+
+telemetry() {
+	ebegin "Logging telemetry for ${SVCNAME}"
+	start-stop-daemon --signal SIGUSR1 --pidfile "${pidfile}"
+	eend $?
+}

@@ -1,0 +1,6 @@
+# Give extra options to dkimproxy.in.
+# Examples:
+# DKIMPROXY_IN_OPTS="--reject-error" # reject email if the verification process fails
+# DKIMPROXY_IN_OPTS="--reject-fail" # reject email if the signature is incorrect
+
+DKIMPROXY_IN_OPTS="--user=dkfilter --group=dkfilter"
