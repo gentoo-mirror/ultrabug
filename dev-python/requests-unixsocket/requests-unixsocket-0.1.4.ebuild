@@ -18,6 +18,7 @@ KEYWORDS="~amd64 ~x86"
 IUSE=""
 
 RDEPEND="
+	dev-python/pbr
 	dev-python/requests
 "
 DEPEND="${RDEPEND}
