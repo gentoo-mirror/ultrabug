@@ -19,6 +19,7 @@ IUSE=""
 
 RDEPEND="
 	dev-python/requests
+	dev-python/requests-unixsocket
 	www-servers/tornado
 "
 DEPEND="${RDEPEND}
