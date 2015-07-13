@@ -58,7 +58,7 @@ src_install() {
 	mv src/python/setup.py .
 	mv src/c/* .
 	python_foreach_impl distutils-r1_src_install
-	cd -
+	cd "${S}" || die
 
 	# cleanup sources
 	rm -rf src/ || die
