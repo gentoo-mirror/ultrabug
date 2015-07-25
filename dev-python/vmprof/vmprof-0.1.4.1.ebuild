@@ -18,8 +18,8 @@ IUSE=""
 
 RDEPEND=""
 DEPEND="${RDEPEND}
+	dev-libs/elfutils
 	dev-libs/libdwarf
-	dev-libs/libelf
 	dev-python/click
 	dev-python/six
 	sys-libs/libunwind"
