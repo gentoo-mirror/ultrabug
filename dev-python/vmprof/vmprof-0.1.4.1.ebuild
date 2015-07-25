@@ -18,10 +18,10 @@ IUSE=""
 
 RDEPEND=""
 DEPEND="${RDEPEND}
+	dev-libs/libdwarf
 	dev-libs/libelf
 	dev-python/click
 	dev-python/six
-	sys-libs/libdwarf
 	sys-libs/libunwind"
 
 RESTRICT="test"
