@@ -36,12 +36,20 @@ src_prepare() {
 	use luajit && sed -e 's/^USE_LUAJIT = 0/USE_LUAJIT = 1/g' -i Makefile
 
 	git submodule update --init
+
+	# main, applies to all modules
+	sed -e "s/CC = cc/CC = $(tc-getCC)/g" \
+		-e "s/LD = cc/CC = $(tc-getCC)/g" \
+		-i project/settings.mk || die
+
+	# include dir
+	sed -e 's@/usr/local@/usr@g' -i Makefile -i modules/mod-lua/Makefile -i modules/luajit/src/Makefile -i modules/ck/Makefile.in -i modules/luajit/Makefile || die
 }
 
 src_compile() {
 	# forced MAKEOPTS, see:
 	# https://github.com/aerospike/aerospike-client-c/issues/22
-	CC=$(tc-getCC) LD=$(tc-getCC) MAKEOPTS="-j1" emake all
+	CC=$(tc-getCC) LD=$(tc-getCC) MAKEOPTS="-j1" PREFIX=/usr emake all
 }
 
 src_install() {
