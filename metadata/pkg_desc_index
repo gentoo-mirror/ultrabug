@@ -8,11 +8,11 @@ dev-db/apache-solr 3.6.0: Popular, blazing fast open source enterprise search pl
 dev-db/couchbase-server-community 3.0.1: Distributed key-value database management system
 dev-lang/apache-pig-bin 0.10.0: High-level language and platform for analyzing large data sets
 dev-libs/libaerospike 3.1.20: Aerospike C Client
-dev-libs/libcouchbase 2.4.8: Couchbase C Client Library
+dev-libs/libcouchbase 2.5.3: Couchbase C Client Library
 dev-libs/libdwarf 20150507: Library to deal with DWARF Debugging Information Format
 dev-python/aerospike 1.0.42: Python Client for Aerospike
 dev-python/consulate 0.5.1: Python client for the Consul HTTP API
-dev-python/couchbase 1.2.5: Python Client for Couchbase
+dev-python/couchbase 2.0.4: Python Client for Couchbase
 dev-python/flask-restful 0.1.6 0.2.1: Simple framework for creating REST APIs with Flask
 dev-python/gevent-socketio 9999: SocketIO server based on the Gevent pywsgi server
 dev-python/grequests 0.1.0 0.2.0: GRequests allows you to use Requests with Gevent to make asyncronous HTTP Requests easily.
