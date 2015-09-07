@@ -31,6 +31,5 @@ python_compile_all() {
 
 python_install_all() {
 	distutils-r1_python_install_all
-
 	use doc || rm -rf "${D}"/usr/share
 }
