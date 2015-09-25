@@ -11,6 +11,7 @@ dev-lang/apache-pig-bin 0.10.0: High-level language and platform for analyzing l
 dev-libs/libaerospike 3.1.20: Aerospike C Client
 dev-libs/libcouchbase 2.5.3: Couchbase C Client Library
 dev-libs/libdwarf 20150507: Library to deal with DWARF Debugging Information Format
+dev-libs/libketama 20141001: C library for consistent hashing
 dev-python/aerospike 1.0.42: Python Client for Aerospike
 dev-python/consulate 0.5.1: Python client for the Consul HTTP API
 dev-python/couchbase 2.0.4: Python Client for Couchbase
@@ -18,6 +19,7 @@ dev-python/flask-restful 0.1.6 0.2.1: Simple framework for creating REST APIs wi
 dev-python/gevent-socketio 9999: SocketIO server based on the Gevent pywsgi server
 dev-python/grequests 0.1.0 0.2.0: GRequests allows you to use Requests with Gevent to make asyncronous HTTP Requests easily.
 dev-python/i3-py 0.6.4: tools for i3 users and developers
+dev-python/ketama 20141001: Python library for consistent hashing
 dev-python/mimerender 0.5.3: Python module for RESTful HTTP Content Negotiation
 dev-python/pika 0.9.13: Python client library for AMQP
 dev-python/pybrowscap 2.0: Python port of PHP function get_browser() based on the browscap project
