@@ -22,7 +22,6 @@ dev-python/grequests 0.1.0 0.2.0: GRequests allows you to use Requests with Geve
 dev-python/i3-py 0.6.4: tools for i3 users and developers
 dev-python/ketama 20141001: Python library for consistent hashing
 dev-python/mimerender 0.5.3: Python module for RESTful HTTP Content Negotiation
-dev-python/pika 0.9.13: Python client library for AMQP
 dev-python/pybrowscap 2.0: Python port of PHP function get_browser() based on the browscap project
 dev-python/python-ultramemcached 9999: A drop in replacement for python-memcache using ultramemcached
 dev-python/requests-unixsocket 0.1.4: Use requests to talk HTTP via a UNIX domain socket
