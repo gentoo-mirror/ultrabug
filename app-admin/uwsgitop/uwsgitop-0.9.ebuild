@@ -2,11 +2,10 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI=4
-PYTHON_DEPEND="2"
-SUPPORT_PYTHON_ABIS="1"
+EAPI=5
+PYTHON_COMPAT=( python2_7 python3_4 )
 
-inherit distutils
+inherit distutils-r1
 
 DESCRIPTION="uWSGI top-like application"
 HOMEPAGE="https://github.com/unbit/uwsgitop/"
