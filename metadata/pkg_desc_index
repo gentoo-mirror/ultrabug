@@ -2,7 +2,7 @@ app-admin/aerospike-amc-community 3.6.1: Web UI based monitoring tool for Aerosp
 app-admin/apache-flume-bin 1.1.0: Distributed Log Collection
 app-admin/circus 0.11.1: Circus is a program that will let you run and watch multiple processes and sockets
 app-admin/logswan 1.01: Web log analyzer using probabilistic data structures
-app-admin/uwsgitop 0.8: uWSGI top-like application
+app-admin/uwsgitop 0.9: uWSGI top-like application
 dev-db/aerospike-server-community 3.5.15: Flash-optimized, in-memory, nosql database
 dev-db/apache-hive-bin 0.9.0 0.12.0: High-level language and platform for analyzing large data sets
 dev-db/apache-solr 3.6.0: Popular, blazing fast open source enterprise search platform from the Apache Lucene project
