@@ -31,7 +31,7 @@ dev-python/uasparser 999: Python User Agent parser library
 dev-python/ultramemcache 9999: Ultra fast memcache client written in highly optimized C++ with Python bindings
 dev-python/validictory 0.9.0: A general purpose Python data validator
 dev-python/vmprof 0.1.4.2 0.1.5.3: vmprof Python client
-dev-python/yapf 0.2.6: A formatter for Python code
+dev-python/yapf 0.6.2: A formatter for Python code
 dev-util/leapmotion-drivers 1.0.9_p8411: LeapMotion runtime and drivers
 dev-util/leapmotion-sdk 1.0.9_p8391: LeapMotion DeveloperKit SDK
 mail-filter/dkimproxy 1.2: SMTP proxy for signing/verifying DKIM and Domainkey signatures
