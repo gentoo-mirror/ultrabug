@@ -1,0 +1,14 @@
+DEFINED_PHASES=compile install postinst postrm prepare setup test
+DEPEND=dev-python/psutil dev-python/pyzmq >=www-servers/tornado-3.0 test? ( dev-python/mock ) dev-lang/python test? ( dev-python/nose )
+DESCRIPTION=Circus is a program that will let you run and watch multiple processes and sockets
+EAPI=5
+HOMEPAGE=http://circus.readthedocs.org
+IUSE=test test
+KEYWORDS=~amd64 ~x86
+LICENSE=BSD
+RDEPEND=dev-python/psutil dev-python/pyzmq >=www-servers/tornado-3.0 test? ( dev-python/mock ) dev-lang/python
+SLOT=0
+SRC_URI=mirror://pypi/c/circus/circus-0.11.1.tar.gz
+_eclass_exported_funcs=pkg_postrm:distutils pkg_postinst:distutils pkg_setup:python src_prepare:distutils src_compile:distutils src_test:distutils src_install:distutils
+_eclasses_=distutils	ad9e4720eb3e69090dd968b152fc611b	multilib	3972ca401cf7dbb430df9995f5d8d580	python	0c2c16ea4f9074d3248bd4365d03890c	toolchain-funcs	7a212e5e01adfa4805c9978366e6ee85
+_md5_=728f621eefc27b71757854ec4bc500f2
