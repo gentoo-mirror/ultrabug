@@ -1,39 +1,8 @@
-app-admin/aerospike-amc-community 3.6.1: Web UI based monitoring tool for Aerospike Community Edition Server
-app-admin/apache-flume-bin 1.1.0: Distributed Log Collection
-app-admin/circus 0.11.1: Circus is a program that will let you run and watch multiple processes and sockets
-app-admin/logswan 1.01: Web log analyzer using probabilistic data structures
-app-admin/uwsgitop 0.9: uWSGI top-like application
 dev-db/aerospike-server-community 3.5.15: Flash-optimized, in-memory, nosql database
 dev-db/apache-hive-bin 0.9.0 0.12.0: High-level language and platform for analyzing large data sets
 dev-db/apache-solr 3.6.0: Popular, blazing fast open source enterprise search platform from the Apache Lucene project
 dev-db/couchbase-server-community 3.0.1: Distributed key-value database management system
 dev-db/rethinkdb 2.1.3: The open-source database for the realtime web.
-dev-lang/apache-pig-bin 0.10.0: High-level language and platform for analyzing large data sets
-dev-libs/libaerospike 3.1.20: Aerospike C Client
-dev-libs/libcouchbase 2.5.3: Couchbase C Client Library
-dev-libs/libdwarf 20150507: Library to deal with DWARF Debugging Information Format
-dev-libs/libketama 20141001: C library for consistent hashing
-dev-python/aerospike 1.0.42: Python Client for Aerospike
-dev-python/consulate 0.5.1: Python client for the Consul HTTP API
-dev-python/couchbase 2.0.4: Python Client for Couchbase
-dev-python/flask-restful 0.1.6 0.2.1: Simple framework for creating REST APIs with Flask
-dev-python/gevent-socketio 9999: SocketIO server based on the Gevent pywsgi server
-dev-python/grequests 0.1.0 0.2.0: GRequests allows you to use Requests with Gevent to make asyncronous HTTP Requests easily.
-dev-python/i3-py 0.6.4: tools for i3 users and developers
-dev-python/ketama 20141001: Python library for consistent hashing
-dev-python/mimerender 0.5.3: Python module for RESTful HTTP Content Negotiation
-dev-python/pybrowscap 2.0: Python port of PHP function get_browser() based on the browscap project
-dev-python/python-ultramemcached 9999: A drop in replacement for python-memcache using ultramemcached
-dev-python/requests-unixsocket 0.1.4: Use requests to talk HTTP via a UNIX domain socket
-dev-python/rethinkdb-python 2.1.0: Python driver library for the RethinkDB database server.
-dev-python/tweetstream 1.1.1: Python module for simple access to twitter's streaming API
-dev-python/uasparser 999: Python User Agent parser library
-dev-python/ultramemcache 9999: Ultra fast memcache client written in highly optimized C++ with Python bindings
-dev-python/validictory 0.9.0: A general purpose Python data validator
-dev-python/vmprof 0.1.4.2 0.1.5.3: vmprof Python client
-dev-python/yapf 0.6.2: A formatter for Python code
-dev-util/leapmotion-drivers 1.0.9_p8411: LeapMotion runtime and drivers
-dev-util/leapmotion-sdk 1.0.9_p8391: LeapMotion DeveloperKit SDK
 mail-filter/dkimproxy 1.2: SMTP proxy for signing/verifying DKIM and Domainkey signatures
 sys-cluster/apache-hadoop-bin 1.0.3: Software framework for data intensive distributed applications
 sys-cluster/apache-hadoop-common 1.1.1 1.1.1-r1 2.0.3: Software framework for data intensive distributed applications
@@ -43,5 +12,3 @@ sys-cluster/cloudera-hadoop-mr1 4.2.0: Cloudera Distribution for Apache Hadoop M
 sys-cluster/cloudera-hive 4.1.3 4.2.0: Cloudera’s Distribution for Apache Hive
 sys-cluster/cloudera-pig 4.1.3 4.2.0: Cloudera’s Distribution for Apache Pig
 sys-cluster/zookeeper 3.4.6: ZooKeeper is a high-performance coordination service for distributed applications.
-www-apps/circus-web 0.5: Circus Web Dashboard
-www-servers/jetty-bin 6.1.26: Jetty is an full-featured web and applicaction server implemented entirely in Java.
