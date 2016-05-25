@@ -2,7 +2,7 @@ dev-db/aerospike-server-community 3.5.15: Flash-optimized, in-memory, nosql data
 dev-db/apache-hive-bin 0.9.0 0.12.0: High-level language and platform for analyzing large data sets
 dev-db/apache-solr 3.6.0: Popular, blazing fast open source enterprise search platform from the Apache Lucene project
 dev-db/couchbase-server-community 3.0.1: Distributed key-value database management system
-dev-db/rethinkdb 2.1.3: The open-source database for the realtime web.
+dev-db/rethinkdb 2.3.2: The open-source database for the realtime web.
 mail-filter/dkimproxy 1.2: SMTP proxy for signing/verifying DKIM and Domainkey signatures
 sys-cluster/apache-hadoop-bin 1.0.3: Software framework for data intensive distributed applications
 sys-cluster/apache-hadoop-common 1.1.1 1.1.1-r1 2.0.3: Software framework for data intensive distributed applications
