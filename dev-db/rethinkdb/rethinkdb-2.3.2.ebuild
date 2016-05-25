@@ -19,7 +19,7 @@ IUSE="doc +jemalloc tcmalloc"
 DEPEND="dev-cpp/gtest
 		dev-libs/boost
 		dev-libs/protobuf-c
-		dev-libs/re2
+		>=dev-libs/re2-0.2016.05.01
 		sys-libs/libunwind
 		sys-libs/ncurses:=
 		jemalloc? ( >=dev-libs/jemalloc-3.2 )
@@ -33,8 +33,11 @@ pkg_setup() {
 }
 
 src_prepare() {
-	# fix doc installation
+	# fix doc auto installation
 	sed -e 's/ install-docs / /g' -i mk/install.mk || die
+
+	# fix init script auto installation
+	sed -e 's/ install-init / /g' -i mk/install.mk || die
 
 	# default config
 	# fix default pid-file path
@@ -46,10 +49,7 @@ src_prepare() {
 		-i packaging/assets/config/default.conf.sample || die
 
 	# fix termcap detection
-	sed -e 's/termcap:termcap tinfo ncurses/termcap:ncurses termcap tinfo/g' -i configure || die
-
-	# fix doc installation
-	sed -e 's/ install-init / /g' -i mk/install.mk || die
+	#sed -e 's/termcap:termcap tinfo ncurses/termcap:ncurses termcap tinfo/g' -i configure || die
 
 	# v8 has to be bundled
 	# use dynamic libs
