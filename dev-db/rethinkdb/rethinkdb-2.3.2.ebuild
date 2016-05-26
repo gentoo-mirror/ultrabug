@@ -1,10 +1,10 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
-EAPI="5"
+EAPI="6"
 
-inherit user
+inherit systemd user
 
 DESCRIPTION="The open-source database for the realtime web."
 HOMEPAGE="http://www.rethinkdb.com"
@@ -33,13 +33,12 @@ pkg_setup() {
 }
 
 src_prepare() {
-	# fix doc auto installation
-	sed -e 's/ install-docs / /g' -i mk/install.mk || die
+	eapply_user
 
-	# fix init script auto installation
-	sed -e 's/ install-init / /g' -i mk/install.mk || die
+	# fix doc and init script auto installation
+	sed -e 's/ install-docs / /g' -e 's/ install-init / /g' -i mk/install.mk || die
 
-	# default config
+	# default config for Gentoo
 	# fix default pid-file path
 	# fix default directory path
 	# fix default log-file path
@@ -50,24 +49,27 @@ src_prepare() {
 
 	# fix termcap detection
 	#sed -e 's/termcap:termcap tinfo ncurses/termcap:ncurses termcap tinfo/g' -i configure || die
-
-	# v8 has to be bundled
-	# use dynamic libs
-	local myopts="--fetch v8 --dynamic all --dynamic gtest --dynamic re2"
-	if use tcmalloc ; then
-		myopts+=" --with-tcmalloc"
-	else
-		myopts+=" --with-jemalloc"
-	fi
-	echo "${myopts}" > configure.default
 }
 
 src_configure() {
-	./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var
+	local conf_opts=(
+		--prefix="/usr"
+		--sysconfdir="/etc"
+		--localstatedir="/var"
+		--static=none
+	)
+	if use jemalloc; then
+		conf_opts+=(--with-jemalloc)
+	elif use tcmalloc; then
+		conf_opts+=(--with-tcmalloc)
+	else
+		conf_opts+=(--with-system-malloc)
+	fi
+	./configure "${conf_opts[@]}"
 }
 
 src_install() {
-	emake DESTDIR="${D}" install
+	emake DESTDIR="${D}" VERBOSE=1 install
 
 	for x in /var/{lib,log}/${PN}; do
 		keepdir "${x}"
@@ -77,5 +79,43 @@ src_install() {
 	newconfd "${FILESDIR}/rethinkdb.confd" rethinkdb
 	newinitd "${FILESDIR}/rethinkdb.initd" rethinkdb
 
+	systemd_newunit "${FILESDIR}/"${PN}.service "rethinkdb@.service"
+	systemd_newtmpfilesd "${FILESDIR}"/${PN}.tmpfilesd "rethinkdb.conf"
+
 	use doc && dodoc COPYRIGHT NOTES.md README.md
+}
+
+pkg_config() {
+	einfo "This will prepare a new RethinkDB instance. Press Control-C to abort."
+
+	einfo "Enter the name for the new instance: "
+	read instance_name
+	[[ -z "${instance_name}" ]] && die "Invalid instance name"
+
+	local instance_data="/var/lib/rethinkdb/instances.d/${instance_name}"
+	local instance_config="/etc/rethinkdb/instances.d/${instance_name}.conf"
+	if [[ -e "${instance_data}" || -e "${instance_config}" ]]; then
+		eerror "An instance with the same name already exists:"
+		eerror "Check ${instance_data} or ${instance_config}."
+		die "Instance already exists"
+	fi
+
+	/usr/bin/rethinkdb create -d "${instance_data}" &>/dev/null \
+		|| die "Creating instance failed"
+	chown -R rethinkdb:rethinkdb "${instance_data}" \
+		|| die "Correcting permissions for instance failed"
+	cp /etc/rethinkdb/default.conf.sample "${instance_config}" \
+		|| die "Creating configuration file failed"
+	sed -e "s:^# \(directory=\).*$:\1${instance_data}:" \
+		-i "${instance_config}" \
+		|| die "Modifying configuration file failed"
+	ln -s /etc/init.d/rethinkdb "/etc/init.d/rethinkdb.${instance_name}" \
+		|| die "Creating init script symlink failed"
+
+	einfo "Successfully created the instance at ${instance_data}."
+	einfo "To change the default settings edit the configuration file:"
+	einfo "${instance_config}"
+	einfo " "
+	einfo "To start your instance, run:"
+	einfo "/etc/init.d/rethinkdb.${instance_name}"
 }
