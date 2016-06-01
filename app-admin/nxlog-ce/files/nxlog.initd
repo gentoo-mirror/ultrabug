@@ -1,0 +1,45 @@
+#!/sbin/openrc-run
+# Copyright 1999-2016 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Id$
+
+config_file=${config_file:-/etc/nxlog/${SVCNAME}.conf}
+run_dir=${run_dir:-/run/nxlog}
+
+command="/usr/bin/nxlog"
+command_args="-c ${config_file}"
+pidfile=${run_dir}/${SVCNAME}.pid
+user=${user:-nxlog}
+group=${group:-nxlog}
+
+extra_started_commands="${opts} reload"
+
+depend() {
+	use net
+}
+
+check_config() {
+	${command} ${command_args} -v >/dev/null
+	return $?
+}
+
+start_pre() {
+    checkpath -d -m 0750 -o "${user}":"${group}" "${run_dir}"
+    if [ ! -f ${config_file} ]; then
+    	eerror "Missing configuration file ${config_file}"
+    	return 1
+    fi
+    check_config
+    return $?
+}
+
+reload() {
+	ebegin "Reloading ${SVCNAME}"
+	check_config
+	if [ $? == 0 ]; then
+		${command} ${command_args} -r
+		eend $?
+	else
+		eend 1
+	fi
+}
