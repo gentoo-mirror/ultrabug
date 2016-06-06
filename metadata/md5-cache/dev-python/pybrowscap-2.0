@@ -1,0 +1,13 @@
+DEFINED_PHASES=compile install postinst postrm prepare
+DEPEND=dev-python/setuptools || ( =dev-lang/python-2.7* =dev-lang/python-2.6* =dev-lang/python-2.5* )
+DESCRIPTION=Python port of PHP function get_browser() based on the browscap project
+EAPI=3
+HOMEPAGE=http://pypi.python.org/pypi/pybrowscap/
+KEYWORDS=~amd64 ~x86
+LICENSE=BSD
+RDEPEND=|| ( =dev-lang/python-2.7* =dev-lang/python-2.6* =dev-lang/python-2.5* )
+SLOT=0
+SRC_URI=mirror://pypi/p/pybrowscap/pybrowscap-2.0.tar.gz
+_eclass_exported_funcs=pkg_postrm:distutils pkg_postinst:distutils src_prepare:distutils src_compile:distutils src_install:distutils
+_eclasses_=distutils	ad9e4720eb3e69090dd968b152fc611b	multilib	d062ae4ba2fc40a19c11de2ad89b6616	python	efc1c55fc44c5b7272fc2ffba73c3e6f	toolchain-funcs	d513d423d449877e49d99af3f7af7acb
+_md5_=67d5d2ae6f47111d5632b5dc44ea954d
