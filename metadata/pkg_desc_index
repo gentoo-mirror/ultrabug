@@ -44,6 +44,6 @@ sys-cluster/cloudera-hadoop 4.2.0: Cloudera Distribution for Apache Hadoop
 sys-cluster/cloudera-hadoop-mr1 4.2.0: Cloudera Distribution for Apache Hadoop MapReduce v1
 sys-cluster/cloudera-hive 4.1.3 4.2.0: Cloudera’s Distribution for Apache Hive
 sys-cluster/cloudera-pig 4.1.3 4.2.0: Cloudera’s Distribution for Apache Pig
-sys-cluster/zookeeper 3.4.6: ZooKeeper is a high-performance coordination service for distributed applications.
+sys-cluster/zookeeper 3.4.8: ZooKeeper is a high-performance coordination service for distributed applications.
 www-apps/circus-web 0.5: Circus Web Dashboard
 www-servers/jetty-bin 6.1.26: Jetty is an full-featured web and applicaction server implemented entirely in Java.
