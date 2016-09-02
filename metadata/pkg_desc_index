@@ -9,7 +9,6 @@ dev-db/aerospike-server-community 3.5.15: Flash-optimized, in-memory, nosql data
 dev-db/apache-hive-bin 0.9.0 0.12.0: High-level language and platform for analyzing large data sets
 dev-db/apache-solr 3.6.0: Popular, blazing fast open source enterprise search platform from the Apache Lucene project
 dev-db/couchbase-server-community 3.0.1: Distributed key-value database management system
-dev-db/rethinkdb 2.3.2: The open-source database for the realtime web.
 dev-lang/apache-pig-bin 0.10.0: High-level language and platform for analyzing large data sets
 dev-libs/libaerospike 3.1.20: Aerospike C Client
 dev-libs/libcouchbase 2.5.3: Couchbase C Client Library
@@ -27,7 +26,6 @@ dev-python/mimerender 0.5.3: Python module for RESTful HTTP Content Negotiation
 dev-python/pybrowscap 2.0: Python port of PHP function get_browser() based on the browscap project
 dev-python/python-ultramemcached 9999: A drop in replacement for python-memcache using ultramemcached
 dev-python/requests-unixsocket 0.1.4: Use requests to talk HTTP via a UNIX domain socket
-dev-python/rethinkdb-python 2.3.0: Python driver library for the RethinkDB database server.
 dev-python/tweetstream 1.1.1: Python module for simple access to twitter's streaming API
 dev-python/uasparser 999: Python User Agent parser library
 dev-python/ultramemcache 9999: Ultra fast memcache client written in highly optimized C++ with Python bindings
