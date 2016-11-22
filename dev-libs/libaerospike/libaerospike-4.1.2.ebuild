@@ -1,4 +1,4 @@
-# Copyright 1999-2014 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -43,7 +43,7 @@ src_prepare() {
 		-i project/settings.mk || die
 
 	# include dir
-	sed -e 's@/usr/local@/usr@g' -i Makefile -i modules/mod-lua/Makefile -i modules/luajit/src/Makefile -i modules/ck/Makefile.in -i modules/luajit/Makefile || die
+	sed -e 's@/usr/local@/usr@g' -i Makefile -i modules/mod-lua/Makefile -i modules/luajit/src/Makefile -i modules/luajit/Makefile || die
 }
 
 src_compile() {
@@ -57,7 +57,7 @@ src_install() {
 	use static-libs && dolib.a target/Linux-x86_64/lib/libaerospike.a
 
 	insinto /usr/include/
-	doins -r target/Linux-x86_64/include/{aerospike,citrusleaf,ck}
+	doins -r target/Linux-x86_64/include/{aerospike,citrusleaf}
 
 	insinto /opt/aerospike/client/sys/udf/lua/
 	doins modules/lua-core/src/{aerospike,as,stream_ops}.lua
