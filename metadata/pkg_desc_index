@@ -8,7 +8,7 @@ dev-db/apache-hive-bin 0.9.0 0.12.0: High-level language and platform for analyz
 dev-db/apache-solr 3.6.0: Popular, blazing fast open source enterprise search platform from the Apache Lucene project
 dev-db/couchbase-server-community 3.0.1: Distributed key-value database management system
 dev-lang/apache-pig-bin 0.10.0: High-level language and platform for analyzing large data sets
-dev-libs/libaerospike 3.1.20: Aerospike C Client
+dev-libs/libaerospike 4.1.2: Aerospike C Client
 dev-libs/libcouchbase 2.5.3: Couchbase C Client Library
 dev-libs/libdwarf 20150507: Library to deal with DWARF Debugging Information Format
 dev-libs/libketama 20141001: C library for consistent hashing
