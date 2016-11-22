@@ -1,4 +1,3 @@
-app-admin/aerospike-amc-community 3.6.1: Web UI based monitoring tool for Aerospike Community Edition Server
 app-admin/apache-flume-bin 1.1.0: Distributed Log Collection
 app-admin/circus 0.11.1: Circus is a program that will let you run and watch multiple processes and sockets
 app-admin/ec2-api-tools 1.6.9.0: These command-line tools serve as the client interface to the Amazon EC2 web service
@@ -33,7 +32,6 @@ dev-python/vmprof 0.1.4.2 0.1.5.3: vmprof Python client
 dev-python/yapf 0.6.2: A formatter for Python code
 dev-util/leapmotion-drivers 1.0.9_p8411: LeapMotion runtime and drivers
 dev-util/leapmotion-sdk 1.0.9_p8391: LeapMotion DeveloperKit SDK
-mail-filter/dkimproxy 1.2: SMTP proxy for signing/verifying DKIM and Domainkey signatures
 sys-cluster/apache-hadoop-bin 1.0.3: Software framework for data intensive distributed applications
 sys-cluster/apache-hadoop-common 1.1.1 1.1.1-r1 2.0.3: Software framework for data intensive distributed applications
 sys-cluster/cloudera-flume-ng 4.2.0: Cloudera’s Distribution for Apache Flume
