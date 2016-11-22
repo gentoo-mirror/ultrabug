@@ -1,5 +1,0 @@
-# Give extra options to dkimproxy.out
-# Example to soft bounce emails if an error occurs during the signing process:
-# DKIMPROXY_OUT_OPTS="--reject-error"
-
-DKIMPROXY_OUT_OPTS="--user=dkfilter --group=dkfilter"
