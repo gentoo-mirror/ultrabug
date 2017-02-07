@@ -1,5 +1,0 @@
-#!/bin/sh
-
-export JAVA_HOME=$(java-config -g JAVA_HOME)
-
-exec /usr/lib/flume-ng/bin/flume-ng "$@"
