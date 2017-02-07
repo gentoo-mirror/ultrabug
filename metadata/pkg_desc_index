@@ -1,18 +1,13 @@
-app-admin/apache-flume-bin 1.1.0: Distributed Log Collection
 app-admin/circus 0.11.1: Circus is a program that will let you run and watch multiple processes and sockets
 app-admin/ec2-api-tools 1.6.9.0: These command-line tools serve as the client interface to the Amazon EC2 web service
 app-admin/logswan 1.05: Web log analyzer using probabilistic data structures
 app-admin/nxlog-ce 2.8.1248: Universal log collector and forwarder supporting different platforms
 app-admin/uwsgitop 0.9: uWSGI top-like application
-dev-db/apache-hive-bin 0.9.0 0.12.0: High-level language and platform for analyzing large data sets
-dev-db/apache-solr 3.6.0: Popular, blazing fast open source enterprise search platform from the Apache Lucene project
 dev-db/couchbase-server-community 3.0.1: Distributed key-value database management system
-dev-lang/apache-pig-bin 0.10.0: High-level language and platform for analyzing large data sets
-dev-libs/libaerospike 4.1.2: Aerospike C Client
 dev-libs/libcouchbase 2.5.3: Couchbase C Client Library
 dev-libs/libdwarf 20150507: Library to deal with DWARF Debugging Information Format
 dev-libs/libketama 20141001: C library for consistent hashing
-dev-python/aerospike 1.0.42: Python Client for Aerospike
+dev-libs/thrift 0.9.1 0.9.3: Lightweight, language-independent software stack with associated code generation mechanism for RPC
 dev-python/consulate 0.5.1: Python client for the Consul HTTP API
 dev-python/couchbase 2.0.4: Python Client for Couchbase
 dev-python/flask-restful 0.1.6 0.2.1: Simple framework for creating REST APIs with Flask
@@ -30,14 +25,4 @@ dev-python/ultramemcache 9999: Ultra fast memcache client written in highly opti
 dev-python/validictory 0.9.0: A general purpose Python data validator
 dev-python/vmprof 0.1.4.2 0.1.5.3: vmprof Python client
 dev-python/yapf 0.6.2: A formatter for Python code
-dev-util/leapmotion-drivers 1.0.9_p8411: LeapMotion runtime and drivers
-dev-util/leapmotion-sdk 1.0.9_p8391: LeapMotion DeveloperKit SDK
-sys-cluster/apache-hadoop-bin 1.0.3: Software framework for data intensive distributed applications
-sys-cluster/apache-hadoop-common 1.1.1 1.1.1-r1 2.0.3: Software framework for data intensive distributed applications
-sys-cluster/cloudera-flume-ng 4.2.0: Cloudera’s Distribution for Apache Flume
-sys-cluster/cloudera-hadoop 4.2.0: Cloudera Distribution for Apache Hadoop
-sys-cluster/cloudera-hadoop-mr1 4.2.0: Cloudera Distribution for Apache Hadoop MapReduce v1
-sys-cluster/cloudera-hive 4.1.3 4.2.0: Cloudera’s Distribution for Apache Hive
-sys-cluster/cloudera-pig 4.1.3 4.2.0: Cloudera’s Distribution for Apache Pig
 www-apps/circus-web 0.5: Circus Web Dashboard
-www-servers/jetty-bin 6.1.26: Jetty is an full-featured web and applicaction server implemented entirely in Java.
