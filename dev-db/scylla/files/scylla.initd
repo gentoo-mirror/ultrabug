@@ -1,0 +1,27 @@
+#!/sbin/openrc-run
+# Copyright 1999-2014 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Id$
+
+config_file=${config_file:-/etc/scylla/${SVCNAME}.yaml}
+run_dir=${run_dir:-/run/scylla}
+
+command="/usr/bin/scylla"
+command_args="--options-file ${config_file} ${extra_command_args}"
+command_background="true"
+pidfile=${run_dir}/${SVCNAME}.pid
+user=${user:-scylla}
+group=${group:-scylla}
+start_stop_daemon_args="--user ${user} --group ${group}"
+
+depend() {
+	use net
+}
+
+start_pre() {
+    checkpath -d -m 0750 -o "${user}":"${group}" "${run_dir}"
+    if [ ! -f ${config_file} ]; then
+    	eerror "Missing configuration file ${config_file}"
+    	return 1
+    fi
+}
