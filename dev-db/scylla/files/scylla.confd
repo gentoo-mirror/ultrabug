@@ -1,0 +1,2 @@
+# extra command line parameters
+extra_command_args="--log-to-syslog 1 --log-to-stdout 0 --default-log-level info"
