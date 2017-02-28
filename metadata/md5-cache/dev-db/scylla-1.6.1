@@ -1,0 +1,13 @@
+DEFINED_PHASES=compile configure install prepare setup unpack
+DEPEND==dev-libs/thrift-0.9.1 app-arch/lz4 app-arch/snappy dev-cpp/antlr-cpp:3.5 dev-cpp/yaml-cpp dev-java/antlr:3.5 dev-libs/boost dev-libs/crypto++ dev-libs/jsoncpp dev-libs/libaio dev-libs/libxml2 dev-libs/protobuf dev-python/pyparsing dev-python/urwid dev-util/ragel dev-util/systemtap net-libs/gnutls net-misc/lksctp-tools sys-apps/hwloc sys-fs/xfsprogs sys-libs/libunwind sys-libs/zlib sys-process/numactl x11-libs/libpciaccess >=sys-kernel/linux-headers-3.5 dev-util/ninja !<sys-devel/gettext-0.18.1.1-r3 || ( >=sys-devel/automake-1.15:1.15 ) >=sys-devel/autoconf-2.69 >=sys-devel/libtool-2.4 >=dev-vcs/git-1.8.2.1 virtual/pkgconfig
+DESCRIPTION=NoSQL data store using the seastar framework, compatible with Apache Cassandra
+EAPI=6
+HOMEPAGE=http://scylladb.com/
+IUSE=collectd systemd python_targets_python3_4 python_targets_python3_5
+KEYWORDS=~amd64
+LICENSE=AGPL-3
+RDEPEND==dev-libs/thrift-0.9.1 app-arch/lz4 app-arch/snappy dev-cpp/antlr-cpp:3.5 dev-cpp/yaml-cpp dev-java/antlr:3.5 dev-libs/boost dev-libs/crypto++ dev-libs/jsoncpp dev-libs/libaio dev-libs/libxml2 dev-libs/protobuf dev-python/pyparsing dev-python/urwid dev-util/ragel dev-util/systemtap net-libs/gnutls net-misc/lksctp-tools sys-apps/hwloc sys-fs/xfsprogs sys-libs/libunwind sys-libs/zlib sys-process/numactl x11-libs/libpciaccess
+SLOT=0
+_eclass_exported_funcs=pkg_setup:- src_unpack:git-r3 src_prepare:- src_configure:- src_compile:- src_install:-
+_eclasses_=autotools	07e71b3b5690738ef7e8bc097077e00c	eutils	708f85bc1bf00876604e223fb56e062a	git-r3	6efc2d7de07a77bf72c7207b48d0e123	libtool	84763589a795fb127b537cac01e5359f	multibuild	742139c87a9fa3766f0c2b155e5522bf	multilib	165fc17c38d1b11dac2008280dab6e80	python-r1	1f16d4a5e3af0ebb79bbe131576e0618	python-utils-r1	50dad5f912d4c16c130f5679777f25e8	systemd	5b6ca8b2fc1307ca593223f327342c96	toolchain-funcs	1b1da0c45c555989dc5d832b54880783	user	e10ccb95af96d45f86016fa982a949bb
+_md5_=cad8c972dcb6a605cabf91c0c6999ae6
