@@ -76,8 +76,7 @@ src_prepare() {
 src_configure() {
 	# TODO: --cflags "${CFLAGS}"
 	#./configure.py --help
-	./configure.py --mode=release --disable-xen --compiler "$(tc-getCXX)" --ldflags "${LDFLAGS}" || die
-	#./configure.py --disable-xen --enable-dpdk --mode=release || die
+	./configure.py --mode=release --enable-dpdk --disable-xen --compiler "$(tc-getCXX)" --ldflags "${LDFLAGS}" || die
 }
 
 src_compile() {
