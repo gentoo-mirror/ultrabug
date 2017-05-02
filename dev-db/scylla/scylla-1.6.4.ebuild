@@ -88,7 +88,9 @@ src_configure() {
 }
 
 src_compile() {
-	ninja -v build/release/scylla build/release/iotune || die
+	# force MAKEOPTS because ninja does a bad job in guessing and the default
+	# build will kill your RAM/Swap in no time
+	ninja -v build/release/scylla build/release/iotune -j4 || die
 }
 
 src_install() {
@@ -152,7 +154,7 @@ pkg_postinst() {
 	elog "You should run `scylla_setup` to finalize your ScyllaDB installation."
 }
 
-pkg_configure() {
+pkg_config() {
 	elog "Running `scylla_setup`..."
 	scylla_setup
 }
