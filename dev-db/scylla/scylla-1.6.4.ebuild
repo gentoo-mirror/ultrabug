@@ -73,6 +73,12 @@ src_prepare() {
 
 	# fix -Werror crashing build
 	sed -e 's/ -Werror//g' -i seastar/configure.py || die
+
+	# change sysconfig path for Gentoo
+	for f in $(grep -rl '/etc/sysconfig' {dist,seastar}); do
+		elog "changing sysconfig path for file ${f}"
+		sed -e 's@/etc/sysconfig@/etc/default@g' -i ${f} || die
+	done
 }
 
 src_configure() {
@@ -82,8 +88,7 @@ src_configure() {
 }
 
 src_compile() {
-	ninja -v build/release/scylla build/release/iotune ${MAKEOPTS} || die
-	#ninja -v build/release/scylla build/release/iotune -j2 || die
+	ninja -v build/release/scylla build/release/iotune || die
 }
 
 src_install() {
@@ -121,6 +126,7 @@ src_install() {
 
 	for util in $(ls dist/common/sbin/); do
 		dosym /usr/lib/scylla/${util} /usr/sbin/${util}
+		fperms +x /usr/lib/scylla/${util}
 	done
 
 	if use collectd; then
@@ -140,4 +146,13 @@ src_install() {
 	newconfd "${FILESDIR}/scylla.confd" ${PN}
 	systemd_dounit dist/common/systemd/*.service
 	systemd_dounit dist/common/systemd/*.timer
+}
+
+pkg_postinst() {
+	elog "You should run `scylla_setup` to finalize your ScyllaDB installation."
+}
+
+pkg_configure() {
+	elog "Running `scylla_setup`..."
+	scylla_setup
 }
