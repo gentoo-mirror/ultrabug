@@ -1,0 +1,29 @@
+From b2868797b73b1a73c01e5553b776cc945d350738 Mon Sep 17 00:00:00 2001
+From: Ultrabug <ultrabug@gentoo.org>
+Date: Wed, 3 May 2017 17:28:56 +0200
+Subject: [PATCH 12/13] scylla_setup: disable selinux setup for gentoo linux
+
+---
+ dist/common/scripts/scylla_setup | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/dist/common/scripts/scylla_setup b/dist/common/scripts/scylla_setup
+index cba51261..a5fe56cd 100755
+--- a/dist/common/scripts/scylla_setup
++++ b/dist/common/scripts/scylla_setup
+@@ -306,7 +306,11 @@ if ! is_gentoo_variant; then
+ fi
+ 
+ # scylla_selinux_setup only supports Red Hat variants
+-if ! is_debian_variant; then
++if is_debian_variant; then
++    echo "scylla_selinux_setup only supports Red Hat variants"
++elif is_gentoo_variant; then
++    echo "scylla_selinux_setup only supports Red Hat variants"
++else
+     if [ $INTERACTIVE -eq 1 ]; then
+         interactive_ask_service "Do you want to disable SELinux?" "Answer yes to disable SELinux and improve performance; answer no to keep it activated." "yes" &&:
+         SELINUX_SETUP=$?
+-- 
+2.12.2
+

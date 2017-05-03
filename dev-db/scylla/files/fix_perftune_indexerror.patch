@@ -1,0 +1,15 @@
+diff --git a/seastar/scripts/perftune.py b/seastar/scripts/perftune.py
+index 6748086..b840ea0 100755
+--- a/seastar/scripts/perftune.py
++++ b/seastar/scripts/perftune.py
+@@ -151,8 +151,9 @@ def learn_all_irqs_one(irq_conf_dir, irq2procline, xen_dev_name):
+     """
+     msi_irqs_dir_name = os.path.join(irq_conf_dir, 'msi_irqs')
+     # Device uses MSI IRQs
++    # Only return IRQs that exist on the system
+     if os.path.exists(msi_irqs_dir_name):
+-        return os.listdir(msi_irqs_dir_name)
++        return list(filter(lambda irq: irq in irq2procline.keys(), os.listdir(msi_irqs_dir_name)))
+ 
+     irq_file_name = os.path.join(irq_conf_dir, 'irq')
+     # Device uses INT#x

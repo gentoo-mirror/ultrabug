@@ -1,0 +1,25 @@
+From a9f662f6992f86cca94812ab7f849370f0b5f650 Mon Sep 17 00:00:00 2001
+From: Ultrabug <ultrabug@gentoo.org>
+Date: Wed, 3 May 2017 17:22:11 +0200
+Subject: [PATCH 05/13] kernel check: add support for gentoo linux
+
+---
+ dist/common/scripts/scylla_kernel_check | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/dist/common/scripts/scylla_kernel_check b/dist/common/scripts/scylla_kernel_check
+index 76ba301b..e27bb9a5 100755
+--- a/dist/common/scripts/scylla_kernel_check
++++ b/dist/common/scripts/scylla_kernel_check
+@@ -7,6 +7,8 @@
+ if [ ! -f /sbin/mkfs.xfs ]; then
+     if is_debian_variant; then
+         apt-get install -y xfsprogs
++    elif is_gentoo_variant; then
++        emerge -uq sys-fs/xfsprogs
+     else
+         yum install -y xfsprogs
+     fi
+-- 
+2.12.2
+
