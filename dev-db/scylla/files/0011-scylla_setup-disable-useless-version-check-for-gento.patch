@@ -1,0 +1,36 @@
+From a5666d324e59ca1cf5229ff0db1a31e7153aab9c Mon Sep 17 00:00:00 2001
+From: Ultrabug <ultrabug@gentoo.org>
+Date: Wed, 3 May 2017 17:28:06 +0200
+Subject: [PATCH 11/13] scylla_setup: disable useless version check for gentoo
+ linux
+
+---
+ dist/common/scripts/scylla_setup | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/dist/common/scripts/scylla_setup b/dist/common/scripts/scylla_setup
+index 9078f4df..cba51261 100755
+--- a/dist/common/scripts/scylla_setup
++++ b/dist/common/scripts/scylla_setup
+@@ -295,11 +295,13 @@ if [ $ENABLE_SERVICE -eq 1 ]; then
+     fi
+ fi
+ 
+-CUR_VERSION=`scylla --version` || true
+-if [ "$CUR_VERSION" != "" ]; then
+-    NEW_VERSION=`sudo -u scylla /usr/lib/scylla/scylla-housekeeping --uuid-file /var/lib/scylla-housekeeping/housekeeping.uuid version --version $CUR_VERSION --mode i` || true
+-    if [ "$NEW_VERSION" != "" ]; then
+-       echo $NEW_VERSION
++if ! is_gentoo_variant; then
++    CUR_VERSION=`scylla --version` || true
++    if [ "$CUR_VERSION" != "" ]; then
++        NEW_VERSION=`sudo -u scylla /usr/lib/scylla/scylla-housekeeping --uuid-file /var/lib/scylla-housekeeping/housekeeping.uuid version --version $CUR_VERSION --mode i` || true
++        if [ "$NEW_VERSION" != "" ]; then
++           echo $NEW_VERSION
++        fi
+     fi
+ fi
+ 
+-- 
+2.12.2
+

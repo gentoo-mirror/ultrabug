@@ -4,7 +4,7 @@
 EAPI=6
 
 EGIT_REPO_URI="https://github.com/scylladb/scylla.git"
-PYTHON_COMPAT=( python3_{4,5} )
+PYTHON_COMPAT=( python3_{4,5,6} )
 
 inherit git-r3 python-r1 toolchain-funcs systemd user
 
@@ -30,6 +30,7 @@ RDEPEND="
 	dev-libs/libxml2
 	dev-libs/protobuf
 	dev-python/pyparsing
+	dev-python/pyudev
 	dev-python/urwid
 	dev-util/ragel
 	dev-util/systemtap
@@ -48,6 +49,22 @@ DEPEND="${RDEPEND}
 "
 
 DOCS=( LICENSE.AGPL README.md )
+PATCHES=(
+	"${FILESDIR}/fix_perftune_indexerror.patch"
+	"${FILESDIR}/0001-add-gentoo_variant-detection-and-SYSCONFIG-setup.patch"
+	"${FILESDIR}/0002-detect-gentoo-linux-on-selinux-setup.patch"
+	"${FILESDIR}/0003-coredump-setup-add-support-for-gentoo-linux.patch"
+	"${FILESDIR}/0004-cpuscaling-setup-add-support-for-gentoo-linux.patch"
+	"${FILESDIR}/0005-kernel-check-add-support-for-gentoo-linux.patch"
+	"${FILESDIR}/0006-ntp-setup-add-support-for-gentoo-linux.patch"
+	"${FILESDIR}/0007-raid-setup-add-support-for-gentoo-linux.patch"
+	"${FILESDIR}/0008-prometheus-node_exporter-install-add-support-for-gen.patch"
+	"${FILESDIR}/0009-scylla_setup-add-gentoo-linux-installation-detection.patch"
+	"${FILESDIR}/0010-scylla_setup-refactor-scylla-server-service-setup-wh.patch"
+	"${FILESDIR}/0011-scylla_setup-disable-useless-version-check-for-gento.patch"
+	"${FILESDIR}/0012-scylla_setup-disable-selinux-setup-for-gentoo-linux.patch"
+	"${FILESDIR}/0013-scylla_setup-fix-typo-on-cpu-scaling-messages.patch"
+)
 
 pkg_setup() {
 	enewgroup scylla
@@ -55,6 +72,7 @@ pkg_setup() {
 }
 
 src_prepare() {
+	default
 	eapply_user
 
 	# set version
@@ -98,10 +116,13 @@ src_install() {
 	doins -r tools/scyllatop
 	doins dist/common/scripts/*
 	doins dist/debian/scripts/*
+	doins seastar/scripts/*
 	doins scylla-blocktune
 	doins scylla-housekeeping
-	doins seastar/scripts/dpdk_nic_bind.py
-	doins seastar/scripts/posix_net_conf.sh
+	for util in $(ls dist/common/sbin/); do
+		dosym /usr/lib/scylla/${util} /usr/sbin/${util}
+	done
+	fperms +x /usr/lib/scylla/*
 
 	insinto /usr/lib/scylla/swagger-ui
 	doins -r swagger-ui/dist
@@ -118,18 +139,12 @@ src_install() {
 	insinto /etc/scylla
 	doins conf/*
 
-	# TODO: do we really want this coredumps config ?
-	#insinto /etc/sysctl.d
-	#doins dist/debian/sysctl.d/99-scylla.conf
+	insinto /etc/sysctl.d
+	doins dist/debian/sysctl.d/99-scylla.conf
 
 	dobin build/release/iotune
 	dobin build/release/scylla
 	dobin dist/common/bin/scyllatop
-
-	for util in $(ls dist/common/sbin/); do
-		dosym /usr/lib/scylla/${util} /usr/sbin/${util}
-		fperms +x /usr/lib/scylla/${util}
-	done
 
 	if use collectd; then
 		insinto /etc/collectd.d
@@ -144,8 +159,8 @@ src_install() {
 	insinto /etc/default
 	doins dist/common/sysconfig/scylla-server
 
-	newinitd "${FILESDIR}/scylla.initd" ${PN}
-	newconfd "${FILESDIR}/scylla.confd" ${PN}
+	newinitd "${FILESDIR}/scylla-server.initd" ${PN}-server
+	newconfd "${FILESDIR}/scylla-server.confd" ${PN}-server
 	systemd_dounit dist/common/systemd/*.service
 	systemd_dounit dist/common/systemd/*.timer
 }

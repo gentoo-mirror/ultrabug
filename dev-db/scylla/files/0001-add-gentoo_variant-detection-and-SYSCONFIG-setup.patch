@@ -1,0 +1,36 @@
+From c9e499700b607984b872fb062d4fb3ddfb1c523d Mon Sep 17 00:00:00 2001
+From: Ultrabug <ultrabug@gentoo.org>
+Date: Wed, 3 May 2017 17:17:51 +0200
+Subject: [PATCH 01/13] add gentoo_variant detection and SYSCONFIG setup
+
+---
+ dist/common/scripts/scylla_lib.sh | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/dist/common/scripts/scylla_lib.sh b/dist/common/scripts/scylla_lib.sh
+index 8dc47bdd..38f0c06f 100644
+--- a/dist/common/scripts/scylla_lib.sh
++++ b/dist/common/scripts/scylla_lib.sh
+@@ -9,6 +9,10 @@ is_redhat_variant() {
+     [ -f /etc/redhat-release ]
+ }
+ 
++is_gentoo_variant() {
++    [ -f /etc/gentoo-release ]
++}
++
+ is_systemd() {
+     grep -q '^systemd$' /proc/1/comm
+ }
+@@ -28,6 +32,8 @@ ec2_is_supported_instance_type() {
+ . /etc/os-release
+ if is_debian_variant; then
+     SYSCONFIG=/etc/default
++elif is_gentoo_variant; then
++    SYSCONFIG=/etc/default
+ else
+     SYSCONFIG=/etc/sysconfig
+ fi
+-- 
+2.12.2
+
