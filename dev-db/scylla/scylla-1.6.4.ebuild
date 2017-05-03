@@ -1,13 +1,12 @@
 # Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
 EAPI=6
 
 EGIT_REPO_URI="https://github.com/scylladb/scylla.git"
 PYTHON_COMPAT=( python3_{4,5} )
 
-inherit autotools git-r3 python-r1 toolchain-funcs systemd user
+inherit git-r3 python-r1 toolchain-funcs systemd user
 
 DESCRIPTION="NoSQL data store using the seastar framework, compatible with Apache Cassandra"
 HOMEPAGE="http://scylladb.com/"
@@ -71,16 +70,27 @@ src_prepare() {
 	# fix systemd service config path
 	cp dist/common/systemd/scylla-server.service.in dist/common/systemd/scylla-server.service || die
 	sed -e "s#@@SYSCONFDIR@@#/etc/sysconfig#g" -i dist/common/systemd/scylla-server.service || die
+
+	# fix -Werror crashing build
+	sed -e 's/ -Werror//g' -i seastar/configure.py || die
+
+	# change sysconfig path for Gentoo
+	for f in $(grep -rl '/etc/sysconfig' {dist,seastar}); do
+		elog "changing sysconfig path for file ${f}"
+		sed -e 's@/etc/sysconfig@/etc/default@g' -i ${f} || die
+	done
 }
 
 src_configure() {
 	# TODO: --cflags "${CFLAGS}"
 	#./configure.py --help
-	./configure.py --mode=release --enable-dpdk --disable-xen --compiler "$(tc-getCXX)" --ldflags "${LDFLAGS}" || die
+	./configure.py --mode=release --with=scylla --enable-dpdk --disable-xen --compiler "$(tc-getCXX)" --ldflags "${LDFLAGS}" || die
 }
 
 src_compile() {
-	ninja -v build/release/scylla build/release/iotune ${MAKEOPTS} || die
+	# force MAKEOPTS because ninja does a bad job in guessing and the default
+	# build will kill your RAM/Swap in no time
+	ninja -v build/release/scylla build/release/iotune -j4 || die
 }
 
 src_install() {
@@ -108,8 +118,9 @@ src_install() {
 	insinto /etc/scylla
 	doins conf/*
 
-	insinto /etc/sysctl.d
-	doins dist/debian/sysctl.d/99-scylla.conf
+	# TODO: do we really want this coredumps config ?
+	#insinto /etc/sysctl.d
+	#doins dist/debian/sysctl.d/99-scylla.conf
 
 	dobin build/release/iotune
 	dobin build/release/scylla
@@ -117,6 +128,7 @@ src_install() {
 
 	for util in $(ls dist/common/sbin/); do
 		dosym /usr/lib/scylla/${util} /usr/sbin/${util}
+		fperms +x /usr/lib/scylla/${util}
 	done
 
 	if use collectd; then
@@ -136,4 +148,13 @@ src_install() {
 	newconfd "${FILESDIR}/scylla.confd" ${PN}
 	systemd_dounit dist/common/systemd/*.service
 	systemd_dounit dist/common/systemd/*.timer
+}
+
+pkg_postinst() {
+	elog "You should run `scylla_setup` to finalize your ScyllaDB installation."
+}
+
+pkg_config() {
+	elog "Running `scylla_setup`..."
+	scylla_setup
 }

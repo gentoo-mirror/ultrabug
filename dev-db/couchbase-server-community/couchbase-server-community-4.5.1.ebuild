@@ -1,25 +1,23 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
-EAPI=5
+EAPI=6
 inherit eutils user
 
 DESCRIPTION="Distributed key-value database management system"
 HOMEPAGE="http://www.couchbase.com"
 SRC_URI="http://packages.couchbase.com/releases/${PV}/${PN}_${PV}-debian7_amd64.deb"
 
-
-LICENSE="COUCHBASE INC. COMMUNITY EDITION"
+LICENSE="COUCHBASE_COMMUNITY_EDITION"
 SLOT="0"
 KEYWORDS="~amd64"
 IUSE=""
 
-RDEPEND=">=sys-libs/ncurses-5[tinfo]
+RDEPEND="sys-libs/ncurses:5=[tinfo]
 		>=dev-libs/libevent-1.4.13
 		>=dev-libs/cyrus-sasl-2
-		~media-video/rtmpdump-2.3
-		virtual/jre"
+		>=media-video/rtmpdump-2.4
+		virtual/jre:*"
 DEPEND="${RDEPEND}"
 
 export CONFIG_PROTECT="${CONFIG_PROTECT} /opt/${PN}/var/lib/${PN}/"
@@ -33,8 +31,12 @@ pkg_setup() {
 
 src_unpack() {
 	ar x "${DISTDIR}"/${A}
-	cd ${WORKDIR}
+	cd "${WORKDIR}"
 	tar xzf data.tar.gz
+}
+
+src_prepare() {
+	default
 }
 
 src_install() {
@@ -44,7 +46,6 @@ src_install() {
 
 	# bin install / copy
 	dodir /opt/couchbase
-	tar xfm opt/couchbase/lib/python/pysqlite2.tar -C opt/couchbase/lib/python || die
 	cp -a opt/couchbase/* "${D}"/opt/couchbase/
 
 	dodir /opt/couchbase/var/lib/couchbase/{data,mnesia,tmp}

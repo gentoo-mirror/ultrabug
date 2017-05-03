@@ -1,2 +1,3 @@
-# extra command line parameters
-extra_command_args="--log-to-syslog 1 --log-to-stdout 0 --default-log-level info"
+# please check the defaults of scylla in the /etc/default/scylla-server file !
+# extra_command_args="--log-to-syslog 1 --log-to-stdout 0 --default-log-level info"
+source /etc/default/scylla-server
