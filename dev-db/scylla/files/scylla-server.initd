@@ -1,17 +1,16 @@
 #!/sbin/openrc-run
 # Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
-config_file=${config_file:-/etc/scylla/${SVCNAME}.yaml}
+config_file=${config_file:-/etc/scylla/scylla.yaml}
 run_dir=${run_dir:-/run/scylla}
 
 command="/usr/bin/scylla"
-command_args="--options-file ${config_file} ${extra_command_args}"
+command_args="--options-file ${config_file} ${SCYLLA_ARGS}"
 command_background="true"
 pidfile=${run_dir}/${SVCNAME}.pid
-user=${user:-scylla}
-group=${group:-scylla}
+user=${USER:-scylla}
+group=${GROUP:-scylla}
 start_stop_daemon_args="--user ${user} --group ${group}"
 
 depend() {
