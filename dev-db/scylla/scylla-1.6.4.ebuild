@@ -6,7 +6,7 @@ EAPI=6
 EGIT_REPO_URI="https://github.com/scylladb/scylla.git"
 PYTHON_COMPAT=( python3_{4,5,6} )
 
-inherit git-r3 python-r1 toolchain-funcs systemd user
+inherit git-r3 linux-info python-r1 toolchain-funcs systemd user
 
 DESCRIPTION="NoSQL data store using the seastar framework, compatible with Apache Cassandra"
 HOMEPAGE="http://scylladb.com/"
@@ -48,6 +48,10 @@ DEPEND="${RDEPEND}
 	dev-util/ninja
 "
 
+CONFIG_CHECK="~KPROBES ~SYN_COOKIES"
+ERROR_KPROBES="${PN} recommends support for KProbes Instrumentation (KPROBES)."
+ERROR_SYN_COOKIES="${PN} recommends support for TCP syncookie support (SYN_COOKIES)."
+
 DOCS=( LICENSE.AGPL README.md )
 PATCHES=(
 	"${FILESDIR}/fix_perftune_indexerror.patch"
@@ -67,6 +71,7 @@ PATCHES=(
 )
 
 pkg_setup() {
+	linux-info_pkg_setup
 	enewgroup scylla
 	enewuser scylla -1 -1 /var/lib/${PN} scylla
 }
@@ -101,7 +106,6 @@ src_prepare() {
 
 src_configure() {
 	# TODO: --cflags "${CFLAGS}"
-	#./configure.py --help
 	./configure.py --mode=release --with=scylla --enable-dpdk --disable-xen --compiler "$(tc-getCXX)" --ldflags "${LDFLAGS}" || die
 }
 
@@ -177,10 +181,10 @@ src_install() {
 }
 
 pkg_postinst() {
-	elog "You should run "scylla_setup" to finalize your ScyllaDB installation."
+	elog "You should run 'scylla_setup' to finalize your ScyllaDB installation."
 }
 
 pkg_config() {
-	elog "Running "scylla_setup"..."
+	elog "Running 'scylla_setup'..."
 	scylla_setup
 }
