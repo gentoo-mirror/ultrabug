@@ -14,7 +14,7 @@ HOMEPAGE="http://scylladb.com/"
 LICENSE="AGPL-3"
 SLOT="0"
 KEYWORDS="~amd64"
-IUSE="collectd systemd"
+IUSE="collectd doc systemd"
 
 RDEPEND="
 	=dev-libs/thrift-0.9.1
@@ -112,23 +112,42 @@ src_compile() {
 }
 
 src_install() {
-	insinto /usr/lib/scylla
-	doins -r tools/scyllatop
-	doins dist/common/scripts/*
-	doins dist/debian/scripts/*
-	doins seastar/scripts/*
-	doins scylla-blocktune
-	doins scylla-housekeeping
-	for util in $(ls dist/common/sbin/); do
-		dosym /usr/lib/scylla/${util} /usr/sbin/${util}
-	done
-	fperms +x /usr/lib/scylla/*
+	# executables
+	exeinto /usr/lib/scylla
+	doexe dist/common/scripts/*
+	doexe dist/debian/scripts/*
+	doexe seastar/scripts/*
+	doexe scylla-blocktune
+	doexe scylla-housekeeping
 
+	# scyllatop
+	insinto /usr/lib/scylla/scyllatop
+	doins -r tools/scyllatop/*
+	fperms +x /usr/lib/scylla/scyllatop/scyllatop.py
+
+	# swagger-ui
 	insinto /usr/lib/scylla/swagger-ui
 	doins -r swagger-ui/dist
 
-	insinto /usr/lib/scylla/api
-	doins -r api/api-doc
+	# bin
+	dobin build/release/iotune
+	dobin build/release/scylla
+	dobin dist/common/bin/scyllatop
+
+	# sbin symlinks
+	for util in $(ls dist/common/sbin/); do
+		dosym /usr/lib/scylla/${util} /usr/sbin/${util}
+	done
+
+	if use collectd; then
+		insinto /etc/collectd.d
+		doins dist/common/collectd.d/scylla.conf
+	fi
+
+	for x in /var/lib/${PN}/{data,commitlog,coredump} /var/log/scylla; do
+		keepdir "${x}"
+		fowners scylla:scylla "${x}"
+	done
 
 	insinto /etc/security/limits.d
 	doins dist/common/limits.d/scylla.conf
@@ -142,20 +161,6 @@ src_install() {
 	insinto /etc/sysctl.d
 	doins dist/debian/sysctl.d/99-scylla.conf
 
-	dobin build/release/iotune
-	dobin build/release/scylla
-	dobin dist/common/bin/scyllatop
-
-	if use collectd; then
-		insinto /etc/collectd.d
-		doins dist/common/collectd.d/scylla.conf
-	fi
-
-	for x in /var/lib/${PN}/{data,commitlog,coredump} /var/log/scylla; do
-		keepdir "${x}"
-		fowners scylla:scylla "${x}"
-	done
-
 	insinto /etc/default
 	doins dist/common/sysconfig/scylla-server
 
@@ -163,6 +168,12 @@ src_install() {
 	newconfd "${FILESDIR}/scylla-server.confd" ${PN}-server
 	systemd_dounit dist/common/systemd/*.service
 	systemd_dounit dist/common/systemd/*.timer
+
+	# TODO: api docs are simple JSON files!?
+	if use doc; then
+		insinto /usr/lib/scylla/api
+		doins -r api/api-doc
+	fi
 }
 
 pkg_postinst() {
