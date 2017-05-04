@@ -25,4 +25,6 @@ start_pre() {
     	eerror "Missing configuration file ${config_file}"
     	return 1
     fi
+    ebegin "Running scylla_prepare"
+    /usr/lib/scylla/scylla_prepare >/dev/null
 }

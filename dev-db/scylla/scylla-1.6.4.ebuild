@@ -96,12 +96,6 @@ src_prepare() {
 
 	# fix -Werror crashing build
 	sed -e 's/ -Werror//g' -i seastar/configure.py || die
-
-	# change sysconfig path for Gentoo
-	for f in $(grep -rl '/etc/sysconfig' {dist,seastar}); do
-		elog "changing sysconfig path for file ${f}"
-		sed -e 's@/etc/sysconfig@/etc/default@g' -i ${f} || die
-	done
 }
 
 src_configure() {
@@ -158,6 +152,9 @@ src_install() {
 
 	insinto /etc/scylla.d
 	doins dist/common/scylla.d/*.conf
+
+	insinto /etc/sudoers.d
+	doins dist/debian/sudoers.d/scylla
 
 	insinto /etc/scylla
 	doins conf/*
