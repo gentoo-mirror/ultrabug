@@ -6,12 +6,14 @@ config_file=${config_file:-/etc/scylla/scylla.yaml}
 run_dir=${run_dir:-/run/scylla}
 
 command="/usr/bin/scylla"
-command_args="--options-file ${config_file} ${SCYLLA_ARGS}"
+command_args="--options-file ${config_file} ${CPUSET} ${DEV_MODE} ${SEASTAR_IO} ${SCYLLA_ARGS}"
 command_background="true"
+command_progress="true"
 pidfile=${run_dir}/${SVCNAME}.pid
 user=${USER:-scylla}
 group=${GROUP:-scylla}
-start_stop_daemon_args="--user ${user} --group ${group}"
+retry="SIGTERM/30 SIGKILL/10"
+start_stop_daemon_args="--user ${user} --group ${group} --wait 5000"
 
 depend() {
 	use net
