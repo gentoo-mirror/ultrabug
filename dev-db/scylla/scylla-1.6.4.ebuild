@@ -14,7 +14,7 @@ HOMEPAGE="http://scylladb.com/"
 LICENSE="AGPL-3"
 SLOT="0"
 KEYWORDS="~amd64"
-IUSE="collectd doc systemd"
+IUSE="collectd doc numa systemd"
 
 RDEPEND="
 	=dev-libs/thrift-0.9.1
@@ -42,6 +42,7 @@ RDEPEND="
 	sys-libs/zlib
 	sys-process/numactl
 	x11-libs/libpciaccess
+	numa? ( sys-apps/irqbalance[numa] )
 "
 DEPEND="${RDEPEND}
 	>=sys-kernel/linux-headers-3.5
@@ -56,6 +57,7 @@ DOCS=( LICENSE.AGPL README.md )
 PATCHES=(
 	"${FILESDIR}/fix_perftune_indexerror.patch"
 	"${FILESDIR}/0001-add-gentoo_variant-detection-and-SYSCONFIG-setup.patch"
+	"${FILESDIR}/0001-Add-support-for-Gentoo-Linux-irqbalance-configuratio.patch"
 	"${FILESDIR}/0002-detect-gentoo-linux-on-selinux-setup.patch"
 	"${FILESDIR}/0003-coredump-setup-add-support-for-gentoo-linux.patch"
 	"${FILESDIR}/0004-cpuscaling-setup-add-support-for-gentoo-linux.patch"
