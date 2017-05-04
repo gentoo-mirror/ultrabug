@@ -177,10 +177,10 @@ src_install() {
 }
 
 pkg_postinst() {
-	elog "You should run `scylla_setup` to finalize your ScyllaDB installation."
+	elog "You should run "scylla_setup" to finalize your ScyllaDB installation."
 }
 
 pkg_config() {
-	elog "Running `scylla_setup`..."
+	elog "Running "scylla_setup"..."
 	scylla_setup
 }
