@@ -14,7 +14,7 @@ HOMEPAGE="http://scylladb.com/"
 LICENSE="AGPL-3"
 SLOT="0"
 KEYWORDS="~amd64"
-IUSE="collectd doc numa systemd"
+IUSE="collectd doc systemd"
 
 RDEPEND="
 	=dev-libs/thrift-0.9.1
@@ -37,21 +37,23 @@ RDEPEND="
 	net-libs/gnutls
 	net-misc/lksctp-tools
 	sys-apps/hwloc
+	sys-apps/irqbalance[numa]
 	sys-fs/xfsprogs
 	sys-libs/libunwind
 	sys-libs/zlib
 	sys-process/numactl
 	x11-libs/libpciaccess
-	numa? ( sys-apps/irqbalance[numa] )
 "
 DEPEND="${RDEPEND}
 	>=sys-kernel/linux-headers-3.5
 	dev-util/ninja
 "
 
-CONFIG_CHECK="~KPROBES ~SYN_COOKIES"
+CONFIG_CHECK="NUMA_BALANCING ~KPROBES ~SYN_COOKIES ~TRANSPARENT_HUGEPAGE"
 ERROR_KPROBES="${PN} recommends support for KProbes Instrumentation (KPROBES)."
+ERROR_NUMA_BALANCING="${PN} requires support for Memory placement aware NUMA scheduler (NUMA_BALANCING)."
 ERROR_SYN_COOKIES="${PN} recommends support for TCP syncookie support (SYN_COOKIES)."
+ERROR_TRANSPARENT_HUGEPAGE="${PN} recommends support for Transparent Hugepage support (TRANSPARENT_HUGEPAGE)."
 
 DOCS=( LICENSE.AGPL README.md )
 PATCHES=(
@@ -180,10 +182,19 @@ src_install() {
 }
 
 pkg_postinst() {
-	elog "You should run 'scylla_setup' to finalize your ScyllaDB installation."
+	elog "You should run 'emerge --config dev-db/scylla' to finalize your ScyllaDB installation."
 }
 
 pkg_config() {
+	elog "Setting up irqbalance..."
+	if $(grep -q systemd /proc/1/comm); then
+		systemctl enable irqbalance.service
+		systemctl start irqbalance.service
+	else
+		rc-update add irqbalance default
+		service irqbalance start
+	fi
+
 	elog "Running 'scylla_setup'..."
 	scylla_setup
 }

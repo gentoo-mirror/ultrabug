@@ -7,6 +7,5 @@
   </maintainer>
   <use>
         <flag name="collectd">Install <pkg>app-admin/collectd</pkg> configuration file.</flag>
-        <flag name="numa">Install <pkg>sys-apps/irqbalance</pkg> for NUMA support.</flag>
   </use>
 </pkgmetadata>
