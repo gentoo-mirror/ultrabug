@@ -20,11 +20,17 @@ depend() {
 }
 
 start_pre() {
-    checkpath -d -m 0750 -o "${user}":"${group}" "${run_dir}"
-    if [ ! -f ${config_file} ]; then
-    	eerror "Missing configuration file ${config_file}"
-    	return 1
-    fi
-    ebegin "Running scylla_prepare"
-    /usr/lib/scylla/scylla_prepare >/dev/null
+	checkpath -d -m 0750 -o "${user}":"${group}" "${run_dir}"
+	if [ ! -f ${config_file} ]; then
+		eerror "Missing configuration file ${config_file}"
+		return 1
+	fi
+	export SCYLLA_CONF SCYLLA_HOME
+	ebegin "Running scylla_prepare"
+	/usr/lib/scylla/scylla_prepare >/dev/null
+}
+
+stop_post() {
+	ebegin "Running scylla_stop"
+	/usr/lib/scylla/scylla_stop >/dev/null
 }

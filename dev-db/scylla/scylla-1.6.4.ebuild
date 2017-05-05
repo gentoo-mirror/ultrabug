@@ -105,6 +105,9 @@ src_prepare() {
 src_configure() {
 	# TODO: --cflags "${CFLAGS}"
 	./configure.py --mode=release --with=scylla --enable-dpdk --disable-xen --compiler "$(tc-getCXX)" --ldflags "${LDFLAGS}" || die
+
+	# force clean version
+	echo "${PV}" > version
 }
 
 src_compile() {
@@ -151,23 +154,30 @@ src_install() {
 		fowners scylla:scylla "${x}"
 	done
 
-	insinto /etc/security/limits.d
-	doins dist/common/limits.d/scylla.conf
-
 	insinto /etc/scylla.d
+	mv conf/housekeeping.cfg dist/common/scylla.d/
 	doins dist/common/scylla.d/*.conf
-
-	insinto /etc/sudoers.d
-	doins dist/debian/sudoers.d/scylla
 
 	insinto /etc/scylla
 	doins conf/*
+
+	insinto /etc/security/limits.d
+	doins dist/common/limits.d/scylla.conf
+
+	insinto /etc/sudoers.d
+	doins dist/debian/sudoers.d/scylla
 
 	insinto /etc/sysctl.d
 	doins dist/debian/sysctl.d/99-scylla.conf
 
 	insinto /etc/default
+	if ! use collectd; then
+		sed -e 's/collectd=1/collectd=0/g' -i dist/common/sysconfig/scylla-server || die
+	fi
 	doins dist/common/sysconfig/scylla-server
+
+	insinto /etc/modprobe.d
+	doins dist/common/modprobe.d/*
 
 	newinitd "${FILESDIR}/scylla-server.initd" ${PN}-server
 	newconfd "${FILESDIR}/scylla-server.confd" ${PN}-server
