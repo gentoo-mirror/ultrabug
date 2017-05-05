@@ -49,9 +49,9 @@ DEPEND="${RDEPEND}
 	dev-util/ninja
 "
 
-CONFIG_CHECK="NUMA_BALANCING ~KPROBES ~SYN_COOKIES ~TRANSPARENT_HUGEPAGE"
+CONFIG_CHECK="~KPROBES ~NUMA_BALANCING ~SYN_COOKIES ~TRANSPARENT_HUGEPAGE"
 ERROR_KPROBES="${PN} recommends support for KProbes Instrumentation (KPROBES)."
-ERROR_NUMA_BALANCING="${PN} requires support for Memory placement aware NUMA scheduler (NUMA_BALANCING)."
+ERROR_NUMA_BALANCING="${PN} recommends support for Memory placement aware NUMA scheduler (NUMA_BALANCING)."
 ERROR_SYN_COOKIES="${PN} recommends support for TCP syncookie support (SYN_COOKIES)."
 ERROR_TRANSPARENT_HUGEPAGE="${PN} recommends support for Transparent Hugepage support (TRANSPARENT_HUGEPAGE)."
 
