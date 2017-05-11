@@ -12,7 +12,7 @@ command_progress="true"
 pidfile=${run_dir}/${SVCNAME}.pid
 user=${USER:-scylla}
 group=${GROUP:-scylla}
-retry="SIGTERM/30 SIGKILL/10"
+retry="SIGTERM/120"
 start_stop_daemon_args="--user ${user} --group ${group} --wait 5000"
 
 depend() {

@@ -31,6 +31,7 @@ RDEPEND="
 	dev-libs/protobuf
 	dev-python/pyparsing
 	dev-python/pyudev
+	dev-python/requests
 	dev-python/urwid
 	dev-util/ragel
 	dev-util/systemtap
@@ -105,9 +106,6 @@ src_prepare() {
 src_configure() {
 	# TODO: --cflags "${CFLAGS}"
 	./configure.py --mode=release --with=scylla --enable-dpdk --disable-xen --compiler "$(tc-getCXX)" --ldflags "${LDFLAGS}" || die
-
-	# force clean version
-	echo "${PV}" > version
 }
 
 src_compile() {
@@ -149,7 +147,7 @@ src_install() {
 		doins dist/common/collectd.d/scylla.conf
 	fi
 
-	for x in /var/lib/${PN}/{data,commitlog,coredump} /var/log/scylla; do
+	for x in /var/lib/${PN}/{data,commitlog,coredump} /var/lib/scylla-housekeeping /var/log/scylla; do
 		keepdir "${x}"
 		fowners scylla:scylla "${x}"
 	done
