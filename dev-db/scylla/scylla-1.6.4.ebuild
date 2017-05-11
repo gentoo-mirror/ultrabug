@@ -59,6 +59,7 @@ ERROR_TRANSPARENT_HUGEPAGE="${PN} recommends support for Transparent Hugepage su
 DOCS=( LICENSE.AGPL README.md )
 PATCHES=(
 	"${FILESDIR}/0001-fix-perftune.py-IndexError-when-NIC-uses-less-IRQs-t.patch"  # merged
+	"${FILESDIR}/0001-fix-scylla-housekeeping-version-detection-to-work-wi.patch"
 	"${FILESDIR}/0001-add-gentoo_variant-detection-and-SYSCONFIG-setup.patch"
 	"${FILESDIR}/0001-Add-support-for-Gentoo-Linux-irqbalance-configuratio.patch"
 	"${FILESDIR}/0002-detect-gentoo-linux-on-selinux-setup.patch"
@@ -145,6 +146,8 @@ src_install() {
 	if use collectd; then
 		insinto /etc/collectd.d
 		doins dist/common/collectd.d/scylla.conf
+	else
+		sed -e 's/collectd=1/collectd=0/g' -i dist/common/sysconfig/scylla-server || die
 	fi
 
 	for x in /var/lib/${PN}/{data,commitlog,coredump} /var/lib/scylla-housekeeping /var/log/scylla; do
@@ -169,9 +172,6 @@ src_install() {
 	doins dist/debian/sysctl.d/99-scylla.conf
 
 	insinto /etc/default
-	if ! use collectd; then
-		sed -e 's/collectd=1/collectd=0/g' -i dist/common/sysconfig/scylla-server || die
-	fi
 	doins dist/common/sysconfig/scylla-server
 
 	insinto /etc/modprobe.d
