@@ -58,7 +58,7 @@ ERROR_TRANSPARENT_HUGEPAGE="${PN} recommends support for Transparent Hugepage su
 
 DOCS=( LICENSE.AGPL README.md )
 PATCHES=(
-	"${FILESDIR}/fix_perftune_indexerror.patch"
+	"${FILESDIR}/0001-fix-perftune.py-IndexError-when-NIC-uses-less-IRQs-t.patch"  # merged
 	"${FILESDIR}/0001-add-gentoo_variant-detection-and-SYSCONFIG-setup.patch"
 	"${FILESDIR}/0001-Add-support-for-Gentoo-Linux-irqbalance-configuratio.patch"
 	"${FILESDIR}/0002-detect-gentoo-linux-on-selinux-setup.patch"
