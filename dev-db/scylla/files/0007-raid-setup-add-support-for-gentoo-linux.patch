@@ -1,8 +1,9 @@
-From b78d665446c8b6d9a0893b3d18d419bbe17d702e Mon Sep 17 00:00:00 2001
-From: Ultrabug <ultrabug@gentoo.org>
-Date: Wed, 3 May 2017 17:22:57 +0200
-Subject: [PATCH 07/13] raid setup: add support for gentoo linux
+From 1d235e50125a57ad36223260638347905b035022 Mon Sep 17 00:00:00 2001
+From: Alexys Jacob <ultrabug@gentoo.org>
+Date: Wed, 17 May 2017 18:06:14 +0200
+Subject: [PATCH 7/9] raid setup: add support for gentoo linux
 
+Signed-off-by: Alexys Jacob <ultrabug@gentoo.org>
 ---
  dist/common/scripts/scylla_raid_setup | 2 ++
  1 file changed, 2 insertions(+)

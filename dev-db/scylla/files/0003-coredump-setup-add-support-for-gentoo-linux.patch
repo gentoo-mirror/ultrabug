@@ -1,25 +1,26 @@
-From 9e89a00568ac56554922243d85b6b210f3ec841b Mon Sep 17 00:00:00 2001
-From: Ultrabug <ultrabug@gentoo.org>
-Date: Wed, 3 May 2017 17:21:37 +0200
-Subject: [PATCH 03/13] coredump setup: add support for gentoo linux
+From 6a1807a7d8b3da6a6f830ef459b4534648b1bc8f Mon Sep 17 00:00:00 2001
+From: Alexys Jacob <ultrabug@gentoo.org>
+Date: Wed, 17 May 2017 18:05:08 +0200
+Subject: [PATCH 3/9] coredump setup: add support for gentoo linux
 
+Signed-off-by: Alexys Jacob <ultrabug@gentoo.org>
 ---
- dist/common/scripts/scylla_coredump_setup | 2 ++
- 1 file changed, 2 insertions(+)
+ dist/common/scripts/scylla_coredump_setup | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/dist/common/scripts/scylla_coredump_setup b/dist/common/scripts/scylla_coredump_setup
-index e4b50ba0..7fea51db 100755
+index e4b50ba0..8876b7e6 100755
 --- a/dist/common/scripts/scylla_coredump_setup
 +++ b/dist/common/scripts/scylla_coredump_setup
-@@ -34,6 +34,8 @@ if [ "$ID" = "ubuntu" ] && [ "$VERSION_ID" != "16.04" ]; then
+@@ -32,7 +32,7 @@ done
+ if [ "$ID" = "ubuntu" ] && [ "$VERSION_ID" != "16.04" ]; then
+     apt-get remove -y apport-noui
      sysctl -p /etc/sysctl.d/99-scylla.conf
- elif [ "$ID" = "debian" ]; then
+-elif [ "$ID" = "debian" ]; then
++elif [ "$ID" = "debian" ] || [ "$ID" = "gentoo" ]; then
      sysctl -p /etc/sysctl.d/99-scylla.conf
-+elif [ "$ID" = "gentoo" ]; then
-+    sysctl -p /etc/sysctl.d/99-scylla.conf
  else
      if [ "$ID" = "ubuntu" ]; then
-         apt-get install -y systemd-coredump
 -- 
 2.12.2
 

@@ -1,14 +1,15 @@
-From c9e499700b607984b872fb062d4fb3ddfb1c523d Mon Sep 17 00:00:00 2001
-From: Ultrabug <ultrabug@gentoo.org>
-Date: Wed, 3 May 2017 17:17:51 +0200
-Subject: [PATCH 01/13] add gentoo_variant detection and SYSCONFIG setup
+From 2ca0380d068efa0b7be167969ff871f01a354da5 Mon Sep 17 00:00:00 2001
+From: Alexys Jacob <ultrabug@gentoo.org>
+Date: Wed, 17 May 2017 18:03:53 +0200
+Subject: [PATCH 1/9] add gentoo_variant detection and SYSCONFIG setup
 
+Signed-off-by: Alexys Jacob <ultrabug@gentoo.org>
 ---
- dist/common/scripts/scylla_lib.sh | 6 ++++++
- 1 file changed, 6 insertions(+)
+ dist/common/scripts/scylla_lib.sh | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/dist/common/scripts/scylla_lib.sh b/dist/common/scripts/scylla_lib.sh
-index 8dc47bdd..38f0c06f 100644
+index 8dc47bdd..fa71daaf 100644
 --- a/dist/common/scripts/scylla_lib.sh
 +++ b/dist/common/scripts/scylla_lib.sh
 @@ -9,6 +9,10 @@ is_redhat_variant() {
@@ -22,15 +23,15 @@ index 8dc47bdd..38f0c06f 100644
  is_systemd() {
      grep -q '^systemd$' /proc/1/comm
  }
-@@ -28,6 +32,8 @@ ec2_is_supported_instance_type() {
+@@ -26,7 +30,7 @@ ec2_is_supported_instance_type() {
+ }
+ 
  . /etc/os-release
- if is_debian_variant; then
+-if is_debian_variant; then
++if is_debian_variant || is_gentoo_variant; then
      SYSCONFIG=/etc/default
-+elif is_gentoo_variant; then
-+    SYSCONFIG=/etc/default
  else
      SYSCONFIG=/etc/sysconfig
- fi
 -- 
 2.12.2
 

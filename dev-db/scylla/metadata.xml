@@ -5,7 +5,4 @@
     <email>ultrabug@gentoo.org</email>
     <name>Ultrabug</name>
   </maintainer>
-  <use>
-        <flag name="collectd">Install <pkg>app-admin/collectd</pkg> configuration file.</flag>
-  </use>
 </pkgmetadata>

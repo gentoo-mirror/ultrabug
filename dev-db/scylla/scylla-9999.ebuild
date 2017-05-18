@@ -4,6 +4,7 @@
 EAPI=6
 
 EGIT_REPO_URI="https://github.com/scylladb/scylla.git"
+#EGIT_COMMIT="scylla-${PV}"
 PYTHON_COMPAT=( python3_{4,5,6} )
 
 inherit git-r3 linux-info python-r1 toolchain-funcs systemd user
@@ -14,10 +15,11 @@ HOMEPAGE="http://scylladb.com/"
 LICENSE="AGPL-3"
 SLOT="0"
 KEYWORDS="~amd64"
-IUSE="collectd doc systemd"
+IUSE="doc systemd"
 
 RDEPEND="
 	=dev-libs/thrift-0.9.1
+	app-admin/collectd
 	app-arch/lz4
 	app-arch/snappy
 	dev-cpp/antlr-cpp:3.5
@@ -57,24 +59,7 @@ ERROR_SYN_COOKIES="${PN} recommends support for TCP syncookie support (SYN_COOKI
 ERROR_TRANSPARENT_HUGEPAGE="${PN} recommends support for Transparent Hugepage support (TRANSPARENT_HUGEPAGE)."
 
 DOCS=( LICENSE.AGPL README.md )
-PATCHES=(
-	"${FILESDIR}/0001-fix-perftune.py-IndexError-when-NIC-uses-less-IRQs-t.patch"  # merged
-	"${FILESDIR}/0001-fix-scylla-housekeeping-version-detection-to-work-wi.patch"
-	"${FILESDIR}/0001-add-gentoo_variant-detection-and-SYSCONFIG-setup.patch"
-	"${FILESDIR}/0001-Add-support-for-Gentoo-Linux-irqbalance-configuratio.patch"
-	"${FILESDIR}/0002-detect-gentoo-linux-on-selinux-setup.patch"
-	"${FILESDIR}/0003-coredump-setup-add-support-for-gentoo-linux.patch"
-	"${FILESDIR}/0004-cpuscaling-setup-add-support-for-gentoo-linux.patch"
-	"${FILESDIR}/0005-kernel-check-add-support-for-gentoo-linux.patch"
-	"${FILESDIR}/0006-ntp-setup-add-support-for-gentoo-linux.patch"
-	"${FILESDIR}/0007-raid-setup-add-support-for-gentoo-linux.patch"
-	"${FILESDIR}/0008-prometheus-node_exporter-install-add-support-for-gen.patch"
-	"${FILESDIR}/0009-scylla_setup-add-gentoo-linux-installation-detection.patch"
-	"${FILESDIR}/0010-scylla_setup-refactor-scylla-server-service-setup-wh.patch"
-	"${FILESDIR}/0011-scylla_setup-disable-useless-version-check-for-gento.patch"
-	"${FILESDIR}/0012-scylla_setup-disable-selinux-setup-for-gentoo-linux.patch"
-	"${FILESDIR}/0013-scylla_setup-fix-typo-on-cpu-scaling-messages.patch"
-)
+PATCHES=()
 
 pkg_setup() {
 	linux-info_pkg_setup
@@ -143,12 +128,8 @@ src_install() {
 		dosym /usr/lib/scylla/${util} /usr/sbin/${util}
 	done
 
-	if use collectd; then
-		insinto /etc/collectd.d
-		doins dist/common/collectd.d/scylla.conf
-	else
-		sed -e 's/collectd=1/collectd=0/g' -i dist/common/sysconfig/scylla-server || die
-	fi
+	insinto /etc/collectd.d
+	doins dist/common/collectd.d/scylla.conf
 
 	for x in /var/lib/${PN}/{data,commitlog,coredump} /var/lib/scylla-housekeeping /var/log/scylla; do
 		keepdir "${x}"

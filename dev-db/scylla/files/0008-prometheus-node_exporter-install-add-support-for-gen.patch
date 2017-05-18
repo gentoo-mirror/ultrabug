@@ -1,9 +1,10 @@
-From 816779967afff06c956791f6c1ea61deef1caea1 Mon Sep 17 00:00:00 2001
-From: Ultrabug <ultrabug@gentoo.org>
-Date: Wed, 3 May 2017 17:23:56 +0200
-Subject: [PATCH 08/13] prometheus node_exporter install: add support for
- gentoo linux
+From 9bb1bda466013dda3bf50d5fc4a9967b20555f07 Mon Sep 17 00:00:00 2001
+From: Alexys Jacob <ultrabug@gentoo.org>
+Date: Wed, 17 May 2017 18:06:34 +0200
+Subject: [PATCH 8/9] prometheus node_exporter install: add support for gentoo
+ linux
 
+Signed-off-by: Alexys Jacob <ultrabug@gentoo.org>
 ---
  dist/common/scripts/node_exporter_install | 44 ++++++++++++++++++++-----------
  1 file changed, 28 insertions(+), 16 deletions(-)

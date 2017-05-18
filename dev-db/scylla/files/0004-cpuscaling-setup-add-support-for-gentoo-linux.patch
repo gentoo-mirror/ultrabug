@@ -1,8 +1,9 @@
-From a2069c4ea3b83090219c82878c38ea0432bf49ed Mon Sep 17 00:00:00 2001
-From: Ultrabug <ultrabug@gentoo.org>
-Date: Wed, 3 May 2017 17:21:55 +0200
-Subject: [PATCH 04/13] cpuscaling setup: add support for gentoo linux
+From a198f2b1afbfa341eabfdbaadcbea1111c716930 Mon Sep 17 00:00:00 2001
+From: Alexys Jacob <ultrabug@gentoo.org>
+Date: Wed, 17 May 2017 18:05:24 +0200
+Subject: [PATCH 4/9] cpuscaling setup: add support for gentoo linux
 
+Signed-off-by: Alexys Jacob <ultrabug@gentoo.org>
 ---
  dist/common/scripts/scylla_cpuscaling_setup | 10 ++++++++++
  1 file changed, 10 insertions(+)
