@@ -52,11 +52,12 @@ DEPEND="${RDEPEND}
 	dev-util/ninja
 "
 
-CONFIG_CHECK="~KPROBES ~NUMA_BALANCING ~SYN_COOKIES ~TRANSPARENT_HUGEPAGE"
+CONFIG_CHECK="~KPROBES ~NUMA_BALANCING ~SYN_COOKIES ~TRANSPARENT_HUGEPAGE ~UIO_PCI_GENERIC"
 ERROR_KPROBES="${PN} recommends support for KProbes Instrumentation (KPROBES)."
 ERROR_NUMA_BALANCING="${PN} recommends support for Memory placement aware NUMA scheduler (NUMA_BALANCING)."
-ERROR_SYN_COOKIES="${PN} recommends support for TCP syncookie support (SYN_COOKIES)."
-ERROR_TRANSPARENT_HUGEPAGE="${PN} recommends support for Transparent Hugepage support (TRANSPARENT_HUGEPAGE)."
+ERROR_SYN_COOKIES="${PN} recommends support for TCP syncookie (SYN_COOKIES)."
+ERROR_TRANSPARENT_HUGEPAGE="${PN} recommends support for Transparent Hugepage (TRANSPARENT_HUGEPAGE)."
+ERROR_UIO_PCI_GENERIC="${PN} recommends support for Generic driver for PCI 2.3 and PCI Express cards (UIO_PCI_GENERIC)."
 
 DOCS=( LICENSE.AGPL README.md )
 PATCHES=()
@@ -106,6 +107,7 @@ src_install() {
 	doexe dist/common/scripts/*
 	doexe dist/debian/scripts/*
 	doexe seastar/scripts/*
+	doexe seastar/dpdk/usertools/dpdk-devbind.py
 	doexe scylla-blocktune
 	doexe scylla-housekeeping
 
