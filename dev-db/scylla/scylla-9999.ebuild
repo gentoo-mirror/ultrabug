@@ -158,6 +158,9 @@ src_install() {
 	insinto /etc/modprobe.d
 	doins dist/common/modprobe.d/*
 
+	insinto /etc/rsyslog.d
+	doins 10-scylla.conf
+
 	newinitd "${FILESDIR}/scylla-server.initd" ${PN}-server
 	newconfd "${FILESDIR}/scylla-server.confd" ${PN}-server
 	systemd_dounit dist/common/systemd/*.service

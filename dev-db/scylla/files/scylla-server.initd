@@ -16,7 +16,7 @@ retry="SIGTERM/120"
 start_stop_daemon_args="--user ${user} --group ${group} --wait 5000"
 
 depend() {
-	use net
+	use net localmount logger
 }
 
 start_pre() {
