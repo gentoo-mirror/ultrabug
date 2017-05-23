@@ -52,9 +52,11 @@ DEPEND="${RDEPEND}
 	dev-util/ninja
 "
 
-CONFIG_CHECK="~KPROBES ~NUMA_BALANCING ~SYN_COOKIES ~TRANSPARENT_HUGEPAGE ~UIO_PCI_GENERIC"
+CONFIG_CHECK="~HUGETLBFS ~KPROBES ~NUMA_BALANCING ~PROC_PAGE_MONITOR ~SYN_COOKIES ~TRANSPARENT_HUGEPAGE ~UIO_PCI_GENERIC"
+ERROR_HUGETLBFS="${PN} recommends support for Huge Table Pages FS (HUGETLBFS)."
 ERROR_KPROBES="${PN} recommends support for KProbes Instrumentation (KPROBES)."
 ERROR_NUMA_BALANCING="${PN} recommends support for Memory placement aware NUMA scheduler (NUMA_BALANCING)."
+ERROR_PROC_PAGE_MONITOR="${PN} recommends to enable /proc page monitoring (PROC_PAGE_MONITOR)."
 ERROR_SYN_COOKIES="${PN} recommends support for TCP syncookie (SYN_COOKIES)."
 ERROR_TRANSPARENT_HUGEPAGE="${PN} recommends support for Transparent Hugepage (TRANSPARENT_HUGEPAGE)."
 ERROR_UIO_PCI_GENERIC="${PN} recommends support for Generic driver for PCI 2.3 and PCI Express cards (UIO_PCI_GENERIC)."
@@ -87,7 +89,7 @@ src_prepare() {
 	sed -e "s#@@SYSCONFDIR@@#/etc/sysconfig#g" -i dist/common/systemd/scylla-server.service || die
 
 	# fix -Werror crashing build
-	sed -e 's/ -Werror//g' -i seastar/configure.py || die
+	#sed -e 's/ -Werror//g' -i seastar/configure.py || die
 }
 
 src_configure() {
@@ -161,7 +163,7 @@ src_install() {
 	doins dist/common/modprobe.d/*
 
 	insinto /etc/rsyslog.d
-	doins 10-scylla.conf
+	doins "${FILESDIR}/10-scylla.conf"
 
 	newinitd "${FILESDIR}/scylla-server.initd" ${PN}-server
 	newconfd "${FILESDIR}/scylla-server.confd" ${PN}-server
