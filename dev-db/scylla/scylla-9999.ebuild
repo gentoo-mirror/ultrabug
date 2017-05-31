@@ -31,10 +31,10 @@ RDEPEND="
 	dev-libs/libaio
 	dev-libs/libxml2
 	dev-libs/protobuf
-	dev-python/pyparsing
-	dev-python/pyudev
-	dev-python/requests
-	dev-python/urwid
+	dev-python/pyparsing[${PYTHON_USEDEP}]
+	dev-python/pyudev[${PYTHON_USEDEP}]
+	dev-python/requests[${PYTHON_USEDEP}]
+	dev-python/urwid[${PYTHON_USEDEP}]
 	dev-util/ragel
 	dev-util/systemtap
 	net-libs/gnutls
