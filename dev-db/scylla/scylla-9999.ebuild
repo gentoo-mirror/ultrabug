@@ -40,7 +40,6 @@ RDEPEND="
 	net-libs/gnutls
 	net-misc/lksctp-tools
 	sys-apps/hwloc
-	sys-apps/irqbalance[numa]
 	sys-fs/xfsprogs
 	sys-libs/libunwind
 	sys-libs/zlib
@@ -52,14 +51,14 @@ DEPEND="${RDEPEND}
 	dev-util/ninja
 "
 
-CONFIG_CHECK="~HUGETLBFS ~KPROBES ~NUMA_BALANCING ~PROC_PAGE_MONITOR ~SYN_COOKIES ~TRANSPARENT_HUGEPAGE ~UIO_PCI_GENERIC"
-ERROR_HUGETLBFS="${PN} recommends support for Huge Table Pages FS (HUGETLBFS)."
-ERROR_KPROBES="${PN} recommends support for KProbes Instrumentation (KPROBES)."
+# Discussion about kernel configuration:
+# https://groups.google.com/forum/#!topic/scylladb-dev/qJu2zrryv-s
+# For DPDK, removed HUGETLBFS PROC_PAGE_MONITOR UIO_PCI_GENERIC in favor of VFIO
+CONFIG_CHECK="~NUMA_BALANCING ~SYN_COOKIES ~TRANSPARENT_HUGEPAGE ~VFIO"
 ERROR_NUMA_BALANCING="${PN} recommends support for Memory placement aware NUMA scheduler (NUMA_BALANCING)."
-ERROR_PROC_PAGE_MONITOR="${PN} recommends to enable /proc page monitoring (PROC_PAGE_MONITOR)."
 ERROR_SYN_COOKIES="${PN} recommends support for TCP syncookie (SYN_COOKIES)."
 ERROR_TRANSPARENT_HUGEPAGE="${PN} recommends support for Transparent Hugepage (TRANSPARENT_HUGEPAGE)."
-ERROR_UIO_PCI_GENERIC="${PN} recommends support for Generic driver for PCI 2.3 and PCI Express cards (UIO_PCI_GENERIC)."
+ERROR_VFIO="${PN} running with DPDK recommends support for Non-Privileged userspace driver framework (VFIO)."
 
 DOCS=( LICENSE.AGPL README.md )
 PATCHES=()
@@ -182,15 +181,6 @@ pkg_postinst() {
 }
 
 pkg_config() {
-	elog "Setting up irqbalance..."
-	if $(grep -q systemd /proc/1/comm); then
-		systemctl enable irqbalance.service
-		systemctl start irqbalance.service
-	else
-		rc-update add irqbalance default
-		service irqbalance start
-	fi
-
 	elog "Running 'scylla_setup'..."
 	scylla_setup
 }
