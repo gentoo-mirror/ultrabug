@@ -18,7 +18,6 @@ KEYWORDS="~amd64"
 IUSE="doc systemd"
 
 RDEPEND="
-	=dev-libs/thrift-0.9.1
 	app-admin/collectd
 	app-arch/lz4
 	app-arch/snappy
@@ -31,11 +30,12 @@ RDEPEND="
 	dev-libs/libaio
 	dev-libs/libxml2
 	dev-libs/protobuf
+	=dev-libs/thrift-0.9.1
 	dev-python/pyparsing[${PYTHON_USEDEP}]
 	dev-python/pyudev[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
+	<dev-util/ragel-7.0
 	dev-python/urwid[${PYTHON_USEDEP}]
-	dev-util/ragel
 	dev-util/systemtap
 	net-libs/gnutls
 	net-misc/lksctp-tools
@@ -87,8 +87,8 @@ src_prepare() {
 	cp dist/common/systemd/scylla-server.service.in dist/common/systemd/scylla-server.service || die
 	sed -e "s#@@SYSCONFDIR@@#/etc/sysconfig#g" -i dist/common/systemd/scylla-server.service || die
 
-	# fix -Werror crashing build
-	#sed -e 's/ -Werror//g' -i seastar/configure.py || die
+	# fix seastar -Werror crashing build
+	# sed -e 's/ -Werror//g' -i seastar/configure.py || die
 }
 
 src_configure() {
@@ -163,6 +163,9 @@ src_install() {
 
 	insinto /etc/rsyslog.d
 	doins "${FILESDIR}/10-scylla.conf"
+
+	insinto /etc/cron.d
+	newins dist/debian/scylla-server.cron.d scylla_delay_fstrim
 
 	newinitd "${FILESDIR}/scylla-server.initd" ${PN}-server
 	newconfd "${FILESDIR}/scylla-server.confd" ${PN}-server
