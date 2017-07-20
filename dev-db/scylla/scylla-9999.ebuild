@@ -88,7 +88,10 @@ src_prepare() {
 	sed -e "s#@@SYSCONFDIR@@#/etc/sysconfig#g" -i dist/common/systemd/scylla-server.service || die
 
 	# fix seastar -Werror crashing build
-	# sed -e 's/ -Werror//g' -i seastar/configure.py || die
+	sed -e 's/ -Werror//g' -i seastar/configure.py || die
+
+	# fix ragel-7.0 bug
+	# https://github.com/scylladb/seastar/issues/296
 }
 
 src_configure() {
