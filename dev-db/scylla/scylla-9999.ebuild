@@ -3,8 +3,8 @@
 
 EAPI=6
 
-EGIT_REPO_URI="https://github.com/scylladb/scylla.git"
 #EGIT_COMMIT="scylla-${PV}"
+EGIT_REPO_URI="https://github.com/scylladb/scylla.git"
 PYTHON_COMPAT=( python3_{4,5,6} )
 
 inherit git-r3 linux-info python-r1 toolchain-funcs systemd user
@@ -17,8 +17,12 @@ SLOT="0"
 KEYWORDS="~amd64"
 IUSE="doc systemd"
 
+RESTRICT="test"
+
 RDEPEND="
 	app-admin/collectd
+	app-admin/scylla-tools
+	app-admin/scylla-jmx
 	app-arch/lz4
 	app-arch/snappy
 	dev-cpp/antlr-cpp:3.5
@@ -71,7 +75,6 @@ pkg_setup() {
 
 src_prepare() {
 	default
-	eapply_user
 
 	# set version
 	local git_commit=$(git log --pretty=format:'%h' -n 1)
