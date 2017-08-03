@@ -38,7 +38,7 @@ RDEPEND="
 	dev-python/pyparsing[${PYTHON_USEDEP}]
 	dev-python/pyudev[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
-	<dev-util/ragel-7.0
+	dev-util/ragel
 	dev-python/urwid[${PYTHON_USEDEP}]
 	dev-util/systemtap
 	net-libs/gnutls
