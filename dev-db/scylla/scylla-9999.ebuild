@@ -21,9 +21,9 @@ RESTRICT="test"
 
 RDEPEND="
 	app-admin/collectd
-	app-admin/scylla-tools
-	app-admin/scylla-jmx
 	app-arch/lz4
+	=app-admin/scylla-tools-${PV}
+	=app-admin/scylla-jmx-${PV}
 	app-arch/snappy
 	dev-cpp/antlr-cpp:3.5
 	dev-cpp/yaml-cpp
