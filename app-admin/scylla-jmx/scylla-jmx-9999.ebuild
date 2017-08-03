@@ -47,7 +47,7 @@ src_prepare() {
 }
 
 src_compile() {
-	mvn -B install
+	mvn -B install || die
 }
 
 src_install() {
