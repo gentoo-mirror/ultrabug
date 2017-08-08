@@ -225,9 +225,6 @@ src_install() {
 
 	insinto /etc/rsyslog.d
 	doins "${FILESDIR}/10-scylla.conf"
-
-	insinto /etc/cron.d
-	newins dist/debian/scylla-server.cron.d scylla_delay_fstrim
 }
 
 pkg_postinst() {
