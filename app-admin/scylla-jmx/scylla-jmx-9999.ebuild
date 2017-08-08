@@ -13,7 +13,7 @@ else
 fi
 PYTHON_COMPAT=( python2_7 )
 
-inherit systemd user
+inherit java-pkg-2 systemd user
 
 DESCRIPTION="Scylla JMX"
 HOMEPAGE="https://github.com/scylladb/scylla-jmx"
