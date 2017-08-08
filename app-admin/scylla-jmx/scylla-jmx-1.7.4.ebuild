@@ -3,21 +3,25 @@
 
 EAPI=6
 
-EGIT_COMMIT="scylla-${PV}"
-EGIT_REPO_URI="https://github.com/scylladb/scylla-jmx.git"
+if [[ ${PV} == "9999" ]] ; then
+	EGIT_REPO_URI="https://github.com/scylladb/scylla-jmx.git"
+	inherit git-r3
+else
+	SRC_URI="https://github.com/scylladb/${PN}/archive/scylla-${PV}.tar.gz -> ${P}.tar.gz"
+	KEYWORDS="~amd64"
+	S="${WORKDIR}/scylla-jmx-scylla-${PV}"
+fi
 PYTHON_COMPAT=( python2_7 )
 
-inherit git-r3 systemd user
+inherit systemd user
 
 DESCRIPTION="Scylla JMX"
 HOMEPAGE="https://github.com/scylladb/scylla-jmx"
-#SRC_URI="https://github.com/scylladb/${PN}-java/archive/${MY_P}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="Apache-2.0"
 SLOT="0"
-KEYWORDS="~amd64"
 
-CDEPEND="dev-java/maven-bin"
+CDEPEND="dev-java/maven-bin:3.3"
 RDEPEND="
 	${CDEPEND}
 	${PYTHON_DEPS}
