@@ -191,7 +191,7 @@ src_install() {
 	exeinto /usr/lib/scylla
 	doexe dist/common/scripts/*
 	doexe seastar/scripts/*
-	doexe seastar/dpdk/usertools/dpdk-devbind.py
+	doexe seastar/dpdk/tools/dpdk-devbind.py
 	doexe scylla-blocktune
 	doexe scylla-housekeeping
 
