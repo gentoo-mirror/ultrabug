@@ -3,21 +3,26 @@
 
 EAPI=6
 
+if [[ ${PV} == "9999" ]] ; then
+	EGIT_REPO_URI="https://github.com/scylladb/scylla-tools-java.git"
+	inherit git-r3
+else
+	SRC_URI="https://github.com/scylladb/scylla-tools-java/archive/scylla-${PV}.tar.gz -> ${P}.tar.gz"
+	KEYWORDS="~amd64"
+	S="${WORKDIR}/scylla-tools-java-scylla-${PV}"
+fi
+
 EANT_BUILD_TARGET="jar"
-#EGIT_COMMIT="scylla-${PV}"
-EGIT_REPO_URI="https://github.com/scylladb/scylla-tools-java.git"
 PYTHON_COMPAT=( python2_7 )
 JAVA_PKG_IUSE="source doc"
 
-inherit java-pkg-2 java-ant-2 git-r3 python-single-r1
+inherit java-pkg-2 java-ant-2 python-single-r1
 
 DESCRIPTION="scylla tools (Java part)"
 HOMEPAGE="https://github.com/scylladb/scylla-tools-java"
-#SRC_URI="https://github.com/scylladb/${PN}-java/archive/${MY_P}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="Apache-2.0"
 SLOT="0"
-KEYWORDS="~amd64"
 
 CDEPEND="dev-java/antlr:3.5"
 RDEPEND="
@@ -28,8 +33,6 @@ DEPEND="
 	${CDEPEND}
 	>=virtual/jdk-1.8"
 
-#S="${WORKDIR}/${PN}-java-scylla-${PV}"
-
 RESTRICT="test"
 
 src_prepare() {
@@ -38,6 +41,8 @@ src_prepare() {
 }
 
 src_install() {
+	default
+
 	# maintainer's note: change/check me on version bumps
 	local origin_version="3.0.8"
 
