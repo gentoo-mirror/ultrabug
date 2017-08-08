@@ -51,10 +51,12 @@ src_prepare() {
 }
 
 src_compile() {
-	mvn -B install
+	mvn -B install || die
 }
 
 src_install() {
+	default
+
 	insinto /etc/default
 	doins dist/common/sysconfig/scylla-jmx
 
