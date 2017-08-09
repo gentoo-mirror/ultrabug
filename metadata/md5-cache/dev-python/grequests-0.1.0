@@ -1,0 +1,13 @@
+DEFINED_PHASES=-
+DEPEND=dev-python/gevent
+DESCRIPTION=GRequests allows you to use Requests with Gevent to make asyncronous HTTP Requests easily.
+EAPI=4
+HOMEPAGE=https://crate.io/packages/grequests
+KEYWORDS=~amd64 ~x86
+LICENSE=BSD
+RDEPEND=dev-python/gevent
+RESTRICT=test
+SLOT=0
+SRC_URI=mirror://pypi/g/grequests/grequests-0.1.0.tar.gz
+_eclass_exported_funcs=-
+_md5_=8d7d3af7fe102bf059134ac67eb97395

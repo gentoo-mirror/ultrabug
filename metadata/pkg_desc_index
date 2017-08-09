@@ -1,0 +1,20 @@
+app-admin/logswan 1.05: Web log analyzer using probabilistic data structures
+app-admin/nxlog-ce 2.8.1248: Universal log collector and forwarder supporting different platforms
+app-admin/scylla-jmx 1.7.4 9999: Scylla JMX
+app-admin/scylla-tools 1.7.4 9999: scylla tools (Java part)
+app-admin/uwsgitop 0.9: uWSGI top-like application
+dev-db/couchbase-server-community 4.5.1: Distributed key-value database management system
+dev-db/scylla 1.7.4 9999: NoSQL data store using the seastar framework, compatible with Apache Cassandra
+dev-libs/libcouchbase 2.5.3: Couchbase C Client Library
+dev-libs/libdwarf 20150507: Couchbase C Client Library
+dev-libs/libketama 20141001: Library to deal with DWARF Debugging Information Format
+dev-libs/thrift 0.9.1 0.9.3: C library for consistent hashing
+dev-python/consulate 0.5.1: Python client for the Consul HTTP API
+dev-python/couchbase 2.0.4: Python Client for Couchbase
+dev-python/grequests 0.1.0 0.2.0: GRequests allows you to use Requests with Gevent to make asyncronous HTTP Requests easily.
+dev-python/i3-py 0.6.4: tools for i3 users and developers
+dev-python/ketama 20141001: Python library for consistent hashing
+dev-python/mimerender 0.5.3: Python module for RESTful HTTP Content Negotiation
+dev-python/requests-unixsocket 0.1.4: Use requests to talk HTTP via a UNIX domain socket
+dev-python/vmprof 0.1.4.2 0.1.5.3: vmprof Python client
+dev-python/yapf 0.16.0: A formatter for Python code
