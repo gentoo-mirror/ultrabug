@@ -1,14 +1,11 @@
-DEFINED_PHASES=compile configure install prepare test
-DEPEND=dev-libs/libev dev-libs/libuv >=dev-libs/libevent-1.4.13 snappy? ( app-arch/snappy ) ssl? ( >=dev-libs/openssl-1.0.1g:= ) sys-devel/make >=dev-util/cmake-2.8.9
-DESCRIPTION=Couchbase C Client Library
+DEFINED_PHASES=configure install
+DESCRIPTION=Library to deal with DWARF Debugging Information Format
 EAPI=5
-HOMEPAGE=http://www.couchbase.com/communities/c-client-library
-IUSE=doc snappy ssl static-libs
+HOMEPAGE=https://github.com/Distrotech/libdwarf
 KEYWORDS=~amd64 ~x86
-LICENSE=Apache-2.0
-RDEPEND=dev-libs/libev dev-libs/libuv >=dev-libs/libevent-1.4.13 snappy? ( app-arch/snappy ) ssl? ( >=dev-libs/openssl-1.0.1g:= )
+LICENSE=GPL-2 LGPL-2
 SLOT=0
-SRC_URI=http://packages.couchbase.com/clients/c/libcouchbase-2.5.3.tar.gz
-_eclass_exported_funcs=src_prepare:cmake-utils src_configure:- src_compile:cmake-utils src_test:cmake-utils src_install:-
-_eclasses_=cmake-utils	026933aff3889190eeb565b642cfe252	epatch	8233751dc5105a6ae8fcd86ce2bb0247	estack	43ddf5aaffa7a8d0482df54d25a66a1f	eutils	9c113d6a64826c40154cad7be15d95ea	flag-o-matic	08e000dba2ecbfac8f7dfc36affdfacd	ltprune	2770eed66a9b8ef944714cd0e968182e	multilib	97f470f374f2e94ccab04a2fb21d811e	multiprocessing	284a473719153462f3e974d86c8cb81c	ninja-utils	ebb2eaddc6331c4fa000b8eb8f6fe074	toolchain-funcs	8fec6b1eb195836560e70b66d98fb163	versionator	c80ccf29e90adea7c5cae94b42eb76d0
+SRC_URI=https://github.com/Distrotech/libdwarf/archive/20150507.tar.gz
+_eclass_exported_funcs=src_configure:- src_install:-
+_eclasses_=epatch	8233751dc5105a6ae8fcd86ce2bb0247	estack	43ddf5aaffa7a8d0482df54d25a66a1f	eutils	9c113d6a64826c40154cad7be15d95ea	flag-o-matic	08e000dba2ecbfac8f7dfc36affdfacd	ltprune	2770eed66a9b8ef944714cd0e968182e	multilib	97f470f374f2e94ccab04a2fb21d811e	toolchain-funcs	185a06792159ca143528e7010368e8af
 _md5_=9a7834e7de1057ab3d0d84b731cb930d
