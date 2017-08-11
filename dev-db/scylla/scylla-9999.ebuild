@@ -6,6 +6,7 @@ EAPI=6
 if [[ ${PV} == "9999" ]] ; then
 	EGIT_REPO_URI="https://github.com/scylladb/scylla.git"
 	inherit git-r3
+	KEYWORDS="~amd64"
 else
 	AMI_COMMIT=""
 	C_ARES_COMMIT=""

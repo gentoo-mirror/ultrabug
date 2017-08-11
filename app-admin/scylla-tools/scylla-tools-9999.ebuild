@@ -6,6 +6,7 @@ EAPI=6
 if [[ ${PV} == "9999" ]] ; then
 	EGIT_REPO_URI="https://github.com/scylladb/scylla-tools-java.git"
 	inherit git-r3
+	KEYWORDS="~amd64"
 else
 	SRC_URI="https://github.com/scylladb/scylla-tools-java/archive/scylla-${PV}.tar.gz -> ${P}.tar.gz"
 	KEYWORDS="~amd64"
