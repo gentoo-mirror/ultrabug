@@ -9,9 +9,9 @@ if [[ ${PV} == "9999" ]] ; then
 else
 	MY_PV="${PV/_rc/.rc}"
 	MY_P="${PN}-${MY_PV}"
-	SRC_URI="https://github.com/scylladb/scylla-tools-java/archive/scylla-core-${MY_PV}.tar.gz -> ${MY_P}.tar.gz"
+	SRC_URI="https://github.com/scylladb/scylla-tools-java/archive/scylla-${MY_PV}.tar.gz -> ${MY_P}.tar.gz"
 	KEYWORDS="~amd64"
-	S="${WORKDIR}/scylla-tools-java-scylla-core-${MY_PV}"
+	S="${WORKDIR}/scylla-tools-java-scylla-${MY_PV}"
 fi
 
 EANT_BUILD_TARGET="jar"
