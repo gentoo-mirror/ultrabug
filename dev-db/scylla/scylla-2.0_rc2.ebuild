@@ -13,11 +13,11 @@ else
 	C_ARES_COMMIT="fd6124c74da0801f23f9d324559d8b66fb83f533"
 	DPDK_COMMIT="10a8b45350c9af0c2d7731a2f058b0983a0c845a"
 	FMT_COMMIT="f61e71ccb9ab253f6d76096b2d958caf38fcccaa"
-	SEASTAR_COMMIT="867b7c724508de54610bc78d1009d3720b198586"
+	SEASTAR_COMMIT="d67c344513b3de0c6dc86795ca7bc8eaf1811dcd"
 	SWAGGER_COMMIT="1b212bbe713905aac22af1edb836f5cf8cc39cc2"
 	SRC_URI="
 		https://github.com/scylladb/${PN}/archive/scylla-${MY_PV}.tar.gz -> ${MY_P}.tar.gz
-		https://github.com/scylladb/seastar/archive/${SEASTAR_COMMIT}.tar.gz -> seastar-${SEASTAR_COMMIT}.tar.gz
+		https://github.com/scylladb/scylla-seastar/archive/${SEASTAR_COMMIT}.tar.gz -> scylla-seastar-${SEASTAR_COMMIT}.tar.gz
 		https://github.com/scylladb/scylla-swagger-ui/archive/${SWAGGER_COMMIT}.tar.gz -> scylla-swagger-ui-${SWAGGER_COMMIT}.tar.gz
 		https://github.com/scylladb/dpdk/archive/${DPDK_COMMIT}.tar.gz -> dpdk-${DPDK_COMMIT}.tar.gz
 		https://github.com/scylladb/fmt/archive/${FMT_COMMIT}.tar.gz -> fmt-${FMT_COMMIT}.tar.gz
@@ -106,7 +106,7 @@ src_prepare() {
 		echo "${PV}-${git_commit}" > version
 	else
 		rmdir seastar || die
-		mv "${WORKDIR}/seastar-${SEASTAR_COMMIT}" seastar || die
+		mv "${WORKDIR}/scylla-seastar-${SEASTAR_COMMIT}" seastar || die
 
 		rmdir seastar/dpdk || die
 		mv "${WORKDIR}/dpdk-${DPDK_COMMIT}" seastar/dpdk || die
