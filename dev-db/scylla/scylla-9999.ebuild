@@ -30,7 +30,7 @@ fi
 
 PYTHON_COMPAT=( python3_{4,5,6} )
 
-inherit autotools linux-info python-r1 toolchain-funcs systemd user
+inherit autotools flag-o-matic linux-info python-r1 toolchain-funcs systemd user
 
 DESCRIPTION="NoSQL data store using the seastar framework, compatible with Apache Cassandra"
 HOMEPAGE="http://scylladb.com/"
@@ -38,6 +38,13 @@ HOMEPAGE="http://scylladb.com/"
 LICENSE="AGPL-3"
 SLOT="0"
 IUSE="doc systemd"
+
+# NOTE:
+# if you want to debug using backtraces, enable the 'splitdebug' FEATURE:
+# https://wiki.gentoo.org/wiki/Project:Quality_Assurance/Backtraces
+#
+# then check out:
+# https://github.com/scylladb/scylla/wiki/How-to-resolve-backtrace
 
 RESTRICT="test"
 
@@ -152,8 +159,10 @@ src_prepare() {
 }
 
 src_configure() {
-	# TODO: --cflags "${CFLAGS}"
-	./configure.py --mode=release --with=scylla --enable-dpdk --disable-xen --compiler "$(tc-getCXX)" --ldflags "${LDFLAGS}" || die
+	# native CPU CFLAGS are strongly enforced by upstreams, respect that
+	replace-cpu-flags "*" "native"
+
+	./configure.py --mode=release --with=scylla --enable-dpdk --disable-xen --compiler "$(tc-getCXX)" --ldflags "${LDFLAGS}" --cflags "${CFLAGS}" || die
 }
 
 src_compile() {
