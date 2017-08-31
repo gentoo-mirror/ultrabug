@@ -1,10 +1,10 @@
 app-admin/logswan 1.05: Web log analyzer using probabilistic data structures
 app-admin/nxlog-ce 2.8.1248: Universal log collector and forwarder supporting different platforms
-app-admin/scylla-jmx 2.0_rc2 9999: Scylla JMX
-app-admin/scylla-tools 2.0_rc2 9999: scylla tools (Java part)
+app-admin/scylla-jmx 2.0_rc3 9999: Scylla JMX
+app-admin/scylla-tools 2.0_rc3 9999: scylla tools (Java part)
 app-admin/uwsgitop 0.9: uWSGI top-like application
 dev-db/couchbase-server-community 4.5.1: Distributed key-value database management system
-dev-db/scylla 2.0_rc2 9999: NoSQL data store using the seastar framework, compatible with Apache Cassandra
+dev-db/scylla 2.0_rc3 9999: NoSQL data store using the seastar framework, compatible with Apache Cassandra
 dev-libs/libcouchbase 2.5.3: Couchbase C Client Library
 dev-libs/libdwarf 20150507: Library to deal with DWARF Debugging Information Format
 dev-libs/libketama 20141001: C library for consistent hashing
