@@ -9,11 +9,11 @@ if [[ ${PV} == "9999" ]] ; then
 else
 	MY_PV="${PV/_rc/.rc}"
 	MY_P="${PN}-${MY_PV}"
-	AMI_COMMIT="5ffa4498cef50b13cef303bc68a6792642cd2b4f"
+	AMI_COMMIT="be90a3fb9f985b2d0773d4ad328ec3cd4c4a146b"
 	C_ARES_COMMIT="fd6124c74da0801f23f9d324559d8b66fb83f533"
 	DPDK_COMMIT="10a8b45350c9af0c2d7731a2f058b0983a0c845a"
 	FMT_COMMIT="f61e71ccb9ab253f6d76096b2d958caf38fcccaa"
-	SEASTAR_COMMIT="b85b0fa07f314645cb04ca666f355f37a2ce5f2c"
+	SEASTAR_COMMIT="04896556c6556efd401db8da88ba73e97c3948fe"
 	SWAGGER_COMMIT="1b212bbe713905aac22af1edb836f5cf8cc39cc2"
 	SRC_URI="
 		https://github.com/scylladb/${PN}/archive/scylla-${MY_PV}.tar.gz -> ${MY_P}.tar.gz
