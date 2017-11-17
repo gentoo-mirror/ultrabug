@@ -7,6 +7,7 @@ dev-db/couchbase-server-community 4.5.1: Distributed key-value database manageme
 dev-db/scylla 2.0.1 9999: NoSQL data store using the seastar framework, compatible with Apache Cassandra
 dev-libs/libcouchbase 2.5.3: Couchbase C Client Library
 dev-libs/libdwarf 20150507: Library to deal with DWARF Debugging Information Format
+dev-libs/libhdfs3 9999: A Native C/C++ HDFS Client
 dev-libs/libketama 20141001: C library for consistent hashing
 dev-libs/thrift 0.9.1 0.9.3: Lightweight, language-independent software stack with associated code generation mechanism for RPC
 dev-python/consulate 0.5.1: Python client for the Consul HTTP API
