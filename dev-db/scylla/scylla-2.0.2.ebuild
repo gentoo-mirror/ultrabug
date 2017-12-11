@@ -13,7 +13,7 @@ else
 	C_ARES_COMMIT="fd6124c74da0801f23f9d324559d8b66fb83f533"
 	DPDK_COMMIT="10a8b45350c9af0c2d7731a2f058b0983a0c845a"
 	FMT_COMMIT="f61e71ccb9ab253f6d76096b2d958caf38fcccaa"
-	SEASTAR_COMMIT="04896556c6556efd401db8da88ba73e97c3948fe"
+	SEASTAR_COMMIT="0dbedf03dcca824b35cd7c2c4fdc8769a041a21f"
 	SWAGGER_COMMIT="1b212bbe713905aac22af1edb836f5cf8cc39cc2"
 	SRC_URI="
 		https://github.com/scylladb/${PN}/archive/scylla-${MY_PV}.tar.gz -> ${MY_P}.tar.gz
