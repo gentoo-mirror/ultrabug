@@ -1,4 +1,4 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -64,7 +64,7 @@ RDEPEND="
 	dev-libs/libaio
 	dev-libs/libxml2
 	dev-libs/protobuf
-	=dev-libs/thrift-0.9.1
+	>=dev-libs/thrift-0.9.3
 	dev-python/pyparsing[${PYTHON_USEDEP}]
 	dev-python/pyudev[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
