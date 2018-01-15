@@ -13,6 +13,7 @@ else
 	KEYWORDS="~amd64"
 	S="${WORKDIR}/scylla-jmx-scylla-${MY_PV}"
 fi
+
 PYTHON_COMPAT=( python2_7 )
 
 inherit java-pkg-2 systemd user
@@ -24,10 +25,14 @@ LICENSE="Apache-2.0"
 SLOT="0"
 
 CDEPEND="dev-java/maven-bin:3.3"
+
+REQUIRED_USE="${PYTHON_REQUIRED_USE}"
+
 RDEPEND="
 	${CDEPEND}
 	${PYTHON_DEPS}
 	>=virtual/jre-1.8"
+
 DEPEND="
 	${CDEPEND}
 	>=virtual/jdk-1.8"
