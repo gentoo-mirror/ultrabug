@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
 <pkgmetadata>
-	<maintainer>
-		<email>dev-zero@gentoo.org</email>
-		<name>Tiziano Müller</name>
+	<maintainer type="person">
+		<email>ultrabug@gentoo.org</email>
+		<name>Ultrabug</name>
 	</maintainer>
 	<use>
 		<flag name='cpp'>Enable C++ runtime support, requires <pkg>dev-libs/boost</pkg></flag>

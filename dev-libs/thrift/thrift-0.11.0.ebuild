@@ -1,6 +1,5 @@
-# Copyright 1999-2014 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI=5
 
@@ -10,19 +9,19 @@ GENTOO_DEPEND_ON_PERL="no"
 
 inherit autotools eutils distutils-r1 perl-module
 
-DESCRIPTION="Lightweight, language-independent software stack with associated code generation mechanism for RPC"
-HOMEPAGE="http://thrift.apache.org"
-SRC_URI="https://github.com/apache/${PN}/archive/${PV}.tar.gz"
+DESCRIPTION="Software stack with associated code generation mechanism for RPC"
+HOMEPAGE="https://thrift.apache.org"
+SRC_URI="mirror://apache/${PN}/${PV}/${P}.tar.gz"
 
 LICENSE="Apache-2.0"
 SLOT="0"
 KEYWORDS="~amd64"
-IUSE="+cpp +glib event perl python qt4 static-libs test +zlib"
+IUSE="+cpp +glib libevent perl python qt4 static-libs test +zlib"
 
 REQUIRED_USE="python? ( ${PYTHON_REQUIRED_USE} )"
 
 RDEPEND="cpp? ( dev-libs/boost:= )
-	event? ( dev-libs/libevent )
+	libevent? ( dev-libs/libevent )
 	glib? ( dev-libs/glib:2 )
 	perl? ( dev-lang/perl:= dev-perl/Bit-Vector )
 	qt4? ( dev-qt/qtcore:4 )
@@ -52,7 +51,7 @@ src_configure() {
 		$(use_enable test) \
 		$(use_with cpp) \
 		$(use_with cpp boost) \
-		$(use_with event libevent) \
+		$(use_with libevent) \
 		$(use_with glib c_glib) \
 		$(use_with qt4 qt) \
 		$(use_with zlib) \
