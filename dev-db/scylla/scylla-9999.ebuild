@@ -160,10 +160,12 @@ src_prepare() {
 }
 
 src_configure() {
+	python_setup
+
 	# native CPU CFLAGS are strongly enforced by upstreams, respect that
 	replace-cpu-flags "*" "native"
 
-	./configure.py --mode=release --with=scylla --enable-dpdk --disable-xen --compiler "$(tc-getCXX)" --ldflags "${LDFLAGS}" --cflags "${CFLAGS}" || die
+	${EPYTHON} configure.py --mode=release --with=scylla --enable-dpdk --disable-xen --compiler "$(tc-getCXX)" --ldflags "${LDFLAGS}" --cflags "${CFLAGS}" --python ${EPYTHON} || die
 }
 
 src_compile() {
