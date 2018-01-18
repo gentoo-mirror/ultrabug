@@ -16,7 +16,7 @@ fi
 
 PYTHON_COMPAT=( python2_7 )
 
-inherit java-pkg-2 systemd user python-r1
+inherit java-pkg-2 python-r1 systemd user
 
 DESCRIPTION="Scylla JMX"
 HOMEPAGE="https://github.com/scylladb/scylla-jmx"
