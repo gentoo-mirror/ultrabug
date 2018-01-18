@@ -15,7 +15,7 @@ else
 fi
 PYTHON_COMPAT=( python2_7 )
 
-inherit java-pkg-2 systemd user
+inherit java-pkg-2 python-r1 systemd user
 
 DESCRIPTION="Scylla JMX"
 HOMEPAGE="https://github.com/scylladb/scylla-jmx"
@@ -24,10 +24,14 @@ LICENSE="Apache-2.0"
 SLOT="0"
 
 CDEPEND="dev-java/maven-bin:3.3"
+
+REQUIRED_USE="${PYTHON_REQUIRED_USE}"
+
 RDEPEND="
 	${CDEPEND}
 	${PYTHON_DEPS}
 	>=virtual/jre-1.8"
+
 DEPEND="
 	${CDEPEND}
 	>=virtual/jdk-1.8"
