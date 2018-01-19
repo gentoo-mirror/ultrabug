@@ -63,7 +63,7 @@ RDEPEND="
 	dev-libs/libaio
 	dev-libs/libxml2
 	dev-libs/protobuf
-	>=dev-libs/thrift-0.9.3
+	<dev-libs/thrift-0.11.0
 	dev-python/pyparsing[${PYTHON_USEDEP}]
 	dev-python/pyudev[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
