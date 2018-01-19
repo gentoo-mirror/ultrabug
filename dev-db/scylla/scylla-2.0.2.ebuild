@@ -191,6 +191,7 @@ src_install() {
 
 	insinto /etc/sysctl.d
 	doins dist/common/sysctl.d/*.conf
+	doins dist/debian/sysctl.d/*.conf
 
 	insinto /etc/modprobe.d
 	doins dist/common/modprobe.d/*
