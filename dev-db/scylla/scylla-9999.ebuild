@@ -98,6 +98,14 @@ ERROR_VFIO="${PN} running with DPDK recommends support for Non-Privileged usersp
 DOCS=( LICENSE.AGPL NOTICE.txt ORIGIN README.md README-DPDK.md )
 PATCHES=()
 
+pkg_pretend() {
+	if tc-is-gcc ; then
+		if [[ $(gcc-major-version) -lt 7 ]] ; then
+				die "You need at least sys-devel/gcc-7.0"
+		fi
+	fi
+}
+
 pkg_setup() {
 	linux-info_pkg_setup
 	enewgroup scylla
