@@ -99,8 +99,8 @@ PATCHES=()
 
 pkg_pretend() {
 	if tc-is-gcc ; then
-		if [[ $(gcc-major-version) -lt 7 ]] ; then
-				die "You need at least sys-devel/gcc-7.0"
+		if [[ $(gcc-major-version) -lt 7 && $(gcc-minor-version) -lt 3 ]] ; then
+				die "You need at least sys-devel/gcc-7.3"
 		fi
 	fi
 }
