@@ -66,6 +66,7 @@ RDEPEND="
 	<dev-libs/thrift-0.11.0
 	dev-python/pyparsing[${PYTHON_USEDEP}]
 	dev-python/pyudev[${PYTHON_USEDEP}]
+	dev-python/pyyaml[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
 	<dev-util/ragel-7.0
 	dev-python/urwid[${PYTHON_USEDEP}]
