@@ -1,6 +1,8 @@
 # Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
+# TODO: node_exporter pkg name change to report upstream
+
 EAPI=6
 
 if [[ ${PV} == "9999" ]] ; then
@@ -9,11 +11,11 @@ if [[ ${PV} == "9999" ]] ; then
 else
 	MY_PV="${PV/_rc/.rc}"
 	MY_P="${PN}-${MY_PV}"
-	AMI_COMMIT="be90a3fb9f985b2d0773d4ad328ec3cd4c4a146b"
+	AMI_COMMIT="c5d9e9645b71561c44451a58d33333a6c96bb2ed"
 	C_ARES_COMMIT="fd6124c74da0801f23f9d324559d8b66fb83f533"
-	DPDK_COMMIT="10a8b45350c9af0c2d7731a2f058b0983a0c845a"
+	DPDK_COMMIT="8aa1d694919fb63211ed625539250008f5d7df9a"
 	FMT_COMMIT="f61e71ccb9ab253f6d76096b2d958caf38fcccaa"
-	SEASTAR_COMMIT="0dbedf03dcca824b35cd7c2c4fdc8769a041a21f"
+	SEASTAR_COMMIT="af1b78985579b7e707458188d17419e9412abe95"
 	SWAGGER_COMMIT="1b212bbe713905aac22af1edb836f5cf8cc39cc2"
 	SRC_URI="
 		https://github.com/scylladb/${PN}/archive/scylla-${MY_PV}.tar.gz -> ${MY_P}.tar.gz
@@ -37,7 +39,7 @@ HOMEPAGE="http://scylladb.com/"
 
 LICENSE="AGPL-3"
 SLOT="0"
-IUSE="doc systemd"
+IUSE="-collectd doc systemd"
 
 # NOTE:
 # if you want to debug using backtraces, enable the 'splitdebug' FEATURE:
@@ -49,10 +51,11 @@ IUSE="doc systemd"
 RESTRICT="test"
 
 RDEPEND="
-	app-admin/collectd
-	app-arch/lz4
-	=app-admin/scylla-tools-${PV}
+	<dev-libs/thrift-0.11.0
+	<dev-util/ragel-7.0
 	=app-admin/scylla-jmx-${PV}
+	=app-admin/scylla-tools-${PV}
+	app-arch/lz4
 	app-arch/snappy
 	dev-cpp/antlr-cpp:3.5
 	dev-cpp/yaml-cpp
@@ -63,11 +66,10 @@ RDEPEND="
 	dev-libs/libaio
 	dev-libs/libxml2
 	dev-libs/protobuf
-	<dev-libs/thrift-0.11.0
 	dev-python/pyparsing[${PYTHON_USEDEP}]
 	dev-python/pyudev[${PYTHON_USEDEP}]
+	dev-python/pyyaml[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
-	<dev-util/ragel-7.0
 	dev-python/urwid[${PYTHON_USEDEP}]
 	dev-util/systemtap
 	net-libs/gnutls
@@ -78,6 +80,7 @@ RDEPEND="
 	sys-libs/zlib
 	sys-process/numactl
 	x11-libs/libpciaccess
+	collectd? ( app-metrics/collectd )
 	systemd? ( sys-apps/systemd )
 "
 DEPEND="${RDEPEND}
@@ -96,6 +99,14 @@ ERROR_VFIO="${PN} running with DPDK recommends support for Non-Privileged usersp
 
 DOCS=( LICENSE.AGPL NOTICE.txt ORIGIN README.md README-DPDK.md )
 PATCHES=()
+
+pkg_pretend() {
+	if tc-is-gcc ; then
+		if [[ $(gcc-major-version) -lt 7 && $(gcc-minor-version) -lt 3 ]] ; then
+				die "You need at least sys-devel/gcc-7.3"
+		fi
+	fi
+}
 
 pkg_setup() {
 	linux-info_pkg_setup
