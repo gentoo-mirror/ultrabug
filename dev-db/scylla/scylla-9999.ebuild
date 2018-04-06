@@ -38,7 +38,7 @@ HOMEPAGE="http://scylladb.com/"
 
 LICENSE="AGPL-3"
 SLOT="0"
-IUSE="doc systemd"
+IUSE="-collectd doc systemd"
 
 # NOTE:
 # if you want to debug using backtraces, enable the 'splitdebug' FEATURE:
@@ -50,10 +50,11 @@ IUSE="doc systemd"
 RESTRICT="test"
 
 RDEPEND="
-	app-admin/collectd
-	app-arch/lz4
-	=app-admin/scylla-tools-${PV}
+	<dev-libs/thrift-0.11.0
+	<dev-util/ragel-7.0
 	=app-admin/scylla-jmx-${PV}
+	=app-admin/scylla-tools-${PV}
+	app-arch/lz4
 	app-arch/snappy
 	dev-cpp/antlr-cpp:3.5
 	dev-cpp/yaml-cpp
@@ -64,12 +65,10 @@ RDEPEND="
 	dev-libs/libaio
 	dev-libs/libxml2
 	dev-libs/protobuf
-	<dev-libs/thrift-0.11.0
 	dev-python/pyparsing[${PYTHON_USEDEP}]
 	dev-python/pyudev[${PYTHON_USEDEP}]
 	dev-python/pyyaml[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
-	<dev-util/ragel-7.0
 	dev-python/urwid[${PYTHON_USEDEP}]
 	dev-util/systemtap
 	net-libs/gnutls
@@ -80,6 +79,7 @@ RDEPEND="
 	sys-libs/zlib
 	sys-process/numactl
 	x11-libs/libpciaccess
+	collectd? ( app-metrics/collectd )
 	systemd? ( sys-apps/systemd )
 "
 DEPEND="${RDEPEND}
@@ -101,7 +101,7 @@ PATCHES=()
 
 pkg_pretend() {
 	if tc-is-gcc ; then
-		if [[ $(gcc-major-version) -lt 7 ]] ; then
+		if [[ $(gcc-major-version) -lt 7 && $(gcc-minor-version) -lt 3 ]] ; then
 				die "You need at least sys-devel/gcc-7.0"
 		fi
 	fi
