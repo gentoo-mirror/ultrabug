@@ -5,4 +5,7 @@
     <email>ultrabug@gentoo.org</email>
     <name>Ultrabug</name>
   </maintainer>
+  <use>
+    <flag name="collectd">install (obsolete) <pkg>app-metrics/collectd</pkg> dependency.</flag>
+  </use>
 </pkgmetadata>
