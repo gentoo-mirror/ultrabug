@@ -1,0 +1,13 @@
+DEFINED_PHASES=install setup unpack
+DEPEND=app-arch/rpm2targz dev-db/scylla
+DESCRIPTION=Scylla Manager
+EAPI=6
+HOMEPAGE=http://docs.scylladb.com/operating-scylla/manager/
+KEYWORDS=~amd64
+LICENSE=SCYLLADB-PROPRIETARY
+RDEPEND=app-arch/rpm2targz dev-db/scylla
+RESTRICT=fetch
+SLOT=0
+SRC_URI=scylla-manager-1.0.0-0.20180119.49f4a33.x86_64.rpm scylla-manager-client-1.0.0-0.20180119.49f4a33.x86_64.rpm scylla-manager-server-1.0.0-0.20180119.49f4a33.x86_64.rpm
+_eclasses_=user	8bc2845510e2109af75e3eeac607ec81
+_md5_=7f67efd8793c21f304145207a6e8d856
