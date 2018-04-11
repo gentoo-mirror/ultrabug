@@ -1,0 +1,180 @@
+ScyllaDB Proprietary  
+Software License Agreement v. 1.0
+The ScyllaDB database (the “Software”) is licensed to you under the following terms and conditions:
+LICENSES
+Subject to and conditioned upon compliance with the terms and conditions of this Agreement, including 
+the limitations, conditions, restrictions and obligations set forth below:
+Evaluation License. 
+For the Software designated as provided under an Evaluation License, ScyllaDB Inc. 
+(
+“ScyllaDB”
+) grants you a non-exclusive, non-transferable, non-sublicensable, revocable, limited right 
+to install and use the Software for 90 days period commencing as of the Effective Date, subject to the 
+parameters contained in the applicable purchase order, for the sole purpose of evaluating the Software  
+and determining whether you wish to purchase an Enterprise License (the “
+Evaluation License
+”).
+Development License.
+ For the Software designated as provided under a Development License, ScyllaDB 
+grants you a non-exclusive, non-transferable, non-sublicensable, revocable, limited right to install and use 
+the Software, subject to the parameters contained in the applicable purchase order, for the sole purpose 
+of developing and testing the Software in order to determine its the compatibility to your internal systems 
+(the “
+Development License
+”). For the avoidance of doubt, in case you wish to use the Software for any 
+purpose other than as permitted under this Development License, you must first contact ScyllaDB and 
+purchase an Enterprise License.  
+Enterprise License.
+ For the Software designated as provided under an Enterprise License, ScyllaDB grants 
+you a non-exclusive, non-transferable, non-sublicensable, revocable, limited right to install and use the 
+Software, subject to the parameters contained in the applicable purchase order (the “
+Enterprise License
+”).
+Use Restrictions. 
+Under any of the licenses granted herein, you shall not: (a) transfer the Software or any 
+portions of the Software to any other party except as expressly provided herein; (b) copy the Software or 
+any portion thereof, except that you may make one copy of the Software for backup purposes, in object 
+code form only, provided that the backup copy must include all copyright or other proprietary notices 
+contained on the original; (c) reverse engineer, disassemble, or decompile the Software in any form or 
+by any means; (d) modify or create derivative works of the Software; (e) incorporate the Software into 
+the structure, machinery or controls of any aircraft, other aerial device, military vehicle, hovercraft, 
+waterborne craft or any medical equipment; or (f) distribute, sell, sublicense or otherwise transfer or 
+provide access to the Software to any third party, including, without limitation, provision of database 
+management services through the Software.
+PROPRIETARY RIGHTS 
+ScyllaDB retains ownership of all rights, interests and title in the Software and in the copies thereof and 
+Customer acknowledges that all rights, title and interest in and to the Software and any and all trademarks, 
+trade names, copyrights, patents, patentable inventions, and any and all other intellectual property rights 
+used or embodied in or in connection therewith, are and shall remain in the sole and exclusive ownership 
+of ScyllaDB, subject only to the rights and licenses expressly granted by ScyllaDB hereunder. Customer 
+shall make no claim of right to any Software to be supplied by ScyllaDB hereunder and acknowledges  
+that as between ScyllaDB and Customer, such Software is proprietary to ScyllaDB.
+TAXES
+All prices for the Software and any services provided in connection therewith as stated in applicable order 
+are exclusive of all federal, state and local excise, sales, use, value-added, occupational, levies, assessments, 
+import duties and like taxes which may be imposed by any governmental entity in connection with any 
+transaction contemplated by this Agreement and/or the purchase order (excluding any taxes assessed 
+against ScyllaDB’s net income).  
+CONFIDENTIALTIY
+During the term of this Agreement and thereafter, the Parties (i) shall treat as confidential and proprietary 
+all information which is identified as confidential or proprietary, or which can be reasonably deemed to 
+be such, and which is disclosed by one Party to the other; (ii) shall not disclose such information to any 
+third party, except for such party’s employees and consultants which have a specific need to know such 
+information for the purpose of this Agreement and only if such employees or consultants executed a 
+confidentiality agreement protecting such information by terms no less stringent than those contained 
+in this Section. The foregoing shall not apply to any information that the Party receiving such information 
+can prove by reasonable written and dated records: (a) is already in the Party’s possession, prior to the 
+disclosure thereof, other than as a result of the breach of a legal or contractual obligation on the part of 
+the receiving Party; (b) was lawfully received by such Party from a third party having rights to disclose, 
+and under no confidentiality obligations known to such Party with respect to such information; (c) is 
+or becomes a part of the public knowledge through no wrongful act of either Party; (d) is approved for 
+release in writing by the Party to whom the confidential or proprietary information belongs; or (e) is or was 
+developed independently by the receiving Party without reliance on, reference to or use of any information 
+of the other Party, and without any breach of this Agreement, as evidenced by contemporaneous written 
+documents. 
+DISCLAIMER OF WARRANTIES
+YOU AGREE THAT SCYLLADB HAS MADE NO EXPRESS WARRANTIES TO YOU REGARDING 
+THE SOFTWARE AND THAT THE SOFTWARE IS BEING PROVIDED TO YOU “AS IS” WITHOUT 
+WARRANTY OF ANY KIND. SCYLLADB DISCLAIMS ALL WARRANTIES WITH REGARD 
+TO THE SOFTWARE; EXPRESS OR IMPLIED; INCLUDING; WITHOUT LIMITATION; ANY 
+IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR PURPOSE; MERCHANTABILITY; 
+MERCHANTABLE QUALITY OR NONINFRINGEMENT OF THIRD PARTY RIGHTS. 
+LIMITATION OF LIABILITY
+TO THE EXTENT PERMISSIBLE UNDER APPLICABLE LAW, IN NO EVENT WILL SCYLLADB 
+BE LIABLE TO YOU FOR ANY LOSS OF USE; INTERRUPTION OF BUSINESS; OR ANY 
+DIRECT; INDIRECT; SPECIAL; INCIDENTAL; OR CONSEQUENTIAL DAMAGES OF ANY 
+KIND (INCLUDING LOST PROFITS) REGARDLESS OF THE FORM OF ACTION WHETHER 
+IN CONTRACT; TORT (INCLUDING NEGLIGENCE); STRICT PRODUCT LIABILITY OR 
+OTHERWISE; EVEN IF SCYLLADB HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH 
+DAMAGES. 
+In no event shall the total cumulative liability of ScyllaDB, for all claims arising out of or relating to this 
+Agreement, exceed the total amounts paid and due by Customer to ScyllaDB during the period of the 
+12 months preceding the date of the claim. The foregoing provision limiting the liability of ScyllaDB shall 
+apply regardless of the form or cause of action, whether in contract or tort, or a breach of a fundamental 
+term or condition. 
+INTELLECTUAL PROPERTY INFRINGEMENT 
+Indemnity Obligation and Conditions. 
+In the event that a legal action is brought against Customer to  
+the extent that it is based on a claim that the Software infringes a U.S. patent or copyright of a third party, 
+ScyllaDB shall provide Customer with legal defense at its own expense and pay for costs and damages 
+awarded against Customer in such action or agreed to under a settlement, provided that: (i) Customer 
+promptly provides ScyllaDB with a written notice of such legal action; (ii) Customer grants ScyllaDB 
+complete authority over the legal defense and settlement negotiations; (iii) Customer fully cooperates with 
+ScyllaDB with respect to such legal action; and (iv) no settlement with respect to such legal action shall be 
+made without ScyllaDB’s prior written approval. 
+Notwithstanding the above, ScyllaDB shall have no liability to defend and pay for any action pertaining to 
+an infringement of intellectual property rights to the extent that the action: (i) is based on a modification 
+of the Software modified not by ScyllaDB; (ii) results from Customer’s failure to use an updated version 
+of the Software; (iii) is based on a combination or use of the Software with any software, program or 
+device, including without limitation software licensed under the terms of applicable open source licenses, 
+not provided or approved by ScyllaDB; (iv) results from Customer’s use of the Software following the 
+termination of the Agreement. 
+THIS SECTION STATES SCYLLADB’S SOLE AND EXCLUSIVE LIABILITY, AND CUSTOMER’S 
+SOLE AND EXCLUSIVE REMEDY, WITH RESPECT TO AN INFRINGEMENT OF INTELLECTUAL 
+PROPERTY RIGHTS OF ANY KIND.
+EXPORT CONTROL
+As required by the laws of the United States and other countries, you represent and warrant that you:  
+(a) understand that the Software may be subject to export controls under the U.S. Commerce 
+Department’s Export Administration Regulations (“
+EAR
+”); (b) are not located in a prohibited destination 
+country under the EAR or U.S. sanctions regulations; (c) will not export, re-export, or transfer the 
+Software to any prohibited destination or persons or entities on the U.S. Bureau of Industry and Security 
+Denied Parties List or Entity List, or the U.S. Office of Foreign Assets Control list of Specially Designated 
+Nationals and Blocked Persons, or any similar lists maintained by other countries, without the necessary 
+export license(s) or authorization(s); (d) will not use or transfer the Software for use in connection with 
+any nuclear, chemical or biological weapons, missile technology, or military end-uses where prohibited by 
+an applicable arms embargo, unless authorized by the relevant government agency by regulation or specific 
+license; (e) understand and agree that if you are in the United States and export or transfers the Software to 
+United States Headquarters
+1900 Embarcadero Rd 
+Palo Alto, CA 94303 U.S.A.
+Phone: +1 (650) 332-9582 
+Email: info@scylladb.com
+Israel Headquarters
+11 Galgalei Haplada
+Herzelia, Israel
+scylladb.com
+eligible end users, you will, to the extent required by EAR Section 740.17(e), submit semi-annual reports 
+to the Commerce Department’s Bureau of Industry and Security, which include the name and address 
+(including country) of each transferee; and (f) understand that countries including the United States 
+may restrict the import, use, or export of encryption products (which may include the Software and the 
+components) and agree that you shall be solely responsible for compliance with any such import, use, 
+or export restrictions.
+TERMINATION OF THIS AGREEMENT
+You may terminate this Agreement by destroying all copies of the Software. Your right to use the Software 
+shall end immediately if you fail to comply with any of the terms set forth in this Agreement, in which 
+case you shall destroy all copies of the Software. This Agreement shall immediately terminate upon the 
+termination or expiration of the Support Services Agreement between Customer and ScyllaDB.
+GENERAL PROVISIONS
+Assignment.
+ The Customer may not assign, transfer, or otherwise dispose of this Agreement or any of its 
+rights, interest, or obligations hereunder without the prior written consent of ScyllaDB. ScyllaDB may 
+transfer or assign this agreement to: (a) an affiliate of the Company; or (b) an acquirer of all or substantially 
+all of the shares or assets of such party through change of control event. Any assignment of this Agreement 
+in violation of this provision shall be null and void.
+Notices. 
+All notices and demands hereunder shall be in writing and shall be served by at least one of the 
+following: (1) personal service; (2) registered or certified mail at the address of the receiving party set forth 
+in this Agreement (or at such different address as may be designated by such Party by written notice to the 
+other Party); (3) electronic mail with electronic confirmation and followed immediately by (1) and/or (2).
+Governing Law and Jurisdiction.
+ This Agreement shall be governed and construed in accordance with the 
+laws of Israel, without giving effect to its conflicts of laws provisions, and the Courts situated in Tel Aviv, 
+Israel shall have sole and exclusive jurisdiction over the Parties and any conflict and/or dispute arising out 
+of, or in connection to, this Agreement.
+Integration.
+ This Agreement sets forth the entire agreement between the parties on the subject hereof 
+and supersedes any and all previously or currently existing oral or written agreements, understandings, 
+memoranda, letters of intent, or representations on the subject matter hereof, as of the Effective Date. This 
+Agreement may be amended only by a writing signed by the duly empowered representatives of the Parties.
+Severance.
+ If any one or more of the terms of this Agreement shall for any reason be held to be invalid 
+or unenforceable, such term shall be construed in a manner to enable it to be enforced to the extent 
+compatible with applicable law. Any determination of the invalidity or unenforceability of any provision 
+of the Agreement shall not affect the remaining provisions hereof unless the business purpose of this 
+Agreement is substantially frustrated thereby.
+Headings.
+ The titles and headings of the various sections and paragraphs in this Agreement are intended 
+solely for reference and are not intended for any other purpose whatsoever or to explain, modify, or place 
+any construction on any of the provisions of this Agreement.
