@@ -1,0 +1,37 @@
+From acdce55572b9bdeeddbf946c827f4eb05767a468 Mon Sep 17 00:00:00 2001
+From: Vladimir Krivopalov <vladimir@scylladb.com>
+Date: Mon, 5 Mar 2018 09:50:20 -0800
+Subject: [PATCH] Inject CryptoPP namespace where Crypto++ `byte` typedef is
+ used.
+
+In Crypto++ v6, the `byte` typedef has been moved from the global
+namespace to the CryptoPP:: namespace.
+To make Scylla code compile with both old and new versions, bring the
+namespace in so that the code works regardless of the scope of `byte`
+definition.
+
+Fixes #3252
+
+Signed-off-by: Vladimir Krivopalov <vladimir@scylladb.com>
+Message-Id: <60e7bfe868b778b1c9bbe15d7247db64b61bd406.1520272198.git.vladimir@scylladb.com>
+---
+ repair/repair.cc | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/repair/repair.cc b/repair/repair.cc
+index 6d31ade7c..9f66a7279 100644
+--- a/repair/repair.cc
++++ b/repair/repair.cc
+@@ -454,6 +454,9 @@ class sha256_hasher {
+     CryptoPP::SHA256 hash{};
+ public:
+     void update(const char* ptr, size_t length) {
++        // In Crypto++ v6, the `byte` typedef has been moved to CryptoPP:: namespace
++        // We bring the namespace in to make the same code work for both 5.x and 6.x versions
++        using namespace CryptoPP;
+         static_assert(sizeof(char) == sizeof(byte), "Assuming lengths will be the same");
+         hash.Update(reinterpret_cast<const byte*>(ptr), length * sizeof(byte));
+     }
+-- 
+2.17.1
+

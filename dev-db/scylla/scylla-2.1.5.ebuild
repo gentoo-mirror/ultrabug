@@ -11,11 +11,11 @@ if [[ ${PV} == "9999" ]] ; then
 else
 	MY_PV="${PV/_rc/.rc}"
 	MY_P="${PN}-${MY_PV}"
-	AMI_COMMIT="c5d9e9645b71561c44451a58d33333a6c96bb2ed"
+	AMI_COMMIT="0df779dcca3dc36ec7a6e91295a2f96828b07dc8"
 	C_ARES_COMMIT="fd6124c74da0801f23f9d324559d8b66fb83f533"
 	DPDK_COMMIT="8aa1d694919fb63211ed625539250008f5d7df9a"
 	FMT_COMMIT="f61e71ccb9ab253f6d76096b2d958caf38fcccaa"
-	SEASTAR_COMMIT="0e6dcd5cfd145c87149caeedd9caea2e06b0c794"
+	SEASTAR_COMMIT="2a2c1d2708bda22087cb04442caebf2e2fe61ef2"
 	SWAGGER_COMMIT="1b212bbe713905aac22af1edb836f5cf8cc39cc2"
 	SRC_URI="
 		https://github.com/scylladb/${PN}/archive/scylla-${MY_PV}.tar.gz -> ${MY_P}.tar.gz
@@ -98,7 +98,10 @@ ERROR_TRANSPARENT_HUGEPAGE="${PN} recommends support for Transparent Hugepage (T
 ERROR_VFIO="${PN} running with DPDK recommends support for Non-Privileged userspace driver framework (VFIO)."
 
 DOCS=( LICENSE.AGPL NOTICE.txt ORIGIN README.md README-DPDK.md )
-PATCHES=()
+PATCHES=(
+	"${FILESDIR}/0001-Fix-Scylla-compilation-with-Crypto-v6.patch"
+	"${FILESDIR}/0001-Inject-CryptoPP-namespace-where-Crypto-byte-typedef-.patch"
+)
 
 pkg_pretend() {
 	if tc-is-gcc ; then
@@ -156,13 +159,6 @@ src_prepare() {
 	cp dist/common/systemd/scylla-server.service.in build/scylla-server.service || die
 	sed -e "s#@@SYSCONFDIR@@#/etc/sysconfig#g" -i build/scylla-server.service || die
 
-	# fix seastar -Werror crashing build
-	# sed -e 's/ -Werror//g' -i seastar/configure.py || die
-
-	# fix dpdk for >=glibc-2.25
-	# https://github.com/scylladb/dpdk/issues/3
-	sed -e '42i #include <sys/sysmacros.h>' -i seastar/dpdk/lib/librte_eal/linuxapp/eal/eal_pci_uio.c || die
-
 	# run a clean autoreconf on c-ares
 	pushd seastar/c-ares
 	eautoreconf || die
@@ -181,7 +177,7 @@ src_configure() {
 src_compile() {
 	# force number of parallel builds because ninja does a bad job in guessing
 	# and the default build will kill your RAM/Swap in no time
-	ninja -v build/release/scylla build/release/iotune -j4 || die
+	ninja -v build/release/scylla build/release/iotune -j2 || die
 }
 
 src_install() {
@@ -203,9 +199,6 @@ src_install() {
 	insinto /etc/sysctl.d
 	doins dist/common/sysctl.d/*.conf
 	doins dist/debian/sysctl.d/*.conf
-
-	insinto /etc/modprobe.d
-	doins dist/common/modprobe.d/*
 
 	insinto /etc/scylla
 	doins conf/*

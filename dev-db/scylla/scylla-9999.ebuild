@@ -97,7 +97,10 @@ ERROR_TRANSPARENT_HUGEPAGE="${PN} recommends support for Transparent Hugepage (T
 ERROR_VFIO="${PN} running with DPDK recommends support for Non-Privileged userspace driver framework (VFIO)."
 
 DOCS=( LICENSE.AGPL NOTICE.txt ORIGIN README.md README-DPDK.md )
-PATCHES=()
+PATCHES=(
+	"${FILESDIR}/0001-Fix-Scylla-compilation-with-Crypto-v6.patch"
+	"${FILESDIR}/0001-Inject-CryptoPP-namespace-where-Crypto-byte-typedef-.patch"
+)
 
 pkg_pretend() {
 	if tc-is-gcc ; then
@@ -155,13 +158,6 @@ src_prepare() {
 	cp dist/common/systemd/scylla-server.service.in build/scylla-server.service || die
 	sed -e "s#@@SYSCONFDIR@@#/etc/sysconfig#g" -i build/scylla-server.service || die
 
-	# fix seastar -Werror crashing build
-	# sed -e 's/ -Werror//g' -i seastar/configure.py || die
-
-	# fix dpdk for >=glibc-2.25
-	# https://github.com/scylladb/dpdk/issues/3
-	sed -e '42i #include <sys/sysmacros.h>' -i seastar/dpdk/lib/librte_eal/linuxapp/eal/eal_pci_uio.c || die
-
 	# run a clean autoreconf on c-ares
 	pushd seastar/c-ares
 	eautoreconf || die
@@ -202,9 +198,6 @@ src_install() {
 	insinto /etc/sysctl.d
 	doins dist/common/sysctl.d/*.conf
 	doins dist/debian/sysctl.d/*.conf
-
-	insinto /etc/modprobe.d
-	doins dist/common/modprobe.d/*
 
 	insinto /etc/scylla
 	doins conf/*
