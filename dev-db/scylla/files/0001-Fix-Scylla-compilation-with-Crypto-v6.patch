@@ -1,0 +1,34 @@
+From 99bd5180ba048f1cdd1ebd76c1e58ff78595e20d Mon Sep 17 00:00:00 2001
+From: Vladimir Krivopalov <vladimir@scylladb.com>
+Date: Sat, 3 Mar 2018 17:11:54 -0800
+Subject: [PATCH] Fix Scylla compilation with Crypto++ v6.
+
+In Crypto++ v6, the `byte` typedef has been moved from the global
+namespace to the `CryptoPP::` namespace.
+
+This fix brings in the CryptoPP namespace so that the `byte` typedef is
+seen with both old and new versions of Crypto++.
+
+Fixes #3252.
+
+Signed-off-by: Vladimir Krivopalov <vladimir@scylladb.com>
+Message-Id: <799d055be710231884d101a52c0be8ed8b0a9806.1520125889.git.vladimir@scylladb.com>
+---
+ md5_hasher.hh | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/md5_hasher.hh b/md5_hasher.hh
+index 379aff14a..723bc1c71 100644
+--- a/md5_hasher.hh
++++ b/md5_hasher.hh
+@@ -33,6 +33,7 @@ class md5_hasher {
+     static constexpr size_t size = CryptoPP::Weak::MD5::DIGESTSIZE;
+ 
+     void update(const char* ptr, size_t length) {
++        using namespace CryptoPP;
+         static_assert(sizeof(char) == sizeof(byte), "Assuming lengths will be the same");
+         hash.Update(reinterpret_cast<const byte*>(ptr), length * sizeof(byte));
+     }
+-- 
+2.17.1
+
