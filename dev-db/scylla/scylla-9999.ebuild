@@ -192,7 +192,7 @@ src_install() {
 	doins dist/common/collectd.d/scylla.conf
 
 	insinto /etc/scylla.d
-	mv conf/housekeeping.cfg dist/common/scylla.d/
+	mv conf/housekeeping.cfg dist/common/scylla.d/ || die
 	doins dist/common/scylla.d/*.conf
 
 	insinto /etc/sysctl.d
