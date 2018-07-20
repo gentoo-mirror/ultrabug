@@ -16,6 +16,7 @@ else
 	FMT_COMMIT=""
 	SEASTAR_COMMIT=""
 	SWAGGER_COMMIT=""
+	XXHASH_COMMIT=""
 	SRC_URI="
 		https://github.com/scylladb/${PN}/archive/scylla-${MY_PV}.tar.gz -> ${MY_P}.tar.gz
 		https://github.com/scylladb/seastar/archive/${SEASTAR_COMMIT}.tar.gz -> seastar-${SEASTAR_COMMIT}.tar.gz
@@ -24,6 +25,7 @@ else
 		https://github.com/scylladb/fmt/archive/${FMT_COMMIT}.tar.gz -> fmt-${FMT_COMMIT}.tar.gz
 		https://github.com/scylladb/c-ares/archive/${C_ARES_COMMIT}.tar.gz -> c-ares-${C_ARES_COMMIT}.tar.gz
 		https://github.com/scylladb/scylla-ami/archive/${AMI_COMMIT}.tar.gz -> scylla-ami-${AMI_COMMIT}.tar.gz
+		https://github.com/scylladb/xxHash/archive/${AMI_COMMIT}.tar.gz -> scylla-xxhash-${XXHASH_COMMIT}.tar.gz
 	"
 	KEYWORDS="~amd64"
 	S="${WORKDIR}/scylla-${MY_P}"
@@ -52,8 +54,8 @@ RESTRICT="test"
 RDEPEND="
 	<dev-libs/thrift-0.11.0
 	<dev-util/ragel-7.0
-	=app-admin/scylla-jmx-${PV}
-	=app-admin/scylla-tools-${PV}
+	~app-admin/scylla-jmx-${PV}
+	~app-admin/scylla-tools-${PV}
 	app-arch/lz4
 	app-arch/snappy
 	dev-cpp/antlr-cpp:3.5
@@ -97,10 +99,7 @@ ERROR_TRANSPARENT_HUGEPAGE="${PN} recommends support for Transparent Hugepage (T
 ERROR_VFIO="${PN} running with DPDK recommends support for Non-Privileged userspace driver framework (VFIO)."
 
 DOCS=( LICENSE.AGPL NOTICE.txt ORIGIN README.md README-DPDK.md )
-PATCHES=(
-	"${FILESDIR}/0001-Fix-Scylla-compilation-with-Crypto-v6.patch"
-	"${FILESDIR}/0001-Inject-CryptoPP-namespace-where-Crypto-byte-typedef-.patch"
-)
+PATCHES=()
 
 pkg_pretend() {
 	if tc-is-gcc ; then
@@ -142,6 +141,9 @@ src_prepare() {
 
 		rmdir dist/ami/files/scylla-ami || die
 		mv "${WORKDIR}/scylla-ami-${AMI_COMMIT}" dist/ami/files/scylla-ami || die
+
+		rmdir xxHash || die
+		mv "${WORKDIR}/xxHash-${XXHASH_COMMIT}" xxHash || die
 
 		# set version
 		echo "${MY_PV}-gentoo" > version
