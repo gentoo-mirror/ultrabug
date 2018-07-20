@@ -11,12 +11,13 @@ if [[ ${PV} == "9999" ]] ; then
 else
 	MY_PV="${PV/_rc/.rc}"
 	MY_P="${PN}-${MY_PV}"
-	AMI_COMMIT="0df779dcca3dc36ec7a6e91295a2f96828b07dc8"
+	AMI_COMMIT="6ed71a3126170d32fa1712370da6945c161b4bd8"
 	C_ARES_COMMIT="fd6124c74da0801f23f9d324559d8b66fb83f533"
-	DPDK_COMMIT="8aa1d694919fb63211ed625539250008f5d7df9a"
+	DPDK_COMMIT="a1774652fbbb1fe7c0ff392d5e66de60a0154df6"
 	FMT_COMMIT="f61e71ccb9ab253f6d76096b2d958caf38fcccaa"
-	SEASTAR_COMMIT="2a2c1d2708bda22087cb04442caebf2e2fe61ef2"
+	SEASTAR_COMMIT="6f61d7456e0a9969193106a0cc0e044ffead2126"
 	SWAGGER_COMMIT="1b212bbe713905aac22af1edb836f5cf8cc39cc2"
+	XXHASH_COMMIT="744892b802dcf61a78a3f2f1311d542577c16d66"
 	SRC_URI="
 		https://github.com/scylladb/${PN}/archive/scylla-${MY_PV}.tar.gz -> ${MY_P}.tar.gz
 		https://github.com/scylladb/scylla-seastar/archive/${SEASTAR_COMMIT}.tar.gz -> scylla-seastar-${SEASTAR_COMMIT}.tar.gz
@@ -25,6 +26,7 @@ else
 		https://github.com/scylladb/fmt/archive/${FMT_COMMIT}.tar.gz -> fmt-${FMT_COMMIT}.tar.gz
 		https://github.com/scylladb/c-ares/archive/${C_ARES_COMMIT}.tar.gz -> c-ares-${C_ARES_COMMIT}.tar.gz
 		https://github.com/scylladb/scylla-ami/archive/${AMI_COMMIT}.tar.gz -> scylla-ami-${AMI_COMMIT}.tar.gz
+		https://github.com/scylladb/xxHash/archive/${XXHASH_COMMIT}.tar.gz -> xxhash-${XXHASH_COMMIT}.tar.gz
 	"
 	KEYWORDS="~amd64"
 	S="${WORKDIR}/scylla-${MY_P}"
@@ -53,8 +55,8 @@ RESTRICT="test"
 RDEPEND="
 	<dev-libs/thrift-0.11.0
 	<dev-util/ragel-7.0
-	=app-admin/scylla-jmx-${PV}
-	=app-admin/scylla-tools-${PV}
+	~app-admin/scylla-jmx-${PV}
+	~app-admin/scylla-tools-${PV}
 	app-arch/lz4
 	app-arch/snappy
 	dev-cpp/antlr-cpp:3.5
@@ -98,10 +100,7 @@ ERROR_TRANSPARENT_HUGEPAGE="${PN} recommends support for Transparent Hugepage (T
 ERROR_VFIO="${PN} running with DPDK recommends support for Non-Privileged userspace driver framework (VFIO)."
 
 DOCS=( LICENSE.AGPL NOTICE.txt ORIGIN README.md README-DPDK.md )
-PATCHES=(
-	"${FILESDIR}/0001-Fix-Scylla-compilation-with-Crypto-v6.patch"
-	"${FILESDIR}/0001-Inject-CryptoPP-namespace-where-Crypto-byte-typedef-.patch"
-)
+PATCHES=()
 
 pkg_pretend() {
 	if tc-is-gcc ; then
@@ -109,6 +108,10 @@ pkg_pretend() {
 				die "You need at least sys-devel/gcc-7.3"
 		fi
 	fi
+	ewarn ""
+	ewarn "IMPORTANT!!"
+	ewarn "dev-libs/boost-1.65 needs to be patched with provided boost-1.65.0-icl-ttp-matching.patch"
+	ewarn ""
 }
 
 pkg_setup() {
@@ -143,6 +146,9 @@ src_prepare() {
 
 		rmdir dist/ami/files/scylla-ami || die
 		mv "${WORKDIR}/scylla-ami-${AMI_COMMIT}" dist/ami/files/scylla-ami || die
+
+		rmdir xxHash || die
+		mv "${WORKDIR}/xxHash-${XXHASH_COMMIT}" xxHash || die
 
 		# set version
 		echo "${MY_PV}-gentoo" > version
