@@ -57,6 +57,7 @@ RDEPEND="
 	<dev-util/ragel-7.0
 	~app-admin/scylla-jmx-${PV}
 	~app-admin/scylla-tools-${PV}
+	>=virtual/jdk-1.8.0
 	app-arch/lz4
 	app-arch/snappy
 	dev-cpp/antlr-cpp:3.5
@@ -76,6 +77,7 @@ RDEPEND="
 	dev-util/systemtap
 	net-libs/gnutls
 	net-misc/lksctp-tools
+	sys-apps/ethtool
 	sys-apps/hwloc
 	sys-fs/xfsprogs
 	sys-libs/libunwind
