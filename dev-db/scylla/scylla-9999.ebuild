@@ -4,7 +4,7 @@
 EAPI=6
 
 if [[ ${PV} == "9999" ]] ; then
-	# EGIT_COMMIT="scylla-"
+	EGIT_COMMIT="scylla-2.3.0"
 	EGIT_REPO_URI="https://github.com/scylladb/scylla.git"
 	inherit git-r3
 else
@@ -12,7 +12,6 @@ else
 	MY_P="${PN}-${MY_PV}"
 	AMI_COMMIT=""
 	C_ARES_COMMIT=""
-	DPDK_COMMIT=""
 	FMT_COMMIT=""
 	SEASTAR_COMMIT=""
 	SWAGGER_COMMIT=""
@@ -21,7 +20,6 @@ else
 		https://github.com/scylladb/${PN}/archive/scylla-${MY_PV}.tar.gz -> ${MY_P}.tar.gz
 		https://github.com/scylladb/seastar/archive/${SEASTAR_COMMIT}.tar.gz -> seastar-${SEASTAR_COMMIT}.tar.gz
 		https://github.com/scylladb/scylla-swagger-ui/archive/${SWAGGER_COMMIT}.tar.gz -> scylla-swagger-ui-${SWAGGER_COMMIT}.tar.gz
-		https://github.com/scylladb/dpdk/archive/${DPDK_COMMIT}.tar.gz -> dpdk-${DPDK_COMMIT}.tar.gz
 		https://github.com/scylladb/fmt/archive/${FMT_COMMIT}.tar.gz -> fmt-${FMT_COMMIT}.tar.gz
 		https://github.com/scylladb/c-ares/archive/${C_ARES_COMMIT}.tar.gz -> c-ares-${C_ARES_COMMIT}.tar.gz
 		https://github.com/scylladb/scylla-ami/archive/${AMI_COMMIT}.tar.gz -> scylla-ami-${AMI_COMMIT}.tar.gz
@@ -40,7 +38,7 @@ HOMEPAGE="http://scylladb.com/"
 
 LICENSE="AGPL-3"
 SLOT="0"
-IUSE="-collectd doc systemd"
+IUSE="doc systemd"
 
 # NOTE:
 # if you want to debug using backtraces, enable the 'splitdebug' FEATURE:
@@ -54,6 +52,7 @@ RESTRICT="test"
 RDEPEND="
 	<dev-libs/thrift-0.11.0
 	<dev-util/ragel-7.0
+	<sys-apps/hwloc-2.0.0
 	~app-admin/scylla-jmx-${PV}
 	~app-admin/scylla-tools-${PV}
 	>=virtual/jdk-1.8.0
@@ -69,6 +68,7 @@ RDEPEND="
 	dev-libs/libxml2
 	dev-libs/protobuf
 	dev-python/pyparsing[${PYTHON_USEDEP}]
+	dev-python/pystache[${PYTHON_USEDEP}]
 	dev-python/pyudev[${PYTHON_USEDEP}]
 	dev-python/pyyaml[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
@@ -77,13 +77,11 @@ RDEPEND="
 	net-libs/gnutls
 	net-misc/lksctp-tools
 	sys-apps/ethtool
-	sys-apps/hwloc
 	sys-fs/xfsprogs
 	sys-libs/libunwind
 	sys-libs/zlib
 	sys-process/numactl
 	x11-libs/libpciaccess
-	collectd? ( app-metrics/collectd )
 	systemd? ( sys-apps/systemd )
 "
 DEPEND="${RDEPEND}
@@ -93,12 +91,15 @@ DEPEND="${RDEPEND}
 
 # Discussion about kernel configuration:
 # https://groups.google.com/forum/#!topic/scylladb-dev/qJu2zrryv-s
-# For DPDK, removed HUGETLBFS PROC_PAGE_MONITOR UIO_PCI_GENERIC in favor of VFIO
-CONFIG_CHECK="~NUMA_BALANCING ~SYN_COOKIES ~TRANSPARENT_HUGEPAGE ~VFIO"
+CONFIG_CHECK="~NUMA_BALANCING ~SYN_COOKIES ~TRANSPARENT_HUGEPAGE"
 ERROR_NUMA_BALANCING="${PN} recommends support for Memory placement aware NUMA scheduler (NUMA_BALANCING)."
 ERROR_SYN_COOKIES="${PN} recommends support for TCP syncookie (SYN_COOKIES)."
 ERROR_TRANSPARENT_HUGEPAGE="${PN} recommends support for Transparent Hugepage (TRANSPARENT_HUGEPAGE)."
-ERROR_VFIO="${PN} running with DPDK recommends support for Non-Privileged userspace driver framework (VFIO)."
+
+# NOTE: maybe later depending on upstream energy, support DPDK
+# For DPDK, removed HUGETLBFS PROC_PAGE_MONITOR UIO_PCI_GENERIC in favor of VFIO
+# CONFIG_CHECK="~NUMA_BALANCING ~SYN_COOKIES ~TRANSPARENT_HUGEPAGE ~VFIO"
+# ERROR_VFIO="${PN} running with DPDK recommends support for Non-Privileged userspace driver framework (VFIO)."
 
 DOCS=( LICENSE.AGPL NOTICE.txt ORIGIN README.md README-DPDK.md )
 PATCHES=()
@@ -106,7 +107,7 @@ PATCHES=()
 pkg_pretend() {
 	if tc-is-gcc ; then
 		if [[ $(gcc-major-version) -lt 7 && $(gcc-minor-version) -lt 3 ]] ; then
-				die "You need at least sys-devel/gcc-7.0"
+				die "You need at least sys-devel/gcc-7.3"
 		fi
 	fi
 }
@@ -129,9 +130,6 @@ src_prepare() {
 		rmdir seastar || die
 		mv "${WORKDIR}/seastar-${SEASTAR_COMMIT}" seastar || die
 
-		rmdir seastar/dpdk || die
-		mv "${WORKDIR}/dpdk-${DPDK_COMMIT}" seastar/dpdk || die
-
 		rmdir seastar/c-ares || die
 		mv "${WORKDIR}/c-ares-${C_ARES_COMMIT}" seastar/c-ares || die
 
@@ -151,16 +149,16 @@ src_prepare() {
 		echo "${MY_PV}-gentoo" > version
 	fi
 
-	# fix slotted antlr3 path
-	sed -e 's/antlr3 /antlr3.5 /g' -i configure.py || die
-
 	# fix jsoncpp detection
 	sed -e 's@json/json.h@jsoncpp/json/json.h@g' -i json.hh || die
 
-	# fix systemd service config path
-	mkdir build || die
-	cp dist/common/systemd/scylla-server.service.in build/scylla-server.service || die
-	sed -e "s#@@SYSCONFDIR@@#/etc/sysconfig#g" -i build/scylla-server.service || die
+	# QA: no -Werror (tho it does not propagate)
+	sed -e 's/\-Werror//g' -i configure.py || die
+
+	# QA NOTE: respect -O3 as it is upstream recommended
+	# and because we would kill the RAM of the machine with lower optimization
+	# since some files can take up to 8GB of RAM to compile!
+	# sed -e 's/\-O3//g' -i configure.py || die
 
 	# run a clean autoreconf on c-ares
 	pushd seastar/c-ares
@@ -171,20 +169,40 @@ src_prepare() {
 src_configure() {
 	python_setup
 
+	# copied from dist/redhat/scylla.spec.mustache
+	# we want a package compiled with old kernel headers to
+	# support nowait aio if the user upgrades their kernel
+	if ! grep -qwr RWF_NOWAIT /usr/include/linux; then
+	    append-cflags "-DRWF_NOWAIT=8"
+	fi
+	if ! grep -qwr aio_rw_flags /usr/include/linux; then
+	    append-cflags "-Daio_rw_flags=aio_reserved1"
+	fi
+
 	# native CPU CFLAGS are strongly enforced by upstreams, respect that
 	replace-cpu-flags "*" "native"
 
-	${EPYTHON} configure.py --mode=release --with=scylla --enable-dpdk --disable-xen --compiler "$(tc-getCXX)" --ldflags "${LDFLAGS}" --cflags "${CFLAGS}" --python ${EPYTHON} || die
+	append-cflags "-Wno-attributes -Wno-array-bounds"
+
+	${EPYTHON} configure.py --enable-gcc6-concepts --mode=release --with=scylla --disable-xen --c-compiler "$(tc-getCC)" --compiler "$(tc-getCXX)" --ldflags "${LDFLAGS}" --cflags "${CFLAGS}" --python ${EPYTHON} --with-antlr3 /usr/bin/antlr3.5 || die
 }
 
 src_compile() {
 	# force number of parallel builds because ninja does a bad job in guessing
 	# and the default build will kill your RAM/Swap in no time
-	ninja -v build/release/scylla build/release/iotune -j4 || die
+	ninja -v build/release/scylla build/release/iotune -j1 || die
 }
 
 src_install() {
+	# NOTE:
+	# I base myself on upstream's install.sh file
+
 	default
+
+	local MUSTACHE_DIST="\"debian\": true"
+	pystache dist/common/systemd/scylla-server.service.mustache "{ $MUSTACHE_DIST }" > build/scylla-server.service
+	pystache dist/common/systemd/scylla-housekeeping-daily.service.mustache "{ $MUSTACHE_DIST }" > build/scylla-housekeeping-daily.service
+	pystache dist/common/systemd/scylla-housekeeping-restart.service.mustache "{ $MUSTACHE_DIST }" > build/scylla-housekeeping-restart.service
 
 	insinto /etc/default
 	doins dist/common/sysconfig/scylla-server
@@ -192,11 +210,7 @@ src_install() {
 	insinto /etc/security/limits.d
 	doins dist/common/limits.d/scylla.conf
 
-	insinto /etc/collectd.d
-	doins dist/common/collectd.d/scylla.conf
-
 	insinto /etc/scylla.d
-	mv conf/housekeeping.cfg dist/common/scylla.d/ || die
 	doins dist/common/scylla.d/*.conf
 
 	insinto /etc/sysctl.d
@@ -204,27 +218,41 @@ src_install() {
 	doins dist/debian/sysctl.d/*.conf
 
 	insinto /etc/scylla
-	doins conf/*
+	for config_file in scylla.yaml cassandra-rackdc.properties; do
+		doins conf/${config_file}
+	done
 
 	systemd_dounit build/*.service
 	systemd_dounit dist/common/systemd/*.service
 	systemd_dounit dist/common/systemd/*.timer
 
-	newinitd "${FILESDIR}/scylla-server.initd" ${PN}-server
-	newconfd "${FILESDIR}/scylla-server.confd" ${PN}-server
-
 	exeinto /usr/lib/scylla
 	doexe dist/common/scripts/*
 	doexe seastar/scripts/*
-	doexe seastar/dpdk/usertools/dpdk-devbind.py
-	doexe scylla-blocktune
-	doexe scylla-housekeeping
 
 	dobin build/release/iotune
 	dobin build/release/scylla
 	dobin dist/common/bin/scyllatop
 
+	insinto /usr/lib/scylla
+	doins dist/common/scripts/scylla_blocktune.py
+
+	exeinto /usr/lib/scylla
+	doexe dist/common/scripts/scylla-blocktune
+	doexe scylla-housekeeping
+
+	insinto /etc/scylla.d
+	doins conf/housekeeping.cfg
+
+	newinitd "${FILESDIR}/scylla-server.initd" ${PN}-server
+	newconfd "${FILESDIR}/scylla-server.confd" ${PN}-server
+
 	dodoc -r licenses
+
+	for x in /var/lib/${PN}/{data,commitlog,hints,coredump} /var/lib/scylla-housekeeping /var/log/scylla; do
+		keepdir "${x}"
+		fowners scylla:scylla "${x}"
+	done
 
 	insinto /usr/lib/scylla/swagger-ui
 	doins -r swagger-ui/dist
@@ -236,13 +264,11 @@ src_install() {
 	doins -r tools/scyllatop/*
 	fperms +x /usr/lib/scylla/scyllatop/scyllatop.py
 
+	insinto /var/lib/scylla-housekeeping
+	doins -r scylla-housekeeping
+
 	for util in $(ls dist/common/sbin/); do
 		dosym /usr/lib/scylla/${util} /usr/sbin/${util}
-	done
-
-	for x in /var/lib/${PN}/{data,commitlog,coredump} /var/lib/scylla-housekeeping /var/log/scylla; do
-		keepdir "${x}"
-		fowners scylla:scylla "${x}"
 	done
 
 	insinto /etc/sudoers.d
@@ -251,8 +277,10 @@ src_install() {
 	insinto /etc/rsyslog.d
 	doins "${FILESDIR}/10-scylla.conf"
 
-	insinto /etc/cron.d
-	newins dist/debian/scylla-server.cron.d scylla_delay_fstrim
+	if ! use systemd; then
+		insinto /etc/cron.d
+		newins dist/debian/scylla-server.cron.d scylla_delay_fstrim
+	fi
 }
 
 pkg_postinst() {
