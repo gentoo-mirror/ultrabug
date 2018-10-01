@@ -35,7 +35,8 @@ RDEPEND="
 
 DEPEND="
 	${CDEPEND}
-	>=virtual/jdk-1.8"
+	>=virtual/jdk-1.8
+	dev-python/pystache[${PYTHON_USEDEP}]"
 
 RESTRICT="test"
 
@@ -46,10 +47,6 @@ pkg_setup() {
 
 src_prepare() {
 	default
-
-	# fix systemd service config path
-	cp dist/common/systemd/scylla-jmx.service.in dist/common/systemd/scylla-jmx.service || die
-	sed -e "s#@@SYSCONFDIR@@#/etc/sysconfig#g" -i dist/common/systemd/scylla-jmx.service || die
 
 	# fix symlink runtime error on scylla-jmx script
 	# * scylla-jmx is not available for oracle-jdk-bin-1.8 on x86_64
@@ -79,7 +76,10 @@ src_install() {
 
 	newinitd "${FILESDIR}/scylla-jmx.initd" ${PN}
 	newconfd "${FILESDIR}/scylla-jmx.confd" ${PN}
-	systemd_dounit dist/common/systemd/*.service
+
+	local MUSTACHE_DIST="\"debian\": true"
+	pystache dist/common/systemd/scylla-jmx.service.mustache "{ $MUSTACHE_DIST }" > scylla-jmx.service
+	systemd_dounit scylla-jmx.service
 }
 
 pkg_postinst() {
