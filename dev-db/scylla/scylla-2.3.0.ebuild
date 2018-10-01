@@ -190,7 +190,7 @@ src_configure() {
 src_compile() {
 	# force number of parallel builds because ninja does a bad job in guessing
 	# and the default build will kill your RAM/Swap in no time
-	ninja -v build/release/scylla build/release/iotune -j1 || die
+	ninja -v build/release/scylla build/release/iotune -j4 || die
 }
 
 src_install() {
