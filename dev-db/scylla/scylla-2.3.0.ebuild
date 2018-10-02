@@ -215,7 +215,6 @@ src_install() {
 
 	insinto /etc/sysctl.d
 	doins dist/common/sysctl.d/*.conf
-	doins dist/debian/sysctl.d/*.conf
 
 	insinto /etc/scylla
 	for config_file in scylla.yaml cassandra-rackdc.properties; do
