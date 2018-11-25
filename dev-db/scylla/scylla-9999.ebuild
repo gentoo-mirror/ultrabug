@@ -1,10 +1,10 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
 
 if [[ ${PV} == "9999" ]] ; then
-	EGIT_COMMIT="scylla-2.3.0"
+	#EGIT_COMMIT="scylla-"
 	EGIT_REPO_URI="https://github.com/scylladb/scylla.git"
 	inherit git-r3
 else
@@ -190,7 +190,7 @@ src_configure() {
 src_compile() {
 	# force number of parallel builds because ninja does a bad job in guessing
 	# and the default build will kill your RAM/Swap in no time
-	ninja -v build/release/scylla build/release/iotune -j4 || die
+	ninja -v build/release/scylla build/release/iotune -j2 || die
 }
 
 src_install() {
@@ -271,7 +271,7 @@ src_install() {
 	done
 
 	insinto /etc/sudoers.d
-	doins dist/debian/sudoers.d/scylla
+	newins "${FILESDIR}"/scylla.sudoers scylla
 
 	insinto /etc/rsyslog.d
 	doins "${FILESDIR}/10-scylla.conf"

@@ -1,4 +1,4 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -10,10 +10,10 @@ if [[ ${PV} == "9999" ]] ; then
 else
 	MY_PV="${PV/_rc/.rc}"
 	MY_P="${PN}-${MY_PV}"
-	AMI_COMMIT="e7aa504db29e6e2f49b7f597846547155f0a7f64"
+	AMI_COMMIT="a425887809d281beb39297903198ee1a77a1065e"
 	C_ARES_COMMIT="fd6124c74da0801f23f9d324559d8b66fb83f533"
 	FMT_COMMIT="f61e71ccb9ab253f6d76096b2d958caf38fcccaa"
-	SEASTAR_COMMIT="ebf48120c2e4f973a1c33d8938c7d7bbc819a2d6"
+	SEASTAR_COMMIT="b846dfe25298ef08684604aaa77ff77873ebef39"
 	SWAGGER_COMMIT="1b212bbe713905aac22af1edb836f5cf8cc39cc2"
 	XXHASH_COMMIT="744892b802dcf61a78a3f2f1311d542577c16d66"
 	SRC_URI="
@@ -190,7 +190,7 @@ src_configure() {
 src_compile() {
 	# force number of parallel builds because ninja does a bad job in guessing
 	# and the default build will kill your RAM/Swap in no time
-	ninja -v build/release/scylla build/release/iotune -j4 || die
+	ninja -v build/release/scylla build/release/iotune -j2 || die
 }
 
 src_install() {
