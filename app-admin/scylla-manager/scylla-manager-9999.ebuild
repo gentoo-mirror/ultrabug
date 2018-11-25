@@ -1,11 +1,11 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
 
 inherit user
 
-MY_V="1.0.0-0.20180119.49f4a33"
+MY_V="1.2.0-0.20181017.59d3a87"
 
 DESCRIPTION="Scylla Manager"
 HOMEPAGE="http://docs.scylladb.com/operating-scylla/manager/"
@@ -51,6 +51,9 @@ src_install() {
 	fperms +x /usr/bin/scylla-manager
 	fperms +x /usr/bin/sctool
 	fperms +x /usr/lib/scylla-manager/scyllamgr_setup
+	fperms +x /usr/lib/scylla-manager/scyllamgr_ssh_setup
+	fperms +x /usr/lib/scylla-manager/scyllamgr_ssh_test
+	fperms +x /usr/lib/scylla-manager/scyllamgr_ssl_cert_gen
 
 	newinitd "${FILESDIR}/scylla-manager.initd" ${PN}
 	newconfd "${FILESDIR}/scylla-manager.confd" ${PN}
