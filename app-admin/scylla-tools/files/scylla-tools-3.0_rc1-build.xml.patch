@@ -1,0 +1,22 @@
+--- a/build.xml	2018-10-31 10:12:05.000000000 +0000
++++ b/build.xml	2018-12-04 14:25:22.987724149 +0000
+@@ -910,7 +910,7 @@
+         The jar target makes cassandra.jar output.
+     -->
+     <target name="jar"
+-            depends="build, build-test, stress-build, write-poms"
++            depends="build, stress-build, write-poms"
+             description="Assemble Cassandra JAR files">
+       <mkdir dir="${build.classes.main}/META-INF" />
+       <mkdir dir="${build.classes.thrift}/META-INF" />
+@@ -1227,8 +1227,9 @@
+       </jar>
+   </target>
+ 
+-    <!-- use https://github.com/krummas/jstackjunit to get thread dumps when unit tests time out -->
++    <!-- use https://github.com/krummas/jstackjunit to get thread dumps when unit tests time out
+   <taskdef name="junit" classname="org.krummas.junit.JStackJUnitTask" classpath="lib/jstackjunit-0.0.1.jar"/>
++  -->
+ 
+   <target name="build-test" depends="build" description="Compile test classes">
+     <javac
