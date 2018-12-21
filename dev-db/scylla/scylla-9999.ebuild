@@ -164,6 +164,9 @@ src_prepare() {
 	pushd seastar/c-ares
 	eautoreconf || die
 	popd
+
+	# I don't agree with the old 4GB of RAM per job, it's more about 8GB now
+	sed -e 's/4000000000/8000000000/g' -i scripts/jobs || die
 }
 
 src_configure() {
@@ -188,9 +191,10 @@ src_configure() {
 }
 
 src_compile() {
-	# force number of parallel builds because ninja does a bad job in guessing
-	# and the default build will kill your RAM/Swap in no time
-	ninja -v build/release/scylla build/release/iotune -j2 || die
+	# we use the provided 'scripts/jobs' to figure out how many parallel
+	# compilation jobs we can sustain
+	einfo "Compiling using $(scripts/jobs) jobs"
+	ninja -v build/release/scylla build/release/iotune -j$(scripts/jobs) || die
 }
 
 src_install() {

@@ -12,7 +12,7 @@ else
 	MY_P="${PN}-${MY_PV}"
 	C_ARES_COMMIT="fd6124c74da0801f23f9d324559d8b66fb83f533"
 	FMT_COMMIT="f61e71ccb9ab253f6d76096b2d958caf38fcccaa"
-	SEASTAR_COMMIT="39b89de2597834e2ba34270a3d958c88b6d9d996"
+	SEASTAR_COMMIT="1651a2ac894e9692fe67d0c8f900214f465bdf8f"
 	SWAGGER_COMMIT="1b212bbe713905aac22af1edb836f5cf8cc39cc2"
 	XXHASH_COMMIT="744892b802dcf61a78a3f2f1311d542577c16d66"
 	SRC_URI="
@@ -159,6 +159,9 @@ src_prepare() {
 	pushd seastar/c-ares
 	eautoreconf || die
 	popd
+
+	# I don't agree with the old 4GB of RAM per job, it's more about 8GB now
+	sed -e 's/4000000000/8000000000/g' -i scripts/jobs || die
 }
 
 src_configure() {
@@ -183,9 +186,10 @@ src_configure() {
 }
 
 src_compile() {
-	# force number of parallel builds because ninja does a bad job in guessing
-	# and the default build will kill your RAM/Swap in no time
-	ninja -v build/release/scylla build/release/iotune -j2 || die
+	# we use the provided 'scripts/jobs' to figure out how many parallel
+	# compilation jobs we can sustain
+	einfo "Compiling using $(scripts/jobs) jobs"
+	ninja -v build/release/scylla build/release/iotune -j$(scripts/jobs) || die
 }
 
 src_install() {
