@@ -11,7 +11,6 @@ else
 	MY_PV="${PV/_rc/.rc}"
 	MY_P="${PN}-${MY_PV}"
 	AMI_COMMIT=""
-	C_ARES_COMMIT=""
 	FMT_COMMIT=""
 	SEASTAR_COMMIT=""
 	SWAGGER_COMMIT=""
@@ -19,9 +18,9 @@ else
 	SRC_URI="
 		https://github.com/scylladb/${PN}/archive/scylla-${MY_PV}.tar.gz -> ${MY_P}.tar.gz
 		https://github.com/scylladb/seastar/archive/${SEASTAR_COMMIT}.tar.gz -> seastar-${SEASTAR_COMMIT}.tar.gz
+		https://github.com/scylladb/libdeflate/archive/${LIBDEFLATE_COMMIT}.tar.gz -> libdeflate-${LIBDEFLATE_COMMIT}.tar.gz
 		https://github.com/scylladb/scylla-swagger-ui/archive/${SWAGGER_COMMIT}.tar.gz -> scylla-swagger-ui-${SWAGGER_COMMIT}.tar.gz
 		https://github.com/scylladb/fmt/archive/${FMT_COMMIT}.tar.gz -> fmt-${FMT_COMMIT}.tar.gz
-		https://github.com/scylladb/c-ares/archive/${C_ARES_COMMIT}.tar.gz -> c-ares-${C_ARES_COMMIT}.tar.gz
 		https://github.com/scylladb/scylla-ami/archive/${AMI_COMMIT}.tar.gz -> scylla-ami-${AMI_COMMIT}.tar.gz
 		https://github.com/scylladb/xxHash/archive/${AMI_COMMIT}.tar.gz -> scylla-xxhash-${XXHASH_COMMIT}.tar.gz
 	"
@@ -130,9 +129,6 @@ src_prepare() {
 		rmdir seastar || die
 		mv "${WORKDIR}/seastar-${SEASTAR_COMMIT}" seastar || die
 
-		rmdir seastar/c-ares || die
-		mv "${WORKDIR}/c-ares-${C_ARES_COMMIT}" seastar/c-ares || die
-
 		rmdir seastar/fmt || die
 		mv "${WORKDIR}/fmt-${FMT_COMMIT}" seastar/fmt || die
 
@@ -144,6 +140,9 @@ src_prepare() {
 
 		rmdir xxHash || die
 		mv "${WORKDIR}/xxHash-${XXHASH_COMMIT}" xxHash || die
+
+		rmdir libdeflate || die
+		mv "${WORKDIR}/libdeflate-${LIBDEFLATE_COMMIT}" libdeflate || die
 
 		# set version
 		echo "${MY_PV}-gentoo" > version
@@ -159,11 +158,6 @@ src_prepare() {
 	# and because we would kill the RAM of the machine with lower optimization
 	# since some files can take up to 8GB of RAM to compile!
 	# sed -e 's/\-O3//g' -i configure.py || die
-
-	# run a clean autoreconf on c-ares
-	pushd seastar/c-ares
-	eautoreconf || die
-	popd
 
 	# I don't agree with the old 4GB of RAM per job, it's more about 8GB now
 	sed -e 's/4000000000/8000000000/g' -i scripts/jobs || die
