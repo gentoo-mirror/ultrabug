@@ -12,6 +12,7 @@ else
 	MY_P="${PN}-${MY_PV}"
 	C_ARES_COMMIT="fd6124c74da0801f23f9d324559d8b66fb83f533"
 	FMT_COMMIT="f61e71ccb9ab253f6d76096b2d958caf38fcccaa"
+	LIBDEFLATE_COMMIT="e7e54eab42d7fd3c684cfe8278084fc354a2455a"
 	SEASTAR_COMMIT="1651a2ac894e9692fe67d0c8f900214f465bdf8f"
 	SWAGGER_COMMIT="1b212bbe713905aac22af1edb836f5cf8cc39cc2"
 	XXHASH_COMMIT="744892b802dcf61a78a3f2f1311d542577c16d66"
@@ -21,6 +22,7 @@ else
 		https://github.com/scylladb/scylla-swagger-ui/archive/${SWAGGER_COMMIT}.tar.gz -> scylla-swagger-ui-${SWAGGER_COMMIT}.tar.gz
 		https://github.com/scylladb/fmt/archive/${FMT_COMMIT}.tar.gz -> fmt-${FMT_COMMIT}.tar.gz
 		https://github.com/scylladb/c-ares/archive/${C_ARES_COMMIT}.tar.gz -> c-ares-${C_ARES_COMMIT}.tar.gz
+		https://github.com/scylladb/libdeflate/archive/${LIBDEFLATE_COMMIT}.tar.gz -> libdeflate-${LIBDEFLATE_COMMIT}.tar.gz
 		https://github.com/scylladb/xxHash/archive/${XXHASH_COMMIT}.tar.gz -> xxhash-${XXHASH_COMMIT}.tar.gz
 	"
 	KEYWORDS="~amd64"
@@ -139,6 +141,9 @@ src_prepare() {
 
 		rmdir xxHash || die
 		mv "${WORKDIR}/xxHash-${XXHASH_COMMIT}" xxHash || die
+
+		rmdir libdeflate || die
+		mv "${WORKDIR}/libdeflate-${LIBDEFLATE_COMMIT}" libdeflate || die
 
 		# set version
 		echo "${MY_PV}-gentoo" > version
