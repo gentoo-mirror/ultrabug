@@ -12,13 +12,13 @@ else
 	MY_P="${PN}-${MY_PV}"
 	C_ARES_COMMIT="fd6124c74da0801f23f9d324559d8b66fb83f533"
 	FMT_COMMIT="f61e71ccb9ab253f6d76096b2d958caf38fcccaa"
-	LIBDEFLATE_COMMIT="e7e54eab42d7fd3c684cfe8278084fc354a2455a"
-	SEASTAR_COMMIT="1651a2ac894e9692fe67d0c8f900214f465bdf8f"
+	LIBDEFLATE_COMMIT="17ec6c94d842463b895ec41bf4880ff058a67938"
+	SEASTAR_COMMIT="08f1258fc534f92a96af376af37efcee304afdb6"
 	SWAGGER_COMMIT="1b212bbe713905aac22af1edb836f5cf8cc39cc2"
 	XXHASH_COMMIT="744892b802dcf61a78a3f2f1311d542577c16d66"
 	SRC_URI="
 		https://github.com/scylladb/${PN}/archive/scylla-${MY_PV}.tar.gz -> ${MY_P}.tar.gz
-		https://github.com/scylladb/seastar/archive/${SEASTAR_COMMIT}.tar.gz -> seastar-${SEASTAR_COMMIT}.tar.gz
+		https://github.com/scylladb/scylla-seastar/archive/${SEASTAR_COMMIT}.tar.gz -> seastar-${SEASTAR_COMMIT}.tar.gz
 		https://github.com/scylladb/scylla-swagger-ui/archive/${SWAGGER_COMMIT}.tar.gz -> scylla-swagger-ui-${SWAGGER_COMMIT}.tar.gz
 		https://github.com/scylladb/fmt/archive/${FMT_COMMIT}.tar.gz -> fmt-${FMT_COMMIT}.tar.gz
 		https://github.com/scylladb/c-ares/archive/${C_ARES_COMMIT}.tar.gz -> c-ares-${C_ARES_COMMIT}.tar.gz
