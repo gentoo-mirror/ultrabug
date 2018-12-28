@@ -128,7 +128,7 @@ src_prepare() {
 		echo "${PV}-${git_commit}" > version
 	else
 		rmdir seastar || die
-		mv "${WORKDIR}/seastar-${SEASTAR_COMMIT}" seastar || die
+		mv "${WORKDIR}/scylla-seastar-${SEASTAR_COMMIT}" seastar || die
 
 		rmdir seastar/c-ares || die
 		mv "${WORKDIR}/c-ares-${C_ARES_COMMIT}" seastar/c-ares || die
