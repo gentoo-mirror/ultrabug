@@ -1,4 +1,4 @@
-# Copyright 1999-2018 Gentoo Authors
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -12,7 +12,7 @@ else
 	MY_P="${PN}-${MY_PV}"
 	C_ARES_COMMIT="fd6124c74da0801f23f9d324559d8b66fb83f533"
 	FMT_COMMIT="f61e71ccb9ab253f6d76096b2d958caf38fcccaa"
-	LIBDEFLATE_COMMIT="17ec6c94d842463b895ec41bf4880ff058a67938"
+	LIBDEFLATE_COMMIT="e7e54eab42d7fd3c684cfe8278084fc354a2455a"
 	SEASTAR_COMMIT="08f1258fc534f92a96af376af37efcee304afdb6"
 	SWAGGER_COMMIT="1b212bbe713905aac22af1edb836f5cf8cc39cc2"
 	XXHASH_COMMIT="744892b802dcf61a78a3f2f1311d542577c16d66"
