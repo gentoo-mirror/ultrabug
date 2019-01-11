@@ -1,11 +1,11 @@
-# Copyright 1999-2018 Gentoo Authors
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
 
 inherit user
 
-MY_V="1.2.0-0.20181017.59d3a87"
+MY_V="1.3.0-0.20181211.a76640d"
 
 DESCRIPTION="Scylla Manager"
 HOMEPAGE="http://docs.scylladb.com/operating-scylla/manager/"
