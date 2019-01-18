@@ -55,8 +55,8 @@ src_prepare() {
 src_install() {
 	default
 
-	# maintainer's note: change/check me on version bumps
-	local origin_version="3.11.3"
+	# find out version
+	local origin_version=$(grep '"base.version"' build.xml | sed 's/.*value="\(.*\)".*/\1/g')
 
 	python_setup 2.7
 	python_domodule pylib/cqlshlib

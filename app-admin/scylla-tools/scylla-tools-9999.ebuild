@@ -1,4 +1,4 @@
-# Copyright 1999-2018 Gentoo Authors
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -45,8 +45,8 @@ src_prepare() {
 src_install() {
 	default
 
-	# maintainer's note: change/check me on version bumps
-	local origin_version="3.0.8"
+	# find out version
+	local origin_version=$(grep '"base.version"' build.xml | sed 's/.*value="\(.*\)".*/\1/g')
 
 	python_setup 2.7
 	python_domodule pylib/cqlshlib
