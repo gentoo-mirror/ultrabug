@@ -252,7 +252,7 @@ src_install() {
 
 	dodoc -r licenses
 
-	for x in /var/lib/${PN} /var/lib/scylla-housekeeping /var/log/scylla; do
+	for x in /var/lib/${PN} /var/lib/${PN}/{data,commitlog,hints,coredump} /var/lib/scylla-housekeeping /var/log/scylla; do
 		keepdir "${x}"
 		fowners scylla:scylla "${x}"
 	done
