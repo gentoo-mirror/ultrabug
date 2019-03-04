@@ -56,5 +56,4 @@ src_install() {
 	fperms +x /usr/lib/scylla-manager/scyllamgr_ssl_cert_gen
 
 	newinitd "${FILESDIR}/scylla-manager.initd" ${PN}
-	newconfd "${FILESDIR}/scylla-manager.confd" ${PN}
 }
