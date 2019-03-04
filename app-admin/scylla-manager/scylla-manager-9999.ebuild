@@ -5,7 +5,7 @@ EAPI=6
 
 inherit user
 
-MY_V="1.3.0-0.20181211.a76640d"
+MY_V="1.3.1-0.20190124.08fc477"
 
 DESCRIPTION="Scylla Manager"
 HOMEPAGE="http://docs.scylladb.com/operating-scylla/manager/"
