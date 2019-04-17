@@ -40,6 +40,9 @@ RESTRICT="test"
 src_prepare() {
 	default
 	find examples -type f -name \*.xml -exec rm -v {} \; || die
+	if has network-sandbox ${FEATURES}; then
+		die "Please set '-network-sandbox' when defining the FEATURES variable"
+	fi
 }
 
 src_install() {
