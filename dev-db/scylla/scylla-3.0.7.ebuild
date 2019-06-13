@@ -10,19 +10,21 @@ if [[ ${PV} == "9999" ]] ; then
 else
 	MY_PV="${PV/_rc/.rc}"
 	MY_P="${PN}-${MY_PV}"
-	AMI_COMMIT=""
-	FMT_COMMIT=""
-	SEASTAR_COMMIT=""
-	SWAGGER_COMMIT=""
-	XXHASH_COMMIT=""
+	C_ARES_COMMIT="fd6124c74da0801f23f9d324559d8b66fb83f533"
+	FMT_COMMIT="f61e71ccb9ab253f6d76096b2d958caf38fcccaa"
+	LIBDEFLATE_COMMIT="e7e54eab42d7fd3c684cfe8278084fc354a2455a"
+	SEASTAR_COMMIT="f541231a3011420e26fb33e71355415334dcb861"
+	SWAGGER_COMMIT="1b212bbe713905aac22af1edb836f5cf8cc39cc2"
+	XXHASH_COMMIT="744892b802dcf61a78a3f2f1311d542577c16d66"
 	SRC_URI="
 		https://github.com/scylladb/${PN}/archive/scylla-${MY_PV}.tar.gz -> ${MY_P}.tar.gz
-		https://github.com/scylladb/seastar/archive/${SEASTAR_COMMIT}.tar.gz -> seastar-${SEASTAR_COMMIT}.tar.gz
-		https://github.com/scylladb/libdeflate/archive/${LIBDEFLATE_COMMIT}.tar.gz -> libdeflate-${LIBDEFLATE_COMMIT}.tar.gz
+		https://github.com/scylladb/scylla-seastar/archive/${SEASTAR_COMMIT}.tar.gz -> seastar-${SEASTAR_COMMIT}.tar.gz
 		https://github.com/scylladb/scylla-swagger-ui/archive/${SWAGGER_COMMIT}.tar.gz -> scylla-swagger-ui-${SWAGGER_COMMIT}.tar.gz
 		https://github.com/scylladb/fmt/archive/${FMT_COMMIT}.tar.gz -> fmt-${FMT_COMMIT}.tar.gz
-		https://github.com/scylladb/scylla-ami/archive/${AMI_COMMIT}.tar.gz -> scylla-ami-${AMI_COMMIT}.tar.gz
-		https://github.com/scylladb/xxHash/archive/${AMI_COMMIT}.tar.gz -> scylla-xxhash-${XXHASH_COMMIT}.tar.gz
+		https://github.com/scylladb/c-ares/archive/${C_ARES_COMMIT}.tar.gz -> c-ares-${C_ARES_COMMIT}.tar.gz
+		https://github.com/scylladb/libdeflate/archive/${LIBDEFLATE_COMMIT}.tar.gz -> libdeflate-${LIBDEFLATE_COMMIT}.tar.gz
+		https://github.com/scylladb/xxHash/archive/${XXHASH_COMMIT}.tar.gz -> xxhash-${XXHASH_COMMIT}.tar.gz
+		https://ultrabug.fr/gentoo/like_matcher.patch.bz2
 	"
 	KEYWORDS="~amd64"
 	S="${WORKDIR}/scylla-${MY_P}"
@@ -60,7 +62,7 @@ RDEPEND="
 	dev-cpp/antlr-cpp:3.5
 	dev-cpp/yaml-cpp
 	dev-java/antlr:3.5
-	dev-libs/boost
+	dev-libs/boost[icu]
 	dev-libs/crypto++
 	dev-libs/jsoncpp
 	dev-libs/libaio
@@ -101,7 +103,10 @@ ERROR_TRANSPARENT_HUGEPAGE="${PN} recommends support for Transparent Hugepage (T
 # ERROR_VFIO="${PN} running with DPDK recommends support for Non-Privileged userspace driver framework (VFIO)."
 
 DOCS=( LICENSE.AGPL NOTICE.txt ORIGIN README.md README-DPDK.md )
-PATCHES=()
+PATCHES=(
+	"${FILESDIR}"/0001-thrift-support-version-0.11-after-THRIFT-2221.patch
+	"${WORKDIR}"/like_matcher.patch
+)
 
 pkg_pretend() {
 	if tc-is-gcc ; then
@@ -127,16 +132,16 @@ src_prepare() {
 		echo "${PV}-${git_commit}" > version
 	else
 		rmdir seastar || die
-		mv "${WORKDIR}/seastar-${SEASTAR_COMMIT}" seastar || die
+		mv "${WORKDIR}/scylla-seastar-${SEASTAR_COMMIT}" seastar || die
+
+		rmdir seastar/c-ares || die
+		mv "${WORKDIR}/c-ares-${C_ARES_COMMIT}" seastar/c-ares || die
 
 		rmdir seastar/fmt || die
 		mv "${WORKDIR}/fmt-${FMT_COMMIT}" seastar/fmt || die
 
 		rmdir swagger-ui || die
 		mv "${WORKDIR}/scylla-swagger-ui-${SWAGGER_COMMIT}" swagger-ui || die
-
-		rmdir dist/ami/files/scylla-ami || die
-		mv "${WORKDIR}/scylla-ami-${AMI_COMMIT}" dist/ami/files/scylla-ami || die
 
 		rmdir xxHash || die
 		mv "${WORKDIR}/xxHash-${XXHASH_COMMIT}" xxHash || die
@@ -158,6 +163,11 @@ src_prepare() {
 	# and because we would kill the RAM of the machine with lower optimization
 	# since some files can take up to 8GB of RAM to compile!
 	# sed -e 's/\-O3//g' -i configure.py || die
+
+	# run a clean autoreconf on c-ares
+	pushd seastar/c-ares
+	eautoreconf || die
+	popd
 
 	# I don't agree with the old 4GB of RAM per job, it's more about 8GB now
 	sed -e 's/4000000000/8000000000/g' -i scripts/jobs || die
@@ -269,7 +279,7 @@ src_install() {
 	done
 
 	insinto /etc/sudoers.d
-	newins "${FILESDIR}"/scylla.sudoers scylla
+	doins dist/debian/sudoers.d/scylla
 
 	insinto /etc/rsyslog.d
 	doins "${FILESDIR}/10-scylla.conf"
