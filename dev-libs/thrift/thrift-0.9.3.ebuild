@@ -1,4 +1,4 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=5
@@ -16,7 +16,7 @@ SRC_URI="mirror://apache/${PN}/${PV}/${P}.tar.gz"
 LICENSE="Apache-2.0"
 SLOT="0"
 KEYWORDS="~amd64"
-IUSE="+cpp +glib libevent perl python qt4 static-libs test +zlib"
+IUSE="+cpp +glib libevent perl python static-libs test +zlib"
 
 REQUIRED_USE="python? ( ${PYTHON_REQUIRED_USE} )"
 
@@ -24,7 +24,6 @@ RDEPEND="cpp? ( dev-libs/boost:= )
 	libevent? ( dev-libs/libevent )
 	glib? ( dev-libs/glib:2 )
 	perl? ( dev-lang/perl:= dev-perl/Bit-Vector )
-	qt4? ( dev-qt/qtcore:4 )
 	zlib? ( sys-libs/zlib )
 	python? ( ${PYTHON_DEPS} )"
 DEPEND="${RDEPEND}
@@ -53,7 +52,6 @@ src_configure() {
 		$(use_with cpp boost) \
 		$(use_with libevent) \
 		$(use_with glib c_glib) \
-		$(use_with qt4 qt) \
 		$(use_with zlib) \
 		--without-{python,perl} \
 		--without-{csharp,java,erlang,php,php_extension,ruby,haskell,go,d,nodejs}
