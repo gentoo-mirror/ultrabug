@@ -24,7 +24,6 @@ else
 		https://github.com/scylladb/c-ares/archive/${C_ARES_COMMIT}.tar.gz -> c-ares-${C_ARES_COMMIT}.tar.gz
 		https://github.com/scylladb/libdeflate/archive/${LIBDEFLATE_COMMIT}.tar.gz -> libdeflate-${LIBDEFLATE_COMMIT}.tar.gz
 		https://github.com/scylladb/xxHash/archive/${XXHASH_COMMIT}.tar.gz -> xxhash-${XXHASH_COMMIT}.tar.gz
-		https://ultrabug.fr/gentoo/like_matcher.patch.bz2
 	"
 	KEYWORDS="~amd64"
 	S="${WORKDIR}/scylla-${MY_P}"
@@ -105,7 +104,6 @@ ERROR_TRANSPARENT_HUGEPAGE="${PN} recommends support for Transparent Hugepage (T
 DOCS=( LICENSE.AGPL NOTICE.txt ORIGIN README.md README-DPDK.md )
 PATCHES=(
 	"${FILESDIR}"/0001-thrift-support-version-0.11-after-THRIFT-2221.patch
-	"${WORKDIR}"/like_matcher.patch
 )
 
 pkg_pretend() {
