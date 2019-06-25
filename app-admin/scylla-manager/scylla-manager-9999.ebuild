@@ -5,7 +5,7 @@ EAPI=6
 
 inherit user
 
-MY_V="1.3.1-0.20190124.08fc477"
+MY_V="1.4.1-0.20190617.64c36e9b"
 
 DESCRIPTION="Scylla Manager"
 HOMEPAGE="http://docs.scylladb.com/operating-scylla/manager/"
@@ -52,7 +52,6 @@ src_install() {
 	fperms +x /usr/bin/sctool
 	fperms +x /usr/lib/scylla-manager/scyllamgr_setup
 	fperms +x /usr/lib/scylla-manager/scyllamgr_ssh_setup
-	fperms +x /usr/lib/scylla-manager/scyllamgr_ssh_test
 	fperms +x /usr/lib/scylla-manager/scyllamgr_ssl_cert_gen
 
 	newinitd "${FILESDIR}/scylla-manager.initd" ${PN}
