@@ -52,7 +52,6 @@ src_install() {
 	fperms +x /usr/bin/sctool
 	fperms +x /usr/lib/scylla-manager/scyllamgr_setup
 	fperms +x /usr/lib/scylla-manager/scyllamgr_ssh_setup
-	fperms +x /usr/lib/scylla-manager/scyllamgr_ssh_test
 	fperms +x /usr/lib/scylla-manager/scyllamgr_ssl_cert_gen
 
 	newinitd "${FILESDIR}/scylla-manager.initd" ${PN}
