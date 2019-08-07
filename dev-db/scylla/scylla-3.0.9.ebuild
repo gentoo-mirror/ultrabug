@@ -56,7 +56,7 @@ RDEPEND="
 	~app-admin/scylla-jmx-${PV}
 	~app-admin/scylla-tools-${PV}
 	>=virtual/jdk-1.8.0:*
-	>=dev-libs/boost-1.70.0[icu]
+	~dev-libs/boost-1.65.0[icu]
 	app-arch/lz4
 	app-arch/snappy
 	dev-cpp/antlr-cpp:3.5
