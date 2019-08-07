@@ -4,6 +4,7 @@
 EAPI=6
 
 if [[ ${PV} == "9999" ]] ; then
+	EGIT_CLONE_TYPE="mirror"
 	#EGIT_COMMIT="scylla-"
 	EGIT_REPO_URI="https://github.com/scylladb/scylla.git"
 	inherit git-r3
