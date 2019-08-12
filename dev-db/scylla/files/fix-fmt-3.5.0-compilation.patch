@@ -1,0 +1,94 @@
+From 5632c0776e5786c270b4c594ccb7cc3303e1648a Mon Sep 17 00:00:00 2001
+From: Vlad Zolotarov <vladz@scylladb.com>
+Date: Tue, 16 Jul 2019 18:12:31 -0400
+Subject: [PATCH] tests: fix the compilation with fmt v5.3.0
+
+Compilation fails with fmt release 5.3.0 when we print a bytes_view
+using "{}" formatter.
+
+Compiler's complain is: "error: static assertion failed: mismatch
+between char-types of context and argument"
+
+Fix this by explicitly using to_hex() converter.
+
+Signed-off-by: Vlad Zolotarov <vladz@scylladb.com>
+Message-Id: <20190716221231.22605-3-vladz@scylladb.com>
+Signed-off-by: Alexys Jacob <ultrabug@gentoo.org>
+---
+ tests/murmur_hash_test.cc | 2 +-
+ tests/sstable_3_x_test.cc | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/tests/murmur_hash_test.cc b/tests/murmur_hash_test.cc
+index fbe341479..d419cb3a9 100644
+--- a/tests/murmur_hash_test.cc
++++ b/tests/murmur_hash_test.cc
+@@ -99,7 +99,7 @@ std::array<uint64_t,2> prefix_hashes[] = {
+ BOOST_AUTO_TEST_CASE(test_hash_output) {
+     auto assert_hashes_equal = [] (bytes_view data, std::array<uint64_t,2> lhs, std::array<uint64_t,2> rhs) {
+         if (lhs != rhs) {
+-            BOOST_FAIL(format("Hashes differ for {} (got {{0x{:x}, 0x{:x}}} and {{0x{:x}, 0x{:x}}})", data,
++            BOOST_FAIL(format("Hashes differ for {} (got {{0x{:x}, 0x{:x}}} and {{0x{:x}, 0x{:x}}})", to_hex(data),
+                 lhs[0], lhs[1], rhs[0], rhs[1]));
+         }
+     };
+diff --git a/tests/sstable_3_x_test.cc b/tests/sstable_3_x_test.cc
+index be77e7ecf..cc7756ddf 100644
+--- a/tests/sstable_3_x_test.cc
++++ b/tests/sstable_3_x_test.cc
+@@ -2815,7 +2815,7 @@ SEASTAR_THREAD_TEST_CASE(test_uncompressed_collections_read) {
+                         BOOST_FAIL(format("Expected row with column {} having value {}, but it has value {}",
+                                           def.id,
+                                           int32_type->decompose(int32_t(val[idx])),
+-                                          entry.first));
++                                          to_hex(entry.first)));
+                     }
+                     ++idx;
+                 }
+@@ -2858,7 +2858,7 @@ SEASTAR_THREAD_TEST_CASE(test_uncompressed_collections_read) {
+                                    def.id,
+                                    int32_type->decompose(int32_t(val[idx].first)),
+                                    utf8_type->decompose(val[idx].second),
+-                                   entry.first,
++                                   to_hex(entry.first),
+                                    entry.second.value().linearize()));
+                     }
+                     ++idx;
+-- 
+2.22.0
+
+From fe82437dea46f585758d388ba5d5ef8392cb0421 Mon Sep 17 00:00:00 2001
+From: Vlad Zolotarov <vladz@scylladb.com>
+Date: Thu, 25 Apr 2019 15:34:15 -0400
+Subject: [PATCH] types.cc: fix the compilation with fmt v5.3.0
+
+Compilation fails with fmt release 5.3.0 when we print a bytes_view
+using "{}" formatter.
+
+Compiler's complain is: "error: static assertion failed: mismatch
+between char-types of context and argument"
+
+Fix this by explicitly using to_hex() converter.
+
+Signed-off-by: Vlad Zolotarov <vladz@scylladb.com>
+Signed-off-by: Alexys Jacob <ultrabug@gentoo.org>
+---
+ types.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/types.cc b/types.cc
+index f6067c65c..bf0a9460a 100644
+--- a/types.cc
++++ b/types.cc
+@@ -3212,7 +3212,7 @@ void list_type_impl::validate(bytes_view v, cql_serialization_format sf) const {
+                 format("Validation failed for type {}: bytes remaining after reading all {} elements of the list -> [{}]",
+                        this->name(),
+                        nr,
+-                       v));
++                       to_hex(v)));
+     }
+ }
+ 
+-- 
+2.22.0
+
