@@ -3,8 +3,9 @@
 
 EAPI=6
 
+MY_PV="${PV/_beta/}"
 EGIT_CLONE_TYPE="mirror"
-EGIT_COMMIT="master"
+EGIT_COMMIT="next-${MY_PV}"
 EGIT_REPO_URI="https://github.com/scylladb/scylla.git"
 inherit git-r3
 
@@ -45,7 +46,7 @@ RDEPEND="
 	dev-libs/crypto++
 	dev-libs/jsoncpp
 	dev-libs/libaio
-	>=dev-libs/libfmt-3.5.0
+	>=dev-libs/libfmt-3.2.1
 	dev-libs/libxml2
 	dev-libs/protobuf
 	dev-python/pyparsing[${PYTHON_USEDEP}]
@@ -83,7 +84,9 @@ ERROR_TRANSPARENT_HUGEPAGE="${PN} recommends support for Transparent Hugepage (T
 # ERROR_VFIO="${PN} running with DPDK recommends support for Non-Privileged userspace driver framework (VFIO)."
 
 DOCS=( LICENSE.AGPL NOTICE.txt ORIGIN README.md README-DPDK.md )
-PATCHES=()
+PATCHES=(
+	"${FILESDIR}/fix-fmt-3.5.0-compilation.patch"
+)
 
 pkg_setup() {
 	linux-info_pkg_setup
