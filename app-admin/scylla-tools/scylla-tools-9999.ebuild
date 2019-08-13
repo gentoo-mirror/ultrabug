@@ -24,6 +24,7 @@ CDEPEND="dev-java/antlr:3.5"
 RDEPEND="
 	${CDEPEND}
 	${PYTHON_DEPS}
+	>=dev-java/ant-junit-1.10.5
 	>=virtual/jre-1.8"
 DEPEND="
 	${CDEPEND}
