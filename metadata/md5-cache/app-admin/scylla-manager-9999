@@ -9,5 +9,5 @@ RDEPEND=app-arch/rpm2targz dev-db/scylla
 RESTRICT=fetch
 SLOT=0
 SRC_URI=scylla-manager-1.4.1-0.20190617.64c36e9b.x86_64.rpm scylla-manager-client-1.4.1-0.20190617.64c36e9b.x86_64.rpm scylla-manager-server-1.4.1-0.20190617.64c36e9b.x86_64.rpm
-_eclasses_=user	f8dcb46ee7b0bcdec51dac1ef4bfdfc9
+_eclasses_=user	00484e1be1aac73e24fca1c99557a7d6
 _md5_=8e9a53a68daa1f68a9efca14b9475bdd
