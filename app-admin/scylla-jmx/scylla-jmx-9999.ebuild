@@ -49,6 +49,10 @@ src_prepare() {
 }
 
 src_compile() {
+	pushd scylla-apiclient
+	mvn -B install || die
+	popd
+
 	mvn -B install || die
 }
 
