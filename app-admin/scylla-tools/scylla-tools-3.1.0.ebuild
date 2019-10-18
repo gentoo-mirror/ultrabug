@@ -18,6 +18,7 @@ inherit java-pkg-2 java-ant-2 python-single-r1
 DESCRIPTION="scylla tools (Java part)"
 HOMEPAGE="https://github.com/scylladb/scylla-tools-java"
 
+KEYWORDS="~amd64"
 LICENSE="Apache-2.0"
 SLOT="0"
 
