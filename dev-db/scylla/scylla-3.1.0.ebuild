@@ -16,6 +16,7 @@ inherit autotools flag-o-matic linux-info python-r1 toolchain-funcs systemd user
 DESCRIPTION="NoSQL data store using the seastar framework, compatible with Apache Cassandra"
 HOMEPAGE="http://scylladb.com/"
 
+KEYWORDS="~amd64"
 LICENSE="AGPL-3"
 SLOT="0"
 IUSE="doc systemd"
