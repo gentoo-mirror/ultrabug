@@ -5,7 +5,7 @@ EAPI=6
 
 MY_PV="${PV/_beta/}"
 EGIT_CLONE_TYPE="mirror"
-EGIT_COMMIT="next-${MY_PV}"
+EGIT_COMMIT="scylla-${PV}"
 EGIT_REPO_URI="https://github.com/scylladb/scylla.git"
 inherit git-r3
 
