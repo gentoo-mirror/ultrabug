@@ -87,6 +87,7 @@ ERROR_TRANSPARENT_HUGEPAGE="${PN} recommends support for Transparent Hugepage (T
 DOCS=( LICENSE.AGPL NOTICE.txt ORIGIN README.md README-DPDK.md )
 PATCHES=(
 	"${FILESDIR}/fix-fmt-3.5.0-compilation.patch"
+	"${FILESDIR}/3.1-thrift-support.patch"
 )
 
 pkg_setup() {
