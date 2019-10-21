@@ -50,6 +50,7 @@ RDEPEND="
 	>=dev-libs/libfmt-3.2.1
 	dev-libs/libxml2
 	dev-libs/protobuf
+	dev-python/psutil[${PYTHON_USEDEP}]
 	dev-python/pyparsing[${PYTHON_USEDEP}]
 	dev-python/pystache[${PYTHON_USEDEP}]
 	dev-python/pyudev[${PYTHON_USEDEP}]
