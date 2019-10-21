@@ -88,6 +88,7 @@ DOCS=( LICENSE.AGPL NOTICE.txt ORIGIN README.md README-DPDK.md )
 PATCHES=(
 	"${FILESDIR}/fix-fmt-3.5.0-compilation.patch"
 	"${FILESDIR}/3.1-thrift-support.patch"
+	"${FILESDIR}/3.1-revert-64-bit-gc_clock.patch"
 )
 
 pkg_setup() {
