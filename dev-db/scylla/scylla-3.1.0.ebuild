@@ -42,7 +42,6 @@ RDEPEND="
 	app-arch/zstd
 	dev-cpp/antlr-cpp:3.5
 	dev-cpp/yaml-cpp
-	dev-java/ant-junit
 	dev-java/antlr:3.5
 	~dev-libs/boost-1.65.0[icu]
 	dev-libs/crypto++
