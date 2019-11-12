@@ -54,7 +54,7 @@ RDEPEND="
 	dev-python/pyparsing[${PYTHON_USEDEP}]
 	dev-python/pystache[${PYTHON_USEDEP}]
 	dev-python/pyudev[${PYTHON_USEDEP}]
-	dev-python/pyyaml[${PYTHON_USEDEP}]
+	>=dev-python/pyyaml-5.1[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
 	dev-python/urwid[${PYTHON_USEDEP}]
 	dev-util/systemtap
