@@ -4,6 +4,7 @@ app-admin/scylla-jmx 3.0.6 3.0.8 3.0.9 3.0.10 3.1.0 3.1.1 9999: Scylla JMX
 app-admin/scylla-manager 9999: Scylla Manager
 app-admin/scylla-tools 3.0.6 3.0.8 3.0.9 3.0.10 3.1.0 3.1.1 9999: scylla tools (Java part)
 app-admin/uwsgitop 0.9: uWSGI top-like application
+dev-cpp/antlr-cpp 3.5.2-r1: The ANTLR 3 C++ Runtime
 dev-db/couchbase-server-community 4.5.1 5.1.1: Distributed key-value database management system
 dev-db/scylla 3.0.6 3.0.8 3.0.9 3.0.10 3.1.0 3.1.1 9999: NoSQL data store using the seastar framework, compatible with Apache Cassandra
 dev-libs/libcouchbase 2.5.3: Couchbase C Client Library
