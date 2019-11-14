@@ -128,7 +128,7 @@ src_prepare() {
 	# dist/common/scripts/scylla_util.py
 	# dist/common/scripts/scylla_config_get.py
 	find "${S}/dist" -type f -exec sed -e 's/yaml.load(/yaml.full_load(/g' -i {} \+ || die
-	sed -e 's/yaml.load(/yaml.full_load(/g' -i seastar/scripts/perftune.py || die
+	sed -e 's/yaml.load(/yaml.safe_load(/g' -i seastar/scripts/perftune.py || die
 }
 
 src_configure() {
