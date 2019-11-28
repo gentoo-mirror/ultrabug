@@ -1,0 +1,44 @@
+From 71b9eaaf6ec2c22715b772315321c28cdcfecdae Mon Sep 17 00:00:00 2001
+Message-Id: <71b9eaaf6ec2c22715b772315321c28cdcfecdae.1574946436.git.asias@scylladb.com>
+From: Asias He <asias@scylladb.com>
+Date: Thu, 28 Nov 2019 20:41:25 +0800
+Subject: [PATCH scylla] repair: Repair tables in parallel
+To: scylladb-dev@googlegroups.com
+
+---
+ repair/repair.cc | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/repair/repair.cc b/repair/repair.cc
+index c3e72854d6..3485605d4a 100644
+--- a/repair/repair.cc
++++ b/repair/repair.cc
+@@ -938,6 +938,8 @@ static future<> repair_cf_range(repair_info& ri,
+     });
+ }
+ 
++static thread_local semaphore tables_parallelism_semaphore(16);
++
+ // Repair a single local range, multiple column families.
+ // Comparable to RepairSession in Origin
+ static future<> repair_range(repair_info& ri, const dht::token_range& range) {
+@@ -956,13 +958,15 @@ static future<> repair_range(repair_info& ri, const dht::token_range& range) {
+             neighbors.swap(live_neighbors);
+       }
+       return ::service::get_local_migration_manager().sync_schema(ri.db.local(), neighbors).then([&neighbors, &ri, range, id] {
+-        return do_for_each(ri.cfs.begin(), ri.cfs.end(), [&ri, &neighbors, range] (auto&& cf) {
++        return parallel_for_each(ri.cfs.begin(), ri.cfs.end(), [&ri, &neighbors, range] (auto&& cf) {
++          return with_semaphore(tables_parallelism_semaphore, 1, [&ri, &neighbors, &cf, range] {
+             ri._sub_ranges_nr++;
+             if (ri.row_level_repair()) {
+                 return repair_cf_range_row_level(ri, cf, range, neighbors);
+             } else {
+                 return repair_cf_range(ri, cf, range, neighbors);
+             }
++          });
+         });
+       });
+     });
+-- 
+2.23.0
+
