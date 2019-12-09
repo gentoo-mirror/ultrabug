@@ -1,9 +1,10 @@
 #!/sbin/openrc-run
-# Copyright 1999-2018 Gentoo Authors
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 config_file=${config_file:-/etc/scylla/scylla.yaml}
 run_dir=${run_dir:-/run/scylla}
+chdir=${chdir:-/var/lib/scylla/coredump}
 
 command="/usr/bin/scylla"
 command_args="--options-file ${config_file} ${CPUSET} ${DEV_MODE} ${SEASTAR_IO} ${SCYLLA_ARGS}"
@@ -13,7 +14,7 @@ pidfile=${run_dir}/${SVCNAME}.pid
 user=${USER:-scylla}
 group=${GROUP:-scylla}
 retry="SIGTERM/120"
-start_stop_daemon_args="--user ${user} --group ${group} --wait 5000"
+start_stop_daemon_args="--chdir ${chdir} --user ${user} --group ${group} --wait 5000"
 
 depend() {
 	use net localmount logger
