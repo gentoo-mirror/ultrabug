@@ -43,7 +43,7 @@ RDEPEND="
 	dev-cpp/antlr-cpp:3.5
 	dev-cpp/yaml-cpp
 	dev-java/antlr:3.5
-	~dev-libs/boost-1.65.0[icu]
+	dev-libs/boost[icu]
 	dev-libs/crypto++
 	dev-libs/jsoncpp
 	dev-libs/libaio
