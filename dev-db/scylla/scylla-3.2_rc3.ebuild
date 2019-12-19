@@ -128,6 +128,9 @@ src_prepare() {
 	# dist/common/scripts/scylla_config_get.py
 	find "${S}/dist" -type f -exec sed -e 's/yaml.load(/yaml.full_load(/g' -i {} \+ || die
 	sed -e 's/yaml.load(/yaml.safe_load(/g' -i seastar/scripts/perftune.py || die
+
+	# fix /opt/scylladb/scripts
+	sed -e 's@/opt/scylladb/scripts@/usr/lib/scylla@g' -i dist/common/scripts/* || die
 }
 
 src_configure() {
@@ -228,10 +231,6 @@ src_install() {
 	doins -r tools/scyllatop/*
 	fperms +x /usr/lib/scylla/scyllatop/scyllatop.py
 	dosym /usr/lib/scylla/scyllatop/scyllatop.py /usr/sbin/scyllatop
-
-	for util in $(ls dist/common/sbin/); do
-		dosym /usr/lib/scylla/${util} /usr/sbin/${util}
-	done
 
 	insinto /etc/sudoers.d
 	newins "${FILESDIR}"/scylla.sudoers scylla
