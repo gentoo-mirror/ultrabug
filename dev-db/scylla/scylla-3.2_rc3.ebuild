@@ -86,7 +86,7 @@ ERROR_TRANSPARENT_HUGEPAGE="${PN} recommends support for Transparent Hugepage (T
 # CONFIG_CHECK="~NUMA_BALANCING ~SYN_COOKIES ~TRANSPARENT_HUGEPAGE ~VFIO"
 # ERROR_VFIO="${PN} running with DPDK recommends support for Non-Privileged userspace driver framework (VFIO)."
 
-DOCS=( LICENSE.AGPL NOTICE.txt ORIGIN README.md README-DPDK.md )
+DOCS=( LICENSE.AGPL NOTICE.txt ORIGIN README.md )
 PATCHES=(
 )
 
