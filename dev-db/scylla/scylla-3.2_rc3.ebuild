@@ -3,39 +3,20 @@
 
 EAPI=6
 
-if [[ ${PV} == "9999" ]] ; then
-	#EGIT_COMMIT="scylla-"
-	EGIT_REPO_URI="https://github.com/scylladb/scylla.git"
-	inherit git-r3
-else
-	MY_PV="${PV/_rc/.rc}"
-	MY_P="${PN}-${MY_PV}"
-	C_ARES_COMMIT="fd6124c74da0801f23f9d324559d8b66fb83f533"
-	FMT_COMMIT="f61e71ccb9ab253f6d76096b2d958caf38fcccaa"
-	LIBDEFLATE_COMMIT="e7e54eab42d7fd3c684cfe8278084fc354a2455a"
-	SEASTAR_COMMIT="16641efb15d7832f5106f294008937923c432c34"
-	SWAGGER_COMMIT="1b212bbe713905aac22af1edb836f5cf8cc39cc2"
-	XXHASH_COMMIT="744892b802dcf61a78a3f2f1311d542577c16d66"
-	SRC_URI="
-		https://github.com/scylladb/${PN}/archive/scylla-${MY_PV}.tar.gz -> ${MY_P}.tar.gz
-		https://github.com/scylladb/scylla-seastar/archive/${SEASTAR_COMMIT}.tar.gz -> seastar-${SEASTAR_COMMIT}.tar.gz
-		https://github.com/scylladb/scylla-swagger-ui/archive/${SWAGGER_COMMIT}.tar.gz -> scylla-swagger-ui-${SWAGGER_COMMIT}.tar.gz
-		https://github.com/scylladb/fmt/archive/${FMT_COMMIT}.tar.gz -> fmt-${FMT_COMMIT}.tar.gz
-		https://github.com/scylladb/c-ares/archive/${C_ARES_COMMIT}.tar.gz -> c-ares-${C_ARES_COMMIT}.tar.gz
-		https://github.com/scylladb/libdeflate/archive/${LIBDEFLATE_COMMIT}.tar.gz -> libdeflate-${LIBDEFLATE_COMMIT}.tar.gz
-		https://github.com/scylladb/xxHash/archive/${XXHASH_COMMIT}.tar.gz -> xxhash-${XXHASH_COMMIT}.tar.gz
-	"
-	KEYWORDS="~amd64"
-	S="${WORKDIR}/scylla-${MY_P}"
-fi
+MY_PV="${PV/_/.}"
+EGIT_CLONE_TYPE="mirror"
+EGIT_COMMIT="scylla-${MY_PV}"
+EGIT_REPO_URI="https://github.com/scylladb/scylla.git"
+inherit git-r3
 
-PYTHON_COMPAT=( python3_{4,5,6} )
+PYTHON_COMPAT=( python3_{5,6} )
 
 inherit autotools flag-o-matic linux-info python-r1 toolchain-funcs systemd user
 
 DESCRIPTION="NoSQL data store using the seastar framework, compatible with Apache Cassandra"
 HOMEPAGE="http://scylladb.com/"
 
+KEYWORDS="~amd64"
 LICENSE="AGPL-3"
 SLOT="0"
 IUSE="doc systemd"
@@ -56,21 +37,24 @@ RDEPEND="
 	~app-admin/scylla-jmx-${PV}
 	~app-admin/scylla-tools-${PV}
 	>=virtual/jdk-1.8.0:*
-	~dev-libs/boost-1.65.0[icu]
 	app-arch/lz4
 	app-arch/snappy
+	app-arch/zstd
 	dev-cpp/antlr-cpp:3.5
 	dev-cpp/yaml-cpp
 	dev-java/antlr:3.5
+	dev-libs/boost[icu]
 	dev-libs/crypto++
 	dev-libs/jsoncpp
 	dev-libs/libaio
+	>=dev-libs/libfmt-3.2.1
 	dev-libs/libxml2
 	dev-libs/protobuf
+	dev-python/psutil[${PYTHON_USEDEP}]
 	dev-python/pyparsing[${PYTHON_USEDEP}]
 	dev-python/pystache[${PYTHON_USEDEP}]
 	dev-python/pyudev[${PYTHON_USEDEP}]
-	dev-python/pyyaml[${PYTHON_USEDEP}]
+	>=dev-python/pyyaml-5.1[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
 	dev-python/urwid[${PYTHON_USEDEP}]
 	dev-util/systemtap
@@ -103,18 +87,7 @@ ERROR_TRANSPARENT_HUGEPAGE="${PN} recommends support for Transparent Hugepage (T
 
 DOCS=( LICENSE.AGPL NOTICE.txt ORIGIN README.md README-DPDK.md )
 PATCHES=(
-	"${FILESDIR}"/0001-thrift-support-version-0.11-after-THRIFT-2221.patch
 )
-
-pkg_pretend() {
-	if tc-is-gcc ; then
-		if [[ $(gcc-major-version) -lt 7 && $(gcc-minor-version) -lt 3 ]] ; then
-				die "You need at least sys-devel/gcc-7.3"
-		elif [[ $(gcc-major-version) -eq 9 ]] ; then
-				die "GCC-9 support has not been backported yet"
-		fi
-	fi
-}
 
 pkg_setup() {
 	linux-info_pkg_setup
@@ -125,33 +98,9 @@ pkg_setup() {
 src_prepare() {
 	default
 
-	# replace git submodules by symlinks
-	if [[ ${PV} == "9999" ]] ; then
-		# set version
-		local git_commit=$(git log --pretty=format:'%h' -n 1)
-		echo "${PV}-${git_commit}" > version
-	else
-		rmdir seastar || die
-		mv "${WORKDIR}/scylla-seastar-${SEASTAR_COMMIT}" seastar || die
-
-		rmdir seastar/c-ares || die
-		mv "${WORKDIR}/c-ares-${C_ARES_COMMIT}" seastar/c-ares || die
-
-		rmdir seastar/fmt || die
-		mv "${WORKDIR}/fmt-${FMT_COMMIT}" seastar/fmt || die
-
-		rmdir swagger-ui || die
-		mv "${WORKDIR}/scylla-swagger-ui-${SWAGGER_COMMIT}" swagger-ui || die
-
-		rmdir xxHash || die
-		mv "${WORKDIR}/xxHash-${XXHASH_COMMIT}" xxHash || die
-
-		rmdir libdeflate || die
-		mv "${WORKDIR}/libdeflate-${LIBDEFLATE_COMMIT}" libdeflate || die
-
-		# set version
-		echo "${MY_PV}-gentoo" > version
-	fi
+	# set version
+	local git_commit=$(git log --pretty=format:'%h' -n 1)
+	echo "${PV}-${git_commit}" > version
 
 	# fix jsoncpp detection
 	sed -e 's@json/json.h@jsoncpp/json/json.h@g' -i json.hh || die
@@ -164,13 +113,20 @@ src_prepare() {
 	# since some files can take up to 8GB of RAM to compile!
 	# sed -e 's/\-O3//g' -i configure.py || die
 
-	# run a clean autoreconf on c-ares
-	pushd seastar/c-ares
-	eautoreconf || die
-	popd
-
 	# I don't agree with the old 4GB of RAM per job, it's more about 8GB now
 	sed -e 's/4000000000/8000000000/g' -i scripts/jobs || die
+
+	# TODO: contribute me
+	# fix pyyaml vulnerability #659348
+	# seastar/scripts/perftune.py
+	# dist/docker/redhat/scyllasetup.py
+	# dist/common/scripts/scylla_io_setup
+	# dist/common/scripts/scylla_fstrim
+	# dist/common/scripts/scylla_blocktune.py
+	# dist/common/scripts/scylla_util.py
+	# dist/common/scripts/scylla_config_get.py
+	find "${S}/dist" -type f -exec sed -e 's/yaml.load(/yaml.full_load(/g' -i {} \+ || die
+	sed -e 's/yaml.load(/yaml.safe_load(/g' -i seastar/scripts/perftune.py || die
 }
 
 src_configure() {
@@ -236,17 +192,17 @@ src_install() {
 	exeinto /usr/lib/scylla
 	doexe dist/common/scripts/*
 	doexe seastar/scripts/*
+	doexe scylla-gdb.py
 
 	dobin build/release/iotune
 	dobin build/release/scylla
-	dobin dist/common/bin/scyllatop
 
 	insinto /usr/lib/scylla
 	doins dist/common/scripts/scylla_blocktune.py
 
 	exeinto /usr/lib/scylla
 	doexe dist/common/scripts/scylla-blocktune
-	doexe scylla-housekeeping
+	doexe dist/common/scripts/scylla-housekeeping
 
 	insinto /etc/scylla.d
 	doins conf/housekeeping.cfg
@@ -270,24 +226,17 @@ src_install() {
 	insinto /usr/lib/scylla/scyllatop
 	doins -r tools/scyllatop/*
 	fperms +x /usr/lib/scylla/scyllatop/scyllatop.py
-
-	insinto /var/lib/scylla-housekeeping
-	doins -r scylla-housekeeping
+	dosym /usr/lib/scylla/scyllatop/scyllatop.py /usr/sbin/scyllatop
 
 	for util in $(ls dist/common/sbin/); do
 		dosym /usr/lib/scylla/${util} /usr/sbin/${util}
 	done
 
 	insinto /etc/sudoers.d
-	doins dist/debian/sudoers.d/scylla
+	newins "${FILESDIR}"/scylla.sudoers scylla
 
 	insinto /etc/rsyslog.d
 	doins "${FILESDIR}/10-scylla.conf"
-
-	if ! use systemd; then
-		insinto /etc/cron.d
-		newins dist/debian/scylla-server.cron.d scylla_delay_fstrim
-	fi
 }
 
 pkg_postinst() {
