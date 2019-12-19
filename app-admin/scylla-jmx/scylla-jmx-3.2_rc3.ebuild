@@ -51,7 +51,9 @@ src_prepare() {
 }
 
 src_compile() {
+	pushd scylla-jmx-parent
 	mvn -B install || die
+	popd
 }
 
 src_install() {
@@ -61,7 +63,7 @@ src_install() {
 	doins dist/common/sysconfig/scylla-jmx
 
 	insinto /usr/lib/scylla/jmx
-	doins target/scylla-jmx-1.0.jar
+	doins target/*.jar
 
 	# removed because of src_prepare fix
 	#dodir /usr/lib/scylla/jmx/symlinks
