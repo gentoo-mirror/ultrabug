@@ -89,8 +89,6 @@ DOCS=( LICENSE.AGPL NOTICE.txt ORIGIN README.md README-DPDK.md )
 PATCHES=(
 	"${FILESDIR}/fix-fmt-3.5.0-compilation.patch"
 	"${FILESDIR}/3.1-thrift-support.patch"
-	"${FILESDIR}/v1-0001-repair-Add-a-timer-for-repair-reader.patch"
-	"${FILESDIR}/0001-repair-Repair-tables-in-parallel.patch"
 )
 
 pkg_setup() {
