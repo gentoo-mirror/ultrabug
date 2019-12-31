@@ -41,7 +41,7 @@ RDEPEND="
 	dev-cpp/antlr-cpp:3.5
 	dev-cpp/yaml-cpp
 	dev-java/antlr:3.5
-	~dev-libs/boost-1.65.0[icu]
+	dev-libs/boost[icu]
 	dev-libs/crypto++
 	dev-libs/jsoncpp
 	dev-libs/libaio
@@ -83,6 +83,9 @@ ERROR_TRANSPARENT_HUGEPAGE="${PN} recommends support for Transparent Hugepage (T
 # ERROR_VFIO="${PN} running with DPDK recommends support for Non-Privileged userspace driver framework (VFIO)."
 
 DOCS=( LICENSE.AGPL NOTICE.txt ORIGIN README.md README-DPDK.md )
+FILECAPS=(
+	cap_sys_nice /usr/bin/scylla
+)
 PATCHES=()
 
 pkg_setup() {

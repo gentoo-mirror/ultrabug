@@ -11,7 +11,7 @@ inherit git-r3
 
 PYTHON_COMPAT=( python3_{4,5,6} )
 
-inherit autotools flag-o-matic linux-info python-r1 toolchain-funcs systemd user
+inherit autotools fcaps flag-o-matic linux-info python-r1 toolchain-funcs systemd user
 
 DESCRIPTION="NoSQL data store using the seastar framework, compatible with Apache Cassandra"
 HOMEPAGE="http://scylladb.com/"
@@ -86,6 +86,9 @@ ERROR_TRANSPARENT_HUGEPAGE="${PN} recommends support for Transparent Hugepage (T
 # ERROR_VFIO="${PN} running with DPDK recommends support for Non-Privileged userspace driver framework (VFIO)."
 
 DOCS=( LICENSE.AGPL NOTICE.txt ORIGIN README.md README-DPDK.md )
+FILECAPS=(
+	cap_sys_nice /usr/bin/scylla
+)
 PATCHES=(
 	"${FILESDIR}/fix-fmt-3.5.0-compilation.patch"
 	"${FILESDIR}/3.1-thrift-support.patch"
