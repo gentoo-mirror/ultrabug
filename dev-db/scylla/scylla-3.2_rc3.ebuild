@@ -1,4 +1,4 @@
-# Copyright 1999-2019 Gentoo Authors
+# Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -152,7 +152,8 @@ src_configure() {
 	# native CPU CFLAGS are strongly enforced by upstreams, respect that
 	replace-cpu-flags "*" "native"
 
-	append-cflags "-Wno-attributes -Wno-array-bounds"
+	filter-flags -fomit-frame-pointer
+	append-cflags -Wno-attributes -Wno-array-bounds
 
 	${EPYTHON} configure.py --enable-gcc6-concepts --mode=release --with=scylla --disable-xen --c-compiler "$(tc-getCC)" --compiler "$(tc-getCXX)" --ldflags "${LDFLAGS}" --cflags "${CFLAGS}" --python ${EPYTHON} --with-antlr3 /usr/bin/antlr3.5 || die
 }
