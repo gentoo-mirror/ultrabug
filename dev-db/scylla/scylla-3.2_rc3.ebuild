@@ -87,11 +87,7 @@ ERROR_TRANSPARENT_HUGEPAGE="${PN} recommends support for Transparent Hugepage (T
 # ERROR_VFIO="${PN} running with DPDK recommends support for Non-Privileged userspace driver framework (VFIO)."
 
 DOCS=( LICENSE.AGPL NOTICE.txt ORIGIN README.md )
-FILECAPS=(
-	cap_sys_nice /usr/bin/scylla
-)
-PATCHES=(
-)
+PATCHES=()
 
 pkg_setup() {
 	linux-info_pkg_setup
@@ -139,21 +135,8 @@ src_prepare() {
 src_configure() {
 	python_setup
 
-	# copied from dist/redhat/scylla.spec.mustache
-	# we want a package compiled with old kernel headers to
-	# support nowait aio if the user upgrades their kernel
-	if ! grep -qwr RWF_NOWAIT /usr/include/linux; then
-	    append-cflags "-DRWF_NOWAIT=8"
-	fi
-	if ! grep -qwr aio_rw_flags /usr/include/linux; then
-	    append-cflags "-Daio_rw_flags=aio_reserved1"
-	fi
-
-	# native CPU CFLAGS are strongly enforced by upstreams, respect that
-	replace-cpu-flags "*" "native"
-
-	filter-flags -fomit-frame-pointer
-	append-cflags -Wno-attributes -Wno-array-bounds
+	# needed for blocked reactors logging as it disables -fomit-frame-pointers
+	append-cflags -g
 
 	${EPYTHON} configure.py --enable-gcc6-concepts --mode=release --with=scylla --disable-xen --c-compiler "$(tc-getCC)" --compiler "$(tc-getCXX)" --ldflags "${LDFLAGS}" --cflags "${CFLAGS}" --python ${EPYTHON} --with-antlr3 /usr/bin/antlr3.5 || die
 }
