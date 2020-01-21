@@ -31,11 +31,11 @@ IUSE="doc systemd"
 RESTRICT="test"
 
 RDEPEND="
-	>=dev-libs/thrift-0.11.0
 	<dev-util/ragel-7.0
 	<sys-apps/hwloc-2.0.0
-	~app-admin/scylla-jmx-${PV}
-	~app-admin/scylla-tools-${PV}
+	>=dev-libs/libfmt-3.2.1
+	>=dev-libs/thrift-0.11.0
+	>=dev-python/pyyaml-5.1[${PYTHON_USEDEP}]
 	>=virtual/jdk-1.8.0:*
 	app-arch/lz4
 	app-arch/snappy
@@ -47,7 +47,6 @@ RDEPEND="
 	dev-libs/crypto++
 	dev-libs/jsoncpp
 	dev-libs/libaio
-	>=dev-libs/libfmt-3.2.1
 	dev-libs/libxml2
 	dev-libs/protobuf
 	dev-libs/rapidjson
@@ -55,7 +54,6 @@ RDEPEND="
 	dev-python/pyparsing[${PYTHON_USEDEP}]
 	dev-python/pystache[${PYTHON_USEDEP}]
 	dev-python/pyudev[${PYTHON_USEDEP}]
-	>=dev-python/pyyaml-5.1[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
 	dev-python/urwid[${PYTHON_USEDEP}]
 	dev-util/systemtap
@@ -66,8 +64,10 @@ RDEPEND="
 	sys-libs/libunwind
 	sys-libs/zlib
 	sys-process/numactl
-	x11-libs/libpciaccess
 	systemd? ( sys-apps/systemd )
+	x11-libs/libpciaccess
+	~app-admin/scylla-jmx-${PV}
+	~app-admin/scylla-tools-${PV}
 "
 DEPEND="${RDEPEND}
 	>=sys-kernel/linux-headers-3.5
@@ -125,8 +125,8 @@ src_prepare() {
 	# dist/common/scripts/scylla_blocktune.py
 	# dist/common/scripts/scylla_util.py
 	# dist/common/scripts/scylla_config_get.py
-	find "${S}/dist" -type f -exec sed -e 's/yaml.load(/yaml.full_load(/g' -i {} \+ || die
-	sed -e 's/yaml.load(/yaml.safe_load(/g' -i seastar/scripts/perftune.py || die
+	# find "${S}/dist" -type f -exec sed -e 's/yaml.load(/yaml.full_load(/g' -i {} \+ || die
+	# sed -e 's/yaml.load(/yaml.safe_load(/g' -i seastar/scripts/perftune.py || die
 
 	# fix /opt/scylladb/scripts
 	sed -e 's@/opt/scylladb/scripts@/usr/lib/scylla@g' -i dist/common/scripts/* || die
@@ -218,6 +218,10 @@ src_install() {
 	doins -r tools/scyllatop/*
 	fperms +x /usr/lib/scylla/scyllatop/scyllatop.py
 	dosym /usr/lib/scylla/scyllatop/scyllatop.py /usr/sbin/scyllatop
+
+	for util in $(ls dist/common/sbin/); do
+		dosym /usr/lib/scylla/${util} /usr/sbin/${util}
+	done
 
 	insinto /etc/sudoers.d
 	newins "${FILESDIR}"/scylla.sudoers scylla

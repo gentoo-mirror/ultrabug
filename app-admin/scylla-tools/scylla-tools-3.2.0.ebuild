@@ -1,4 +1,4 @@
-# Copyright 1999-2019 Gentoo Authors
+# Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -40,6 +40,12 @@ src_prepare() {
 
 	# remove "build-test" from the "jar" target
 	sed -e 's/ build-test,//g' -i build.xml || die
+
+	# https everything
+	sed -e 's@http://@https://@g' -i build.xml build.properties.default || die
+
+	# fix bad cert HTTPS URL
+	sed -e 's@repo2.maven.org@repo.maven.apache.org@g' -i build.xml || die
 
 	if has network-sandbox ${FEATURES}; then
 		die "Please set '-network-sandbox' when defining the FEATURES variable"
