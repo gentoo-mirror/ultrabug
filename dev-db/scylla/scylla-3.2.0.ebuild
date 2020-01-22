@@ -87,7 +87,7 @@ ERROR_TRANSPARENT_HUGEPAGE="${PN} recommends support for Transparent Hugepage (T
 # ERROR_VFIO="${PN} running with DPDK recommends support for Non-Privileged userspace driver framework (VFIO)."
 
 DOCS=( LICENSE.AGPL NOTICE.txt ORIGIN README.md )
-PATCHES=()
+PATCHES=( "${FILESDIR}/5624.patch" )
 
 pkg_setup() {
 	linux-info_pkg_setup
