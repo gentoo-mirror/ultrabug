@@ -71,8 +71,8 @@ install_package() {
 	insinto /etc/rsyslog.d
 	doins "${FILESDIR}/10-scylla.conf"
 
-	newinitd "${FILESDIR}/scylla-server.initd" ${PN}-server
-	newconfd "${FILESDIR}/scylla-server.confd" ${PN}-server
+	newinitd "${FILESDIR}/scylla-server.initd" scylla-server
+	newconfd "${FILESDIR}/scylla-server.confd" scylla-server
 
 	popd
 }
@@ -86,8 +86,8 @@ install_python3() {
 install_jmx_package() {
 	pushd jmx-package
 	bash install.sh --root "${D}" --sysconfdir /etc/default || die
-	newinitd "${FILESDIR}/scylla-jmx.initd" ${PN}-server
-	newconfd "${FILESDIR}/scylla-jmx.confd" ${PN}-server
+	newinitd "${FILESDIR}/scylla-jmx.initd" scylla-jmx
+	newconfd "${FILESDIR}/scylla-jmx.confd" scylla-jmx
 	popd
 }
 
