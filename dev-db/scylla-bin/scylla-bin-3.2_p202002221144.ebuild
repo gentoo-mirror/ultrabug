@@ -84,6 +84,7 @@ install_python3() {
 }
 
 install_jmx_package() {
+	# TODO: not working with icedtea JVM
 	pushd jmx-package
 	bash install.sh --root "${D}" --sysconfdir /etc/default || die
 	newinitd "${FILESDIR}/scylla-jmx.initd" scylla-jmx
@@ -94,7 +95,7 @@ install_jmx_package() {
 src_install() {
 	install_package
 	install_python3
-	install_jmx_package
+	#install_jmx_package
 }
 
 pkg_postinst() {
