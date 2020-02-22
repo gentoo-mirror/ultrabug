@@ -1,0 +1,23 @@
+#!/sbin/openrc-run
+# Copyright 1999-2020 Gentoo Authors
+# Distributed under the terms of the GNU General Public License v2
+
+run_dir=${run_dir:-/run/scylla-jmx}
+
+command="/opt/scylladb/jmx/scylla-jmx"
+command_args=""
+command_background="true"
+command_progress="true"
+pidfile=${run_dir}/${SVCNAME}.pid
+user=${USER:-scylla}
+group=${GROUP:-scylla}
+retry="SIGTERM/120"
+start_stop_daemon_args="--user ${user} --group ${group} --wait 2000 --make-pidfile"
+
+depend() {
+	use net localmount logger
+}
+
+start_pre() {
+	checkpath -d -m 0750 -o "${user}":"${group}" "${run_dir}"
+}
