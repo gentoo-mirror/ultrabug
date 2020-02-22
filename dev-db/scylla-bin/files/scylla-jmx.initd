@@ -5,7 +5,7 @@
 run_dir=${run_dir:-/run/scylla-jmx}
 
 command="/opt/scylladb/jmx/scylla-jmx"
-command_args=""
+command_args="-l /opt/scylladb/jmx"
 command_background="true"
 command_progress="true"
 pidfile=${run_dir}/${SVCNAME}.pid
