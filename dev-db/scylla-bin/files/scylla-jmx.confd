@@ -1,0 +1,9 @@
+# please check the defaults of scylla in the /etc/default/scylla-jmx file!
+#
+# you can configure the following options for the OpenRC init script:
+# - run_dir
+
+# source scylla default env
+source /etc/default/scylla-jmx
+
+rc_need="scylla-server"
