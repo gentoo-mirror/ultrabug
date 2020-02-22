@@ -5,11 +5,11 @@ EAPI=6
 
 MY_PV="${PV/_p//}"
 
-inherit linux-info unpacker user
+inherit linux-info user
 
 DESCRIPTION="NoSQL data store using the seastar framework, compatible with Apache Cassandra"
 HOMEPAGE="https://scylladb.com/"
-SRC_URI="http://downloads.scylladb.com/relocatable/unstable/branch-${MY_PV}/scylla-package.tar.gz -> ${P}-package.tar.gz http://downloads.scylladb.com/relocatable/unstable/branch-${MY_PV}/scylla-python3-package.tar.gz -> ${P}-python3.tar.gz http://downloads.scylladb.com/relocatable/unstable/branch-${MY_PV}/scylla-jmx-package.tar.gz -> ${P}-jmx-package.tar.gz"
+SRC_URI="http://downloads.scylladb.com/relocatable/unstable/branch-${MY_PV}/scylla-package.tar.gz -> ${P}-package.tar.gz http://downloads.scylladb.com/relocatable/unstable/branch-${MY_PV}/scylla-python3-package.tar.gz -> ${P}-python3.tar.gz"
 
 KEYWORDS="~amd64"
 LICENSE="AGPL-3"
@@ -17,7 +17,9 @@ SLOT="0"
 IUSE="doc"
 RESTRICT="strip test"
 
-RDEPEND=""
+RDEPEND="
+	>=app-admin/scylla-jmx-3.2
+"
 DEPEND="${RDEPEND}
 	>=sys-kernel/linux-headers-3.5
 "
@@ -45,11 +47,11 @@ pkg_setup() {
 }
 
 src_unpack() {
-	for pkg in package jmx-package python3;
+	for pkg in package python3;
 	do
 		mkdir "${pkg}" || die
 		pushd "${pkg}" || die
-		unpacker ${P}-${pkg}.tar.gz || die
+		unpack ${P}-${pkg}.tar.gz || die
 		find . -type f -name "*.pyc" -delete
 		popd || die
 	done
@@ -83,14 +85,14 @@ install_python3() {
 	popd
 }
 
-install_jmx_package() {
-	# TODO: not working with icedtea JVM
-	pushd jmx-package
-	bash install.sh --root "${D}" --sysconfdir /etc/default || die
-	newinitd "${FILESDIR}/scylla-jmx.initd" scylla-jmx
-	newconfd "${FILESDIR}/scylla-jmx.confd" scylla-jmx
-	popd
-}
+#install_jmx_package() {
+#	# TODO: not working with icedtea JVM
+#	pushd jmx-package
+#	bash install.sh --root "${D}" --sysconfdir /etc/default || die
+#	newinitd "${FILESDIR}/scylla-jmx.initd" scylla-jmx
+#	newconfd "${FILESDIR}/scylla-jmx.confd" scylla-jmx
+#	popd
+#}
 
 src_install() {
 	install_package
