@@ -18,6 +18,7 @@ IUSE="doc"
 RESTRICT="strip test"
 
 RDEPEND="
+	!dev-db/scylla
 	>=app-admin/scylla-jmx-3.2
 "
 DEPEND="${RDEPEND}
