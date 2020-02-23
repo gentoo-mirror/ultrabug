@@ -58,10 +58,18 @@ src_unpack() {
 	done
 }
 
+src_prepare() {
+	default
+	sed -e 's@/etc/sysconfig@/etc/default@g' -i package/install.sh || die
+	sed -e 's@retc"/sysconfig@retc"/default@g' -i package/install.sh || die
+	sed -e 's@retc/sysconfig@retc/default@g' -i package/install.sh || die
+	sed -e "s@/share/doc@/share/doc/${P}@g" -i package/install.sh || die
+}
+
 install_package() {
 	pushd package
 
-	bash install.sh --root "${D}" --sysconfdir /etc/default || die
+	bash install.sh --root "${D}" --target debian || die
 
 	for x in /var/lib/scylla /var/lib/scylla/{data,commitlog,hints,coredump,hints,view_hints} /var/lib/scylla-housekeeping /var/log/scylla; do
 		keepdir "${x}"
@@ -82,7 +90,8 @@ install_package() {
 
 install_python3() {
 	pushd python3
-	bash install.sh --root "${D}" || die
+	insinto /opt/scylladb/python3
+	doins -r bin dist lib64 libexec licenses
 	popd
 }
 
