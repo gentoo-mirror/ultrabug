@@ -19,6 +19,7 @@ RESTRICT="strip test"
 
 RDEPEND="
 	!dev-db/scylla
+	dev-python/pystache
 	>=app-admin/scylla-jmx-3.2
 "
 DEPEND="${RDEPEND}
