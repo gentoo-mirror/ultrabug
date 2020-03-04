@@ -21,6 +21,7 @@ RDEPEND="
 	!dev-db/scylla
 	dev-python/pystache
 	>=app-admin/scylla-jmx-3.2
+	>=app-admin/scylla-tools-3.2
 "
 DEPEND="${RDEPEND}
 	>=sys-kernel/linux-headers-3.5
