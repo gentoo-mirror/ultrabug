@@ -31,9 +31,12 @@ start_pre() {
 	/usr/lib/scylla/scylla_prepare >/dev/null
 }
 
-stop_post() {
+stop_pre() {
 	ebegin "Draining node"
-	$(which nodetool) drain
+	$(which nodetool) drain || ewarn "Draining failed!"
+}
+
+stop_post() {
 	ebegin "Running scylla_stop"
 	/usr/lib/scylla/scylla_stop >/dev/null
 }
