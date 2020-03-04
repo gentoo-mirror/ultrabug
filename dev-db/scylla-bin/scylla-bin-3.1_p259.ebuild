@@ -65,6 +65,7 @@ src_prepare() {
 	sed -e 's@retc"/sysconfig@retc"/default@g' -i package/install.sh || die
 	sed -e 's@retc/sysconfig@retc/default@g' -i package/install.sh || die
 	sed -e "s@/share/doc@/share/doc/${P}@g" -i package/install.sh || die
+	find package/dist -type f -exec sed -e 's/yaml.load(/yaml.safe_load(/g' -i {} \+ || die
 }
 
 install_package() {
