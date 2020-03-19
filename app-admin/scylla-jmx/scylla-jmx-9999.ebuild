@@ -1,4 +1,4 @@
-# Copyright 1999-2019 Gentoo Authors
+# Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -8,7 +8,7 @@ EGIT_COMMIT="master"
 EGIT_REPO_URI="https://github.com/scylladb/scylla-jmx.git"
 inherit git-r3
 
-PYTHON_COMPAT=( python2_7 )
+PYTHON_COMPAT=( python3_6 )
 
 inherit java-pkg-2 python-r1 systemd user
 
