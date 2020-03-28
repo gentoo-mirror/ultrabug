@@ -10,5 +10,5 @@ RDEPEND=!dev-db/scylla dev-python/pystache >=app-admin/scylla-jmx-3.1 >=app-admi
 RESTRICT=strip test
 SLOT=0
 SRC_URI=http://downloads.scylladb.com/relocatable/unstable/branch-3.1/263/scylla-package.tar.gz -> scylla-bin-3.1_p263-package.tar.gz http://downloads.scylladb.com/relocatable/unstable/branch-3.1/263/scylla-python3-package.tar.gz -> scylla-bin-3.1_p263-python3.tar.gz
-_eclasses_=eapi7-ver	f9ec87e93172b25ce65a85303dc06964	linux-info	953c3b1c472dcadbf62098a9301327f2	multilib	1d91b03d42ab6308b5f4f6b598ed110e	toolchain-funcs	512eb3367f507ebaa1d1d43ab7d66e6c	user	7b7fc6ec5eb1c1eee55b0609f01e7362	user-info	a2abd4e2f4c3b9b06d64bf1329359a02
+_eclasses_=eapi7-ver	f9ec87e93172b25ce65a85303dc06964	linux-info	953c3b1c472dcadbf62098a9301327f2	multilib	c9e26066f2b7b5a91ad08d042f7f7306	toolchain-funcs	512eb3367f507ebaa1d1d43ab7d66e6c	user	7b7fc6ec5eb1c1eee55b0609f01e7362	user-info	a2abd4e2f4c3b9b06d64bf1329359a02
 _md5_=102f59edaaf86a8ee99834fbc8a9d943
