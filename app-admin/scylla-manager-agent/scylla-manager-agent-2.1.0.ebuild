@@ -5,7 +5,7 @@ EAPI=6
 
 inherit user
 
-MY_V="2.0.1-0.20200123.7cf18f6b"
+MY_V="2.1.0-0.20200611.9be1c609"
 
 DESCRIPTION="Scylla Manager Agent"
 HOMEPAGE="https://docs.scylladb.com/operating-scylla/manager/2.0/install-agent"
@@ -51,6 +51,7 @@ src_install() {
 	doins -r */usr/*
 
 	fperms +x /usr/bin/scylla-manager-agent
+	fperms +x /usr/lib/scylla-manager/scyllamgr_agent_setup
 	fperms +x /usr/lib/scylla-manager/scyllamgr_auth_token_gen
 	fperms +x /usr/lib/scylla-manager/scyllamgr_ssl_cert_gen
 
