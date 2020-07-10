@@ -10,8 +10,8 @@ command_args=""
 command_background="true"
 command_progress="true"
 pidfile=${run_dir}/${SVCNAME}.pid
-user=${USER:-scylla-manager}
-group=${GROUP:-scylla-manager}
+user=${USER:-scylla}
+group=${GROUP:-scylla}
 retry="SIGTERM/120"
 start_stop_daemon_args="--user ${user} --group ${group}"
 
