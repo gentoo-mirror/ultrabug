@@ -1,4 +1,4 @@
-DEFINED_PHASES=install setup unpack
+DEFINED_PHASES=install unpack
 DEPEND=app-arch/rpm2targz
 DESCRIPTION=Scylla Manager Agent
 EAPI=6
@@ -9,5 +9,4 @@ RDEPEND=app-arch/rpm2targz
 RESTRICT=fetch
 SLOT=0
 SRC_URI=scylla-manager-agent-2.1.0-0.20200611.9be1c609.x86_64.rpm
-_eclasses_=user	7b7fc6ec5eb1c1eee55b0609f01e7362	user-info	a2abd4e2f4c3b9b06d64bf1329359a02
-_md5_=ef609e67f1bac9ebaf6cc539027b8da4
+_md5_=bdb85551d3a39aceb5775f83be921000
