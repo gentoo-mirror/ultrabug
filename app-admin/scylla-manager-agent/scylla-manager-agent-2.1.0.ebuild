@@ -32,7 +32,7 @@ src_install() {
 	default
 
 	keepdir /var/lib/scylla-manager
-	fowners scylla-manager:scylla-manager "/var/lib/scylla-manager"
+	fowners scylla:scylla "/var/lib/scylla-manager"
 
 	insinto /etc
 	doins -r */etc/*
