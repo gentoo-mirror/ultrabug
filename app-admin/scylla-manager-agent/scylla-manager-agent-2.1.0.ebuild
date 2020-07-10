@@ -3,8 +3,6 @@
 
 EAPI=6
 
-inherit user
-
 MY_V="2.1.0-0.20200611.9be1c609"
 
 DESCRIPTION="Scylla Manager Agent"
@@ -23,11 +21,6 @@ DEPEND="${RDEPEND}"
 
 RESTRICT="fetch"
 S=${WORKDIR}
-
-pkg_setup() {
-	enewgroup scylla-manager
-	enewuser scylla-manager -1 -1 /var/lib/${PN} scylla-manager
-}
 
 src_unpack() {
 	for rpm in ${A}; do
