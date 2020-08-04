@@ -18,6 +18,7 @@ start_stop_daemon_args="--chdir ${chdir} --user ${user} --group ${group} --wait 
 
 depend() {
 	use net localmount logger
+	want scylla-jmx
 }
 
 start_pre() {

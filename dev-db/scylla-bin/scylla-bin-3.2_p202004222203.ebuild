@@ -9,7 +9,7 @@ inherit linux-info user
 
 DESCRIPTION="NoSQL data store using the seastar framework, compatible with Apache Cassandra"
 HOMEPAGE="https://scylladb.com/"
-SRC_URI="http://downloads.scylladb.com/relocatable/unstable/branch-${MY_PV}/scylla-package.tar.gz -> ${P}-package.tar.gz http://downloads.scylladb.com/relocatable/unstable/branch-${MY_PV}/scylla-python3-package.tar.gz -> ${P}-python3.tar.gz"
+SRC_URI="http://downloads.scylladb.com/relocatable/unstable/branch-${MY_PV}/scylla-package.tar.gz -> ${P}-package.tar.gz http://downloads.scylladb.com/relocatable/unstable/branch-${MY_PV}/scylla-python3-package.tar.gz -> ${P}-python3.tar.gz http://downloads.scylladb.com/relocatable/unstable/branch-${MY_PV}/scylla-tools-package.tar.gz -> ${P}-tools.tar.gz http://downloads.scylladb.com/relocatable/unstable/branch-${MY_PV}/scylla-jmx-package.tar.gz -> ${P}-jmx.tar.gz"
 
 KEYWORDS="~amd64"
 LICENSE="AGPL-3"
@@ -18,10 +18,9 @@ IUSE="doc"
 RESTRICT="strip test"
 
 RDEPEND="
+	!app-admin/scylla-jmx
+	!app-admin/scylla-tools
 	!dev-db/scylla
-	dev-python/pystache
-	>=app-admin/scylla-jmx-3.2
-	>=app-admin/scylla-tools-3.2
 "
 DEPEND="${RDEPEND}
 	>=sys-kernel/linux-headers-3.5
@@ -50,7 +49,7 @@ pkg_setup() {
 }
 
 src_unpack() {
-	for pkg in package python3;
+	for pkg in package python3 tools jmx;
 	do
 		mkdir "${pkg}" || die
 		pushd "${pkg}" || die
@@ -88,19 +87,43 @@ install_python3() {
 	popd
 }
 
-#install_jmx_package() {
-#	# TODO: not working with icedtea JVM
-#	pushd jmx-package
-#	bash install.sh --root "${D}" --sysconfdir /etc/default || die
-#	newinitd "${FILESDIR}/scylla-jmx.initd" scylla-jmx
-#	newconfd "${FILESDIR}/scylla-jmx.confd" scylla-jmx
-#	popd
-#}
+install_jmx() {
+	pushd jmx
+	# fix symlink runtime error on scylla-jmx script
+	# * scylla-jmx is not available for oracle-jdk-bin-1.8 on x86_64
+	# * IMPORTANT: some Java tools are not available on some VMs on some architectures
+	sed -e 's@"$LOCATION_SCRIPTS"/symlinks/scylla-jmx@/usr/bin/java@g' -i scylla-jmx || die
+	bash install.sh --root "${D}" --sysconfdir /etc/default || die
+	newinitd "${FILESDIR}/scylla-jmx.initd" scylla-jmx
+	newconfd "${FILESDIR}/scylla-jmx.confd" scylla-jmx
+	popd
+}
+
+install_tools() {
+	pushd tools
+	find . -type f -name '*.bat' -delete || die
+	for e in nodetool cqlsh sstableverify sstableutil sstableupgrade sstablescrub scylla-sstableloader debug-cql; do
+		sed -e "2i export CASSANDRA_INCLUDE=/opt/scylladb/bin/cassandra.in.sh" -i "bin/${e}" || die
+		sed -e "2i export CASSANDRA_HOME=/opt/scylladb/" -i "bin/${e}" || die
+	done
+	insinto /opt/scylladb
+	for f in bin conf doc lib pylib tools; do
+		doins -r "${f}"
+	done
+	for e in nodetool cqlsh sstableverify sstableutil sstableupgrade sstablescrub scylla-sstableloader debug-cql; do
+		fperms +x "/opt/scylladb/bin/${e}"
+		dosym "/opt/scylladb/bin/${e}" "/usr/bin/${e}"
+		sed -e "2i export CASSANDRA_INCLUDE=/opt/scylladb/bin/cassandra.in.sh" -i "bin/${e}" || die
+		sed -e "2i export CASSANDRA_HOME=/opt/scylladb/" -i "bin/${e}" || die
+	done
+	popd
+}
 
 src_install() {
 	install_package
 	install_python3
-	#install_jmx_package
+	install_tools
+	install_jmx
 }
 
 pkg_postinst() {
