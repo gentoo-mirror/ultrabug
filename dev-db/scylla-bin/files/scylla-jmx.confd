@@ -5,5 +5,3 @@
 
 # source scylla default env
 source /etc/default/scylla-jmx
-
-rc_need="scylla-server"

@@ -16,6 +16,7 @@ start_stop_daemon_args="--user ${user} --group ${group} --wait 2000 --make-pidfi
 
 depend() {
 	use net localmount logger
+	provide scylla-jmx
 }
 
 start_pre() {
