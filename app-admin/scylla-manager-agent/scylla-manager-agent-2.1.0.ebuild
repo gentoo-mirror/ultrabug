@@ -50,3 +50,7 @@ src_install() {
 
 	newinitd "${FILESDIR}/scylla-manager-agent.initd" ${PN}
 }
+
+pkg_config() {
+	/usr/lib/scylla-manager/scyllamgr_agent_setup -y --no-enable-service
+}
