@@ -21,6 +21,7 @@ RDEPEND="
 	!app-admin/scylla-jmx
 	!app-admin/scylla-tools
 	!dev-db/scylla
+	virtual/jdk:1.8
 "
 DEPEND="${RDEPEND}
 	>=sys-kernel/linux-headers-3.5
