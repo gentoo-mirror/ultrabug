@@ -5,6 +5,8 @@ EAPI=6
 
 MY_V="2.1.2-0.20200816.76cc4dcc"
 
+inherit user
+
 DESCRIPTION="Scylla Manager Agent"
 HOMEPAGE="https://docs.scylladb.com/operating-scylla/manager/2.0/install-agent"
 SRC_URI="${PN}-${MY_V}.x86_64.rpm"
@@ -22,6 +24,11 @@ DEPEND="${RDEPEND}"
 RESTRICT="fetch"
 S="${WORKDIR}/${PN}-${MY_V}.x86_64"
 
+pkg_setup() {
+	enewgroup scylla-manager
+	enewuser scylla-manager -1 -1 /var/lib/scylla-manager scylla-manager
+}
+
 src_unpack() {
 	for rpm in ${A}; do
 		rpmunpack "${DISTDIR}/${rpm}" || die
@@ -30,9 +37,6 @@ src_unpack() {
 
 src_prepare() {
 	default
-	sed -e 's/User=scylla-manager/User=scylla/g' -i usr/lib/systemd/system/*.service || die
-	sed -e 's/Group=scylla-manager/User=scylla/g' -i usr/lib/systemd/system/*.service || die
-
 	rm -rf usr/share || die
 }
 
@@ -40,7 +44,7 @@ src_install() {
 	default
 
 	keepdir /var/lib/scylla-manager
-	fowners scylla:scylla "/var/lib/scylla-manager"
+	fowners scylla-manager:scylla-manager "/var/lib/scylla-manager"
 
 	insinto /etc
 	doins -r etc/*
