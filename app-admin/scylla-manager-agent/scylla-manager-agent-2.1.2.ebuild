@@ -5,6 +5,8 @@ EAPI=6
 
 MY_V="2.1.2-0.20200816.76cc4dcc"
 
+inherit user
+
 DESCRIPTION="Scylla Manager Agent"
 HOMEPAGE="https://docs.scylladb.com/operating-scylla/manager/2.0/install-agent"
 SRC_URI="${PN}-${MY_V}.x86_64.rpm"
