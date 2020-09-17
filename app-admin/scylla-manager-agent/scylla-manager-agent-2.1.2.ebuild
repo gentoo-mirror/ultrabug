@@ -61,7 +61,6 @@ src_install() {
 }
 
 pkg_config() {
-	pidof scylla-manager-agent || die "scylla-manager-agent should be stopped"
 	usermod -ou $(id -u scylla) scylla-manager || die "failed to alias scylla-manager to scylla user"
 	/usr/lib/scylla-manager/scyllamgr_agent_setup -y --no-enable-service
 }
