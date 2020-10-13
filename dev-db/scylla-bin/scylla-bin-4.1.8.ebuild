@@ -3,13 +3,13 @@
 
 EAPI=6
 
-MY_PV="${PV/_p//}"
+MY_PV="4.1.8-0.20201002.6c43a0dc29"
 
-inherit linux-info user
+inherit linux-info user versionator
 
 DESCRIPTION="NoSQL data store using the seastar framework, compatible with Apache Cassandra"
 HOMEPAGE="https://scylladb.com/"
-SRC_URI="http://scratch.scylladb.com/lubos/numberly/scylla-package.tar.gz -> ${P}-package.tar.gz http://scratch.scylladb.com/lubos/numberly/scylla-python3-package.tar.gz -> ${P}-python3.tar.gz"
+SRC_URI="http://downloads.scylladb.com/downloads/scylla/relocatable/scylladb-$(get_version_component_range 1-2 ${PV})/scylla-package-${MY_PV}.tar.gz -> ${P}-package.tar.gz http://downloads.scylladb.com/downloads/scylla/relocatable/scylladb-$(get_version_component_range 1-2 ${PV})/scylla-python3-package-${MY_PV}.tar.gz -> ${P}-python3.tar.gz http://downloads.scylladb.com/downloads/scylla/relocatable/scylladb-$(get_version_component_range 1-2 ${PV})/scylla-tools-package-${MY_PV}.tar.gz -> ${P}-tools.tar.gz http://downloads.scylladb.com/downloads/scylla/relocatable/scylladb-$(get_version_component_range 1-2 ${PV})/scylla-jmx-package-${MY_PV}.tar.gz -> ${P}-jmx.tar.gz"
 
 KEYWORDS="~amd64"
 LICENSE="AGPL-3"
@@ -18,9 +18,10 @@ IUSE="doc"
 RESTRICT="strip test"
 
 RDEPEND="
+	!app-admin/scylla-jmx
+	!app-admin/scylla-tools
 	!dev-db/scylla
-	>=app-admin/scylla-jmx-3.1
-	>=app-admin/scylla-tools-3.1
+	virtual/jdk:1.8
 "
 DEPEND="${RDEPEND}
 	>=sys-kernel/linux-headers-3.5
@@ -49,7 +50,7 @@ pkg_setup() {
 }
 
 src_unpack() {
-	for pkg in package python3;
+	for pkg in package python3 tools jmx;
 	do
 		mkdir "${pkg}" || die
 		pushd "${pkg}" || die
@@ -59,19 +60,10 @@ src_unpack() {
 	done
 }
 
-src_prepare() {
-	default
-	sed -e 's@/etc/sysconfig@/etc/default@g' -i package/install.sh || die
-	sed -e 's@retc"/sysconfig@retc"/default@g' -i package/install.sh || die
-	sed -e 's@retc/sysconfig@retc/default@g' -i package/install.sh || die
-	sed -e "s@/share/doc@/share/doc/${P}@g" -i package/install.sh || die
-	find package/dist -type f -exec sed -e 's/yaml.load(/yaml.safe_load(/g' -i {} \+ || die
-}
-
 install_package() {
 	pushd package
 
-	bash install.sh --root "${D}" --target debian || die
+	bash install.sh --root "${D}" --sysconfdir /etc/default --packaging || die
 
 	for x in /var/lib/scylla /var/lib/scylla/{data,commitlog,hints,coredump,hints,view_hints} /var/lib/scylla-housekeeping /var/log/scylla; do
 		keepdir "${x}"
@@ -92,24 +84,33 @@ install_package() {
 
 install_python3() {
 	pushd python3
-	insinto /opt/scylladb/python3
-	doins -r bin dist lib64 libexec licenses
+	bash install.sh --root "${D}" || die
 	popd
 }
 
-#install_jmx_package() {
-#	# TODO: not working with icedtea JVM
-#	pushd jmx-package
-#	bash install.sh --root "${D}" --sysconfdir /etc/default || die
-#	newinitd "${FILESDIR}/scylla-jmx.initd" scylla-jmx
-#	newconfd "${FILESDIR}/scylla-jmx.confd" scylla-jmx
-#	popd
-#}
+install_jmx() {
+	pushd jmx
+	# fix symlink runtime error on scylla-jmx script
+	# * scylla-jmx is not available for oracle-jdk-bin-1.8 on x86_64
+	# * IMPORTANT: some Java tools are not available on some VMs on some architectures
+	sed -e 's@"$LOCATION_SCRIPTS"/symlinks/scylla-jmx@/usr/bin/java@g' -i scylla-jmx || die
+	bash install.sh --root "${D}" --sysconfdir /etc/default || die
+	newinitd "${FILESDIR}/scylla-jmx.initd" scylla-jmx
+	newconfd "${FILESDIR}/scylla-jmx.confd" scylla-jmx
+	popd
+}
+
+install_tools() {
+	pushd tools
+	bash install.sh --root "${D}" || die
+	popd
+}
 
 src_install() {
-	install_package
 	install_python3
-	#install_jmx_package
+	install_package
+	install_tools
+	install_jmx
 }
 
 pkg_postinst() {
