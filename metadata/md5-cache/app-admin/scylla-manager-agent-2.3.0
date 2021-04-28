@@ -1,0 +1,14 @@
+DEFINED_PHASES=config install prepare setup unpack
+DEPEND=app-arch/rpm2targz
+DESCRIPTION=Scylla Manager Agent
+EAPI=6
+HOMEPAGE=https://docs.scylladb.com/operating-scylla/manager/2.0/install-agent
+INHERIT=user
+KEYWORDS=~amd64
+LICENSE=SCYLLADB-PROPRIETARY
+RDEPEND=app-arch/rpm2targz
+RESTRICT=fetch
+SLOT=0
+SRC_URI=scylla-manager-agent-2.3.0-0.20210322.74f75d4a.x86_64.rpm
+_eclasses_=user-info	a2abd4e2f4c3b9b06d64bf1329359a02	user	26d8ce6329c43cbac965617f1c0627e2
+_md5_=7444d34572754baa9ed44a440a673602
