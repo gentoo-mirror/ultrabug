@@ -1,0 +1,15 @@
+DEFINED_PHASES=config install postinst setup unpack
+DEPEND=!app-admin/scylla-jmx !app-admin/scylla-tools !dev-db/scylla virtual/jdk:1.8 >=sys-kernel/linux-headers-3.5
+DESCRIPTION=NoSQL data store using the seastar framework, compatible with Apache Cassandra
+EAPI=6
+HOMEPAGE=https://scylladb.com/
+INHERIT=linux-info user versionator
+IUSE=doc kernel_linux
+KEYWORDS=~amd64
+LICENSE=AGPL-3
+RDEPEND=!app-admin/scylla-jmx !app-admin/scylla-tools !dev-db/scylla virtual/jdk:1.8
+RESTRICT=strip test
+SLOT=0
+SRC_URI=http://downloads.scylladb.com.s3.amazonaws.com/downloads/scylla/relocatable/scylladb-4.3/scylla-unified-package-4.3.2.1.scrub.20210505.b40b709c0.tar.gz -> scylla-bin-4.3.3-package.tar.gz http://downloads.scylladb.com/downloads/scylla/relocatable/scylladb-4.3/scylla-python3-package-4.3.2.0.20210301.5cdc1fa66.tar.gz -> scylla-bin-4.3.3-python3.tar.gz http://downloads.scylladb.com/downloads/scylla/relocatable/scylladb-4.3/scylla-tools-package-4.3.2.0.20210301.5cdc1fa66.tar.gz -> scylla-bin-4.3.3-tools.tar.gz http://downloads.scylladb.com/downloads/scylla/relocatable/scylladb-4.3/scylla-jmx-package-4.3.2.0.20210301.5cdc1fa66.tar.gz -> scylla-bin-4.3.3-jmx.tar.gz
+_eclasses_=toolchain-funcs	24921b57d6561d87cbef4916a296ada4	multilib	d410501a125f99ffb560b0c523cd3d1e	eapi7-ver	f9ec87e93172b25ce65a85303dc06964	linux-info	30ded7f9adbdd03d3e848cdd74f6c395	user-info	a2abd4e2f4c3b9b06d64bf1329359a02	user	26d8ce6329c43cbac965617f1c0627e2	estack	055c42df72f76a4f45ec92b35e83cd56	versionator	d3fb3ba33acc3bbbdc4d7970227c100d
+_md5_=39c527aed46f5df4466b8ea8e3c0aca1
