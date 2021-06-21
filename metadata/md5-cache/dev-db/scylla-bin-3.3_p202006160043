@@ -11,5 +11,5 @@ RDEPEND=!app-admin/scylla-jmx !app-admin/scylla-tools !dev-db/scylla virtual/jdk
 RESTRICT=strip test
 SLOT=0
 SRC_URI=http://downloads.scylladb.com/relocatable/unstable/branch-3.3/2020-06-16T00:43:53Z/scylla-package.tar.gz -> scylla-bin-3.3_p202006160043-package.tar.gz http://downloads.scylladb.com/relocatable/unstable/branch-3.3/2020-06-16T00:43:53Z/scylla-python3-package.tar.gz -> scylla-bin-3.3_p202006160043-python3.tar.gz http://downloads.scylladb.com/relocatable/unstable/branch-3.3/2020-06-16T00:43:53Z/scylla-tools-package.tar.gz -> scylla-bin-3.3_p202006160043-tools.tar.gz http://downloads.scylladb.com/relocatable/unstable/branch-3.3/2020-06-16T00:43:53Z/scylla-jmx-package.tar.gz -> scylla-bin-3.3_p202006160043-jmx.tar.gz
-_eclasses_=toolchain-funcs	7a9551c9a6680454019664620505375a	multilib	6f710a580aea2e8c7f5be70f8912ad43	eapi7-ver	f9ec87e93172b25ce65a85303dc06964	linux-info	7e8ed4c6a1d136fb291c52386f996c2c	user-info	8eda7e0ed7acb4b9678bea151579e154	user	527b8f84a662e996f692f97ffd2c893a
+_eclasses_=toolchain-funcs	e867df3870e8ff04a5b94f925be8b06a	multilib	f8d35c2432bb32c4f1e779c4287b31ec	eapi7-ver	f9ec87e93172b25ce65a85303dc06964	linux-info	7e8ed4c6a1d136fb291c52386f996c2c	user-info	8eda7e0ed7acb4b9678bea151579e154	user	527b8f84a662e996f692f97ffd2c893a
 _md5_=fe983c86d552ca33190c9ddcf45ad70e
