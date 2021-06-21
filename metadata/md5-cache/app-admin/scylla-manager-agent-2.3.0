@@ -10,5 +10,5 @@ RDEPEND=app-arch/rpm2targz
 RESTRICT=fetch
 SLOT=0
 SRC_URI=scylla-manager-agent-2.3.0-0.20210322.74f75d4a.x86_64.rpm
-_eclasses_=user-info	8eda7e0ed7acb4b9678bea151579e154	user	1e9788ed3d1120a037bc627062ab3c61
+_eclasses_=user-info	8eda7e0ed7acb4b9678bea151579e154	user	527b8f84a662e996f692f97ffd2c893a
 _md5_=7444d34572754baa9ed44a440a673602
